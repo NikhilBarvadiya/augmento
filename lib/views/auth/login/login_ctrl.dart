@@ -1,10 +1,10 @@
 import 'package:augmento/utils/routes/route_name.dart';
+import 'package:augmento/utils/toaster.dart';
 import 'package:augmento/views/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LoginCtrl extends GetxController {
-  final formKey = GlobalKey<FormState>();
   final emailCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
   var isLoading = false.obs, isPasswordVisible = false.obs;
@@ -22,7 +22,18 @@ class LoginCtrl extends GetxController {
   }
 
   Future<void> login() async {
-    if (!formKey.currentState!.validate()) return;
+    if (emailCtrl.text.isEmpty) {
+      return toaster.warning('Please enter your email');
+    }
+    if (!GetUtils.isEmail(emailCtrl.text)) {
+      return toaster.warning('Please enter a valid email');
+    }
+    if (passwordCtrl.text.isEmpty) {
+      return toaster.warning('Please enter your password');
+    }
+    if (passwordCtrl.text.length < 6) {
+      return toaster.warning('Password must be at least 6 characters');
+    }
     isLoading.value = true;
     try {
       final request = {'email': emailCtrl.text.trim(), 'password': passwordCtrl.text.trim()};

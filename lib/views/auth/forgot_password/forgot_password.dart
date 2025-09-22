@@ -79,123 +79,111 @@ class ForgotPassword extends StatelessWidget {
                         ),
                         Expanded(
                           flex: 2,
-                          child: Form(
-                            key: ctrl.formKey,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: decoration.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(color: decoration.colorScheme.outline.withOpacity(0.2)),
+                                ),
+                                child: TextFormField(
+                                  controller: ctrl.emailCtrl,
+                                  keyboardType: TextInputType.emailAddress,
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                  decoration: InputDecoration(
+                                    labelText: 'Email Address',
+                                    hintText: 'Enter your registered email',
+                                    prefixIcon: Container(
+                                      margin: const EdgeInsets.all(12),
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(color: decoration.colorScheme.secondary.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+                                      child: Icon(Icons.email_outlined, size: 20, color: decoration.colorScheme.secondary),
+                                    ),
+                                    border: InputBorder.none,
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                                    labelStyle: TextStyle(color: decoration.colorScheme.onSurfaceVariant),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 32),
+                              Obx(
+                                () => Container(
+                                  height: 56,
                                   decoration: BoxDecoration(
-                                    color: decoration.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                                    gradient: ctrl.isLoading.value
+                                        ? null
+                                        : LinearGradient(
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight,
+                                            colors: [decoration.colorScheme.primary, decoration.colorScheme.primary.withOpacity(0.8)],
+                                          ),
                                     borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: decoration.colorScheme.outline.withOpacity(0.2)),
+                                    boxShadow: ctrl.isLoading.value ? null : [BoxShadow(color: decoration.colorScheme.primary.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 8))],
                                   ),
-                                  child: TextFormField(
-                                    controller: ctrl.emailController,
-                                    keyboardType: TextInputType.emailAddress,
-                                    style: Theme.of(context).textTheme.bodyLarge,
-                                    decoration: InputDecoration(
-                                      labelText: 'Email Address',
-                                      hintText: 'Enter your registered email',
-                                      prefixIcon: Container(
-                                        margin: const EdgeInsets.all(12),
-                                        padding: const EdgeInsets.all(8),
-                                        decoration: BoxDecoration(color: decoration.colorScheme.secondary.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
-                                        child: Icon(Icons.email_outlined, size: 20, color: decoration.colorScheme.secondary),
-                                      ),
-                                      border: InputBorder.none,
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                                      labelStyle: TextStyle(color: decoration.colorScheme.onSurfaceVariant),
+                                  child: ElevatedButton(
+                                    onPressed: ctrl.isLoading.value ? null : ctrl.resetPassword,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: ctrl.isLoading.value ? decoration.colorScheme.primary : Colors.transparent,
+                                      shadowColor: Colors.transparent,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                      minimumSize: const Size(double.infinity, 56),
                                     ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Please enter your email';
-                                      }
-                                      if (!GetUtils.isEmail(value)) {
-                                        return 'Please enter a valid email';
-                                      }
-                                      return null;
-                                    },
+                                    child: ctrl.isLoading.value
+                                        ? SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: decoration.colorScheme.secondary))
+                                        : Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.send_rounded, size: 20, color: decoration.colorScheme.onSecondary),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                'Send Reset Link',
+                                                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: decoration.colorScheme.onSecondary, fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
                                   ),
                                 ),
-                                const SizedBox(height: 32),
-                                Obx(
-                                  () => Container(
-                                    height: 56,
-                                    decoration: BoxDecoration(
-                                      gradient: ctrl.isLoading.value
-                                          ? null
-                                          : LinearGradient(
-                                              begin: Alignment.centerLeft,
-                                              end: Alignment.centerRight,
-                                              colors: [decoration.colorScheme.primary, decoration.colorScheme.primary.withOpacity(0.8)],
-                                            ),
-                                      borderRadius: BorderRadius.circular(16),
-                                      boxShadow: ctrl.isLoading.value ? null : [BoxShadow(color: decoration.colorScheme.primary.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 8))],
-                                    ),
-                                    child: ElevatedButton(
-                                      onPressed: ctrl.isLoading.value ? null : ctrl.resetPassword,
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: ctrl.isLoading.value ? decoration.colorScheme.primary : Colors.transparent,
-                                        shadowColor: Colors.transparent,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                        minimumSize: const Size(double.infinity, 56),
-                                      ),
-                                      child: ctrl.isLoading.value
-                                          ? SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: decoration.colorScheme.secondary))
-                                          : Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Icon(Icons.send_rounded, size: 20, color: decoration.colorScheme.onSecondary),
-                                                const SizedBox(width: 8),
-                                                Text(
-                                                  'Send Reset Link',
-                                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: decoration.colorScheme.onSecondary, fontWeight: FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                    ),
-                                  ),
+                              ),
+                              const SizedBox(height: 24),
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: decoration.colorScheme.primaryContainer.withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: decoration.colorScheme.primary.withOpacity(0.2)),
                                 ),
-                                const SizedBox(height: 24),
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    color: decoration.colorScheme.primaryContainer.withOpacity(0.5),
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: decoration.colorScheme.primary.withOpacity(0.2)),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(8),
-                                        decoration: BoxDecoration(color: decoration.colorScheme.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
-                                        child: Icon(Icons.info_outline_rounded, size: 20, color: decoration.colorScheme.primary),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Text(
-                                          'Check your spam folder if you don\'t receive the email within a few minutes',
-                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: decoration.colorScheme.onPrimaryContainer, height: 1.4),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const Spacer(),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                child: Row(
                                   children: [
-                                    Text('Remember your password? ', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: decoration.colorScheme.onSurfaceVariant)),
-                                    TextButton(
-                                      onPressed: () => Get.back(),
-                                      style: TextButton.styleFrom(foregroundColor: decoration.colorScheme.primary, padding: const EdgeInsets.symmetric(horizontal: 4)),
-                                      child: Text('Sign In', style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(color: decoration.colorScheme.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+                                      child: Icon(Icons.info_outline_rounded, size: 20, color: decoration.colorScheme.primary),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        'Check your spam folder if you don\'t receive the email within a few minutes',
+                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: decoration.colorScheme.onPrimaryContainer, height: 1.4),
+                                      ),
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              const Spacer(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('Remember your password? ', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: decoration.colorScheme.onSurfaceVariant)),
+                                  TextButton(
+                                    onPressed: () => Get.back(),
+                                    style: TextButton.styleFrom(foregroundColor: decoration.colorScheme.primary, padding: const EdgeInsets.symmetric(horizontal: 4)),
+                                    child: Text('Sign In', style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                         Padding(
