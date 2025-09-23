@@ -2,6 +2,9 @@ import 'package:augmento/utils/routes/route_name.dart';
 import 'package:augmento/views/auth/forgot_password/forgot_password.dart';
 import 'package:augmento/views/auth/login/login.dart';
 import 'package:augmento/views/auth/register/register.dart';
+import 'package:augmento/views/dashboard/dashboard.dart';
+import 'package:augmento/views/dashboard/tabs/account/profile_details/profile_details.dart';
+import 'package:augmento/views/dashboard/tabs/account/profile_edit/profile_edit.dart';
 import 'package:augmento/views/no_internet.dart';
 import 'package:augmento/views/splash/splash.dart';
 import 'package:get/get.dart';
@@ -17,6 +20,8 @@ class AppRouteMethods {
     getPage(name: AppRouteNames.register, page: () => const Register()),
     getPage(name: AppRouteNames.forgotPassword, page: () => const ForgotPassword()),
     getPage(name: AppRouteNames.noInternet, page: () => const NoInternet()),
-    // getPage(name: AppRouteNames.dashboard, page: () => const Dashboard()),
+    getPage(name: AppRouteNames.dashboard, page: () => const Dashboard()),
+    getPage(name: AppRouteNames.profileEdit, page: () => const ProfileEdit()),
+    getPage(name: AppRouteNames.profileDetails, page: () => const ProfileDetails()),
   ];
 }

@@ -10,16 +10,7 @@ class LoginCtrl extends GetxController {
   var isLoading = false.obs, isPasswordVisible = false.obs;
   final AuthService _authService = Get.find<AuthService>();
 
-  @override
-  void onClose() {
-    emailCtrl.dispose();
-    passwordCtrl.dispose();
-    super.onClose();
-  }
-
-  void togglePasswordVisibility() {
-    isPasswordVisible.toggle();
-  }
+  void togglePasswordVisibility() => isPasswordVisible.toggle();
 
   Future<void> login() async {
     if (emailCtrl.text.isEmpty) {
@@ -39,6 +30,8 @@ class LoginCtrl extends GetxController {
       final request = {'email': emailCtrl.text.trim(), 'password': passwordCtrl.text.trim()};
       await _authService.login(request);
     } finally {
+      emailCtrl.clear();
+      passwordCtrl.clear();
       isLoading.value = false;
     }
   }

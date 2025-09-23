@@ -5,4 +5,6 @@ class AppRouteNames {
   static const forgotPassword = '/forgotPassword';
   static const noInternet = '/noInternet';
   static const dashboard = '/dashboard';
+  static const profileEdit = '/profileEdit';
+  static const profileDetails = '/profileDetails';
 }

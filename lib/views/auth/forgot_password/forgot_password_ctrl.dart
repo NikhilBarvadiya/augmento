@@ -9,12 +9,6 @@ class ForgotPasswordCtrl extends GetxController {
 
   final AuthService _authService = Get.find<AuthService>();
 
-  @override
-  void onClose() {
-    emailCtrl.dispose();
-    super.onClose();
-  }
-
   Future<void> resetPassword() async {
     if (emailCtrl.text.isEmpty) {
       return toaster.warning('Please enter your email');
@@ -26,6 +20,7 @@ class ForgotPasswordCtrl extends GetxController {
     try {
       await _authService.forgotPassword(emailCtrl.text.trim());
     } finally {
+      emailCtrl.clear();
       isLoading.value = false;
     }
   }

@@ -16,16 +16,6 @@ class RegisterCtrl extends GetxController {
 
   final AuthService _authService = Get.find<AuthService>();
 
-  @override
-  void onClose() {
-    emailCtrl.dispose();
-    passwordCtrl.dispose();
-    mobileCtrl.dispose();
-    companyCtrl.dispose();
-    contactPersonCtrl.dispose();
-    super.onClose();
-  }
-
   void togglePasswordVisibility() => isPasswordVisible.toggle();
 
   Future<void> register() async {
@@ -65,6 +55,11 @@ class RegisterCtrl extends GetxController {
       dio.FormData formData = dio.FormData.fromMap(request);
       await _authService.register(formData);
     } finally {
+      emailCtrl.clear();
+      passwordCtrl.clear();
+      mobileCtrl.clear();
+      companyCtrl.clear();
+      contactPersonCtrl.clear();
       isLoading.value = false;
     }
   }
