@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:augmento/utils/config/session.dart';
 import 'package:augmento/utils/storage.dart';
 import 'package:augmento/utils/toaster.dart';
@@ -59,23 +60,13 @@ class ProfileEditCtrl extends GetxController {
     resourceCountCtrl.text = user['resourceCount']?.toString() ?? '';
     commentsCtrl.text = user['comments']?.toString() ?? '';
     gstNumberCtrl.text = user['gstNumber']?.toString() ?? '';
-    Map<String, dynamic>? bankDetails = jsonDecode(user['bankDetails']) as Map<String, dynamic>? ?? {};
+    Map<String, dynamic>? bankDetails = user['bankDetails'] as Map<String, dynamic>? ?? {};
     bankAccountHolderNameCtrl.text = bankDetails['bankAccountHolderName']?.toString() ?? '';
     bankAccountNumberCtrl.text = bankDetails['bankAccountNumber']?.toString() ?? '';
     bankNameCtrl.text = bankDetails['bankName']?.toString() ?? '';
     bankBranchNameCtrl.text = bankDetails['bankBranchName']?.toString() ?? '';
-    if (user['engagementModels'] is List) {
-      engagementModels.addAll((user['engagementModels'] as List).cast<String>().where((item) => item.trim().isNotEmpty));
-    } else if (user['engagementModels'] is String) {
-      final models = (user['engagementModels'] as String).split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
-      engagementModels.addAll(models);
-    }
-    if (user['timeZones'] is List) {
-      timeZones.addAll((user['timeZones'] as List).cast<String>().where((item) => item.trim().isNotEmpty));
-    } else if (user['timeZones'] is String) {
-      final zones = (user['timeZones'] as String).split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
-      timeZones.addAll(zones);
-    }
+    engagementModels.value = List<String>.from(user['engagementModels'] as List);
+    timeZones.value = List<String>.from(user['timeZones'] as List);
   }
 
   void calculateCompletion() {
@@ -198,6 +189,38 @@ class ProfileEditCtrl extends GetxController {
 
   bool isValidArray(List<String> items) {
     return items.every((item) => item.trim().isNotEmpty);
+  }
+
+  List<String> fullyNormalizeList(dynamic raw) {
+    List<String> result = [];
+    void extract(dynamic item) {
+      if (item == null) return;
+      if (item is String) {
+        String str = item.trim();
+        bool decoded = true;
+        while (decoded) {
+          try {
+            final parsed = jsonDecode(str);
+            if (parsed is String) {
+              str = parsed;
+            } else if (parsed is List) {
+              parsed.forEach(extract);
+              return;
+            } else {
+              return;
+            }
+          } catch (_) {
+            decoded = false;
+          }
+        }
+        result.add(str);
+      } else if (item is List) {
+        item.forEach(extract);
+      }
+    }
+
+    extract(raw);
+    return result;
   }
 
   Future<void> updateProfile() async {

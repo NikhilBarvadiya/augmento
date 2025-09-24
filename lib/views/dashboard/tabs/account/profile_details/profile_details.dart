@@ -176,9 +176,22 @@ class ProfileDetails extends StatelessWidget {
   }
 
   Widget _buildBusinessDetailsCard(Map<String, dynamic> user) {
+    var engagementModels = <String>[].obs, timeZones = <String>[].obs;
+    if (user['engagementModels'] is List) {
+      engagementModels.addAll((user['engagementModels'] as List).cast<String>().where((item) => item.trim().isNotEmpty));
+    } else if (user['engagementModels'] is String) {
+      final models = (user['engagementModels'] as String).split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+      engagementModels.addAll(models);
+    }
+    if (user['timeZones'] is List) {
+      timeZones.addAll((user['timeZones'] as List).cast<String>().where((item) => item.trim().isNotEmpty));
+    } else if (user['timeZones'] is String) {
+      final zones = (user['timeZones'] as String).split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+      timeZones.addAll(zones);
+    }
     return _buildInfoCard('Business Details', Icons.work_outline, const Color(0xFF10B981), [
-      if (user['engagementModels'] != null) _buildChipRow('Engagement Models', (user['engagementModels'] as List).cast<String>(), Icons.handshake),
-      if (user['timeZones'] != null) _buildChipRow('Time Zones', (user['timeZones'] as List).cast<String>(), Icons.schedule),
+      if (engagementModels.isNotEmpty) _buildChipRow('Engagement Models', engagementModels, Icons.handshake),
+      if (timeZones.isNotEmpty) _buildChipRow('Time Zones', timeZones, Icons.schedule),
       _buildInfoRow('Available Resources', user['resourceCount']?.toString(), Icons.people_alt),
       _buildInfoRow('Comments', user['comments'], Icons.comment),
     ]);

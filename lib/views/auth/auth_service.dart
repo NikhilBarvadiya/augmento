@@ -134,9 +134,16 @@ class AuthService extends GetxService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> createCandidateProfile(Map<String, dynamic> candidates, PlatformFile? profileImage, PlatformFile? resume) async {
+  Future<dynamic> createCandidateProfile(Map<String, dynamic> candidates, PlatformFile? profileImage, PlatformFile? resume) async {
     try {
-      final formData = dio.FormData.fromMap(candidates);
+      dio.FormData? formData;
+      if (candidates["id"] != null) formData = dio.FormData.fromMap(candidates);
+      if (candidates["id"] == null) {
+        formData = dio.FormData.fromMap({
+          "candidates": jsonEncode([candidates]),
+        });
+      }
+      if (formData == null) return;
       if (profileImage != null) {
         formData.files.add(MapEntry('profileImage', await dio.MultipartFile.fromFile(profileImage.path!, filename: profileImage.name)));
       }
@@ -147,17 +154,18 @@ class AuthService extends GetxService {
       final response = await _apiManager.post(apiURL, formData);
       if (!response.success || response.data == null) {
         toaster.warning(response.message ?? 'Failed to create candidate');
-        return response.data;
+        return null;
       }
       if (candidates["id"] != null) {
         toaster.success(response.message?.toString().capitalizeFirst ?? 'Candidate update successfully');
       } else {
         toaster.success(response.message?.toString().capitalizeFirst ?? 'Candidate created successfully');
       }
+      return response.data;
     } catch (err) {
       toaster.error(err.toString());
     }
-    return [];
+    return null;
   }
 
   Future<Map<String, dynamic>> listVendorCandidates(Map<String, dynamic> body) async {
@@ -189,18 +197,81 @@ class AuthService extends GetxService {
     }
   }
 
-  Future<Map<String, dynamic>> changeStatusOfCandidateAvailability(Map<String, dynamic> body) async {
+  Future<bool> changeStatusOfCandidateAvailability(Map<String, dynamic> body) async {
     try {
       final response = await _apiManager.post(APIIndex.changeStatusOfCandidateAvailability, body);
       if (!response.success || response.data == null) {
         toaster.warning(response.message ?? 'Something went wrong');
-        return {};
+        return false;
       }
       toaster.success(response.message ?? 'Candidates Availability ${body["status"]}');
+      return true;
+    } catch (err) {
+      toaster.error(err.toString());
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>> createCandidateRequirement(Map<String, dynamic> candidates) async {
+    try {
+      String apiURL = candidates["_id"] != null ? APIIndex.updateCandidateRequirement : APIIndex.createCandidateRequirement;
+      final response = await _apiManager.post(apiURL, candidates);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Failed to create candidate');
+        return {};
+      }
+      if (candidates["_id"] != null) {
+        toaster.success(response.message?.toString().capitalizeFirst ?? 'Candidate update requirement successfully');
+      } else {
+        toaster.success(response.message?.toString().capitalizeFirst ?? 'Candidate created requirement successfully');
+      }
       return response.data;
     } catch (err) {
       toaster.error(err.toString());
       return {};
+    }
+  }
+
+  Future<Map<String, dynamic>> listCandidateRequirements(Map<String, dynamic> body) async {
+    try {
+      final response = await _apiManager.post(APIIndex.listCandidateRequirements, body);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return {};
+      }
+      return response.data;
+    } catch (err) {
+      toaster.error(err.toString());
+      return {};
+    }
+  }
+
+  Future<Map<String, dynamic>> getRequirementStats() async {
+    try {
+      final response = await _apiManager.post(APIIndex.getRequirementStats, {});
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return {};
+      }
+      return response.data;
+    } catch (err) {
+      toaster.error(err.toString());
+      return {};
+    }
+  }
+
+  Future<bool> deleteCandidateRequirement(Map<String, dynamic> body) async {
+    try {
+      final response = await _apiManager.post(APIIndex.deleteCandidateRequirement, body);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return false;
+      }
+      toaster.success(response.message ?? 'Candidates requirement deleted successfully');
+      return true;
+    } catch (err) {
+      toaster.error(err.toString());
+      return false;
     }
   }
 

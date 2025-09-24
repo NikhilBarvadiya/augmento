@@ -1,9 +1,9 @@
 import 'package:augmento/utils/decoration.dart';
 import 'package:augmento/views/dashboard/dashboard_ctrl.dart';
 import 'package:augmento/views/dashboard/tabs/account/account.dart';
+import 'package:augmento/views/dashboard/tabs/candidate_requirements/candidate_requirements.dart';
 import 'package:augmento/views/dashboard/tabs/candidates/candidates.dart';
 import 'package:augmento/views/dashboard/tabs/home/home.dart';
-import 'package:augmento/views/dashboard/tabs/jobs_tab.dart';
 import 'package:augmento/views/dashboard/tabs/projects_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,6 +65,7 @@ class Dashboard extends StatelessWidget {
             children: [
               _buildProfessionalNavItem(Icons.dashboard_outlined, Icons.dashboard, 'Overview', 0, ctrl),
               _buildProfessionalNavItem(Icons.people_outline, Icons.people, 'Candidates', 1, ctrl),
+              _buildProfessionalNavItem(Icons.pending_actions_rounded, Icons.people, 'Requirements', 2, ctrl),
               _buildProfessionalNavItem(Icons.folder_outlined, Icons.folder, 'Projects', 3, ctrl),
               _buildProfessionalNavItem(Icons.person_outline, Icons.person, 'Profile', 4, ctrl),
             ],
@@ -85,7 +86,7 @@ class Dashboard extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeInOut,
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
           decoration: BoxDecoration(color: isSelected ? decoration.colorScheme.primary.withOpacity(0.1) : Colors.transparent, borderRadius: BorderRadius.circular(12)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -114,7 +115,7 @@ class Dashboard extends StatelessWidget {
       case 1:
         return const Candidates(key: ValueKey(1));
       case 2:
-        return const JobsTab(key: ValueKey(2));
+        return const CandidateRequirements(key: ValueKey(2));
       case 3:
         return const ProjectsTab(key: ValueKey(3));
       case 4:

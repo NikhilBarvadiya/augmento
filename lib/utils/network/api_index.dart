@@ -16,4 +16,12 @@ class APIIndex {
   static const String modifyCandidate = "modifyCandidate";
   static const String removeCandidate = "removeCandidate";
   static const String changeStatusOfCandidateAvailability = "changeStatusOfCandidateAvailability";
+
+  /// Candidates Requirement
+  static const String createCandidateRequirement = "create-candidate-requirement";
+  static const String updateCandidateRequirement = "update-candidate-requirement";
+  static const String listCandidateRequirements = "list-candidate-requirements";
+  static const String getCandidateRequirementById = "get-candidate-requirement-by-id";
+  static const String deleteCandidateRequirement = "delete-candidate-requirement";
+  static const String getRequirementStats = "get-requirement-stats";
 }

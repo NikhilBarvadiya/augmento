@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:augmento/utils/toaster.dart';
 import 'package:augmento/views/auth/auth_service.dart';
 import 'package:file_picker/file_picker.dart';
@@ -10,7 +9,7 @@ class CandidatesCtrl extends GetxController {
   final AuthService _authService = Get.find<AuthService>();
   var candidates = <Map<String, dynamic>>[].obs;
   var isLoading = false.obs, hasMore = true.obs, isProfileCompletedFilter = true.obs, isCandidate = false.obs;
-  var page = 1.obs, totalDocs = 0.obs;
+  var page = 1.obs;
   var searchQuery = ''.obs, statusFilter = ''.obs, availabilityFilter = ''.obs;
   final nameCtrl = TextEditingController();
   final mobileCtrl = TextEditingController();
@@ -21,10 +20,11 @@ class CandidatesCtrl extends GetxController {
   final availabilityCtrl = TextEditingController();
   final chargesCtrl = TextEditingController();
   final currentSalaryCtrl = TextEditingController();
-  var profileImage = Rx<PlatformFile?>(null), resume = Rx<PlatformFile?>(null), aadhaarCard = Rx<PlatformFile?>(null);
-  var panCard = Rx<PlatformFile?>(null);
+  var profileImage = Rx<PlatformFile?>(null), resume = Rx<PlatformFile?>(null);
   var candidateStatus = 'Available'.obs, pdfFormat = 'Format1'.obs;
   var extractedResumeData = {}.obs;
+
+  final RxList<String> skillsList = <String>[].obs, techStackList = <String>[].obs, educationList = <String>[].obs;
 
   @override
   void onInit() {
@@ -33,6 +33,7 @@ class CandidatesCtrl extends GetxController {
     debounce(searchQuery, (_) => fetchCandidates(reset: true), time: const Duration(milliseconds: 500));
     debounce(statusFilter, (_) => fetchCandidates(reset: true), time: const Duration(milliseconds: 500));
     debounce(availabilityFilter, (_) => fetchCandidates(reset: true), time: const Duration(milliseconds: 500));
+    debounce(isProfileCompletedFilter, (_) => fetchCandidates(reset: true), time: const Duration(milliseconds: 500));
   }
 
   Future<void> fetchCandidates({bool reset = false}) async {
@@ -53,10 +54,13 @@ class CandidatesCtrl extends GetxController {
         'isProfilCompleted': isProfileCompletedFilter.value,
       });
       if (response.isNotEmpty) {
-        candidates.addAll(List<Map<String, dynamic>>.from(response['docs'] ?? []));
-        totalDocs.value = response['totalDocs'] ?? 0;
-        hasMore.value = response['hasNextPage'] ?? false;
-        page.value++;
+        final newCandidates = List<Map<String, dynamic>>.from(response['docs'] ?? []);
+        candidates.addAll(newCandidates);
+        hasMore.value = response["hasNextPage"] == true;
+        hasMore.value = response["hasNextPage"] == true;
+        if (hasMore.value) {
+          page.value = (response["nextPage"] ?? page.value + 1);
+        }
       }
     } catch (e) {
       toaster.error('Error: ${e.toString()}');
@@ -68,14 +72,14 @@ class CandidatesCtrl extends GetxController {
   Future<void> createCandidate({String? candidateId}) async {
     isLoading.value = true;
     try {
-      final candidateData = {
+      Map<String, dynamic> candidateData = {
         'name': nameCtrl.text.trim(),
         'mobile': mobileCtrl.text.trim(),
-        'skills': jsonEncode(skillsCtrl.text.trim().split(',').map((s) => s.trim()).toList()),
-        'techStack': jsonEncode(techStackCtrl.text.trim().split(',').map((s) => s.trim()).toList()),
-        'education': jsonEncode(educationCtrl.text.trim().split(',').map((s) => s.trim()).toList()),
+        'skills': candidateId != null && candidateId.isNotEmpty ? jsonEncode(skillsList.toList()) : skillsList,
+        'techStack': candidateId != null && candidateId.isNotEmpty ? jsonEncode(techStackList.toList()) : techStackList,
+        'education': candidateId != null && candidateId.isNotEmpty ? jsonEncode(educationList.toList()) : educationList,
         'experience': double.tryParse(experienceCtrl.text.trim()) ?? 0.0,
-        'availability': availabilityCtrl.text.trim(), // ["Immediate", "1 Week", "2 Weeks", "1 Month", "Other"],
+        'availability': availabilityCtrl.text.trim(),
         'itfuturzCandidate': isCandidate.value,
         'status': candidateStatus.value,
         'charges': double.tryParse(chargesCtrl.text.trim()) ?? 0.0,
@@ -85,9 +89,18 @@ class CandidatesCtrl extends GetxController {
         candidateData["id"] = candidateId;
       }
       final response = await _authService.createCandidateProfile(candidateData, profileImage.value, resume.value);
-      if (response.isNotEmpty) {
+      if (response != null) {
         clearForm();
-        candidates.addAll(response);
+        if (candidateId != null && candidateId.isNotEmpty) {
+          int index = candidates.indexWhere((e) => e["_id"] == candidateId);
+          if (index != -1) {
+            candidates[index] = response;
+          }
+        } else {
+          isLoading.value = false;
+          await fetchCandidates(reset: true);
+        }
+        Get.back();
       }
     } catch (e) {
       toaster.error('Error: ${e.toString()}');
@@ -114,7 +127,7 @@ class CandidatesCtrl extends GetxController {
     isLoading.value = true;
     try {
       final response = await _authService.changeStatusOfCandidateAvailability({'id': id, 'status': status});
-      if (response.isNotEmpty) {
+      if (response == true) {
         int index = candidates.indexWhere((e) => e["_id"] == id);
         if (index != -1) {
           candidates[index]["status"] = status;
@@ -130,19 +143,17 @@ class CandidatesCtrl extends GetxController {
   void clearForm() {
     nameCtrl.clear();
     mobileCtrl.clear();
-    skillsCtrl.clear();
-    techStackCtrl.clear();
-    educationCtrl.clear();
     experienceCtrl.clear();
     availabilityCtrl.clear();
     chargesCtrl.clear();
     currentSalaryCtrl.clear();
-    profileImage.value = null;
-    resume.value = null;
-    aadhaarCard.value = null;
-    panCard.value = null;
+    skillsList.clear();
+    techStackList.clear();
+    educationList.clear();
     isCandidate.value = false;
     candidateStatus.value = 'Available';
+    profileImage.value = null;
+    resume.value = null;
   }
 
   Future<void> pickFile(String type) async {
@@ -154,12 +165,6 @@ class CandidatesCtrl extends GetxController {
           break;
         case 'resume':
           resume.value = result.files.first;
-          break;
-        case 'aadhaarCard':
-          aadhaarCard.value = result.files.first;
-          break;
-        case 'panCard':
-          panCard.value = result.files.first;
           break;
       }
     }
