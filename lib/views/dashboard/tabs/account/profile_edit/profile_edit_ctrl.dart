@@ -192,11 +192,11 @@ class ProfileEditCtrl extends GetxController {
       toaster.warning('PAN Card is required');
       return;
     }
-    if (gstValidationStatus.value != 'valid' && gstNumberCtrl.text.isNotEmpty) {
-      _triggerShake();
-      toaster.warning('Please validate GST number');
-      return;
-    }
+    // if (gstValidationStatus.value != 'valid' && gstNumberCtrl.text.isNotEmpty) {
+    //   _triggerShake();
+    //   toaster.warning('Please validate GST number');
+    //   return;
+    // }
     isLoading.value = true;
     try {
       final request = {
@@ -219,8 +219,6 @@ class ProfileEditCtrl extends GetxController {
         'gstNumber': gstNumberCtrl.text,
       };
       await _authService.updateProfile(request, panCard.value, avatar.value, certificates);
-      toaster.success('Profile updated successfully');
-      Get.back();
     } catch (e) {
       toaster.error('Failed to update profile: ${e.toString()}');
     } finally {

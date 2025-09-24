@@ -3,6 +3,7 @@ import 'package:augmento/views/dashboard/tabs/account/profile_edit/profile_edit_
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 
 class ProfileEdit extends StatelessWidget {
@@ -14,24 +15,28 @@ class ProfileEdit extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: _buildAppBar(context),
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildProgressHeader(ctrl),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Obx(
-                  () => AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    transform: Matrix4.translationValues(ctrl.shakeForm.value ? (8 * (DateTime.now().millisecondsSinceEpoch % 2 == 0 ? 1 : -1)) : 0, 0, 0),
-                    child: Form(key: ctrl.formKey, child: _buildStepContent(ctrl).paddingOnly(top: 20, bottom: 20)),
+      body: KeyboardVisibilityBuilder(
+        builder: (context, isKeyboardVisible) {
+          return SafeArea(
+            child: Column(
+              children: [
+                _buildProgressHeader(ctrl),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Obx(
+                      () => AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        transform: Matrix4.translationValues(ctrl.shakeForm.value ? (8 * (DateTime.now().millisecondsSinceEpoch % 2 == 0 ? 1 : -1)) : 0, 0, 0),
+                        child: Form(key: ctrl.formKey, child: _buildStepContent(ctrl).paddingOnly(top: 20, bottom: 20)),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                if (!isKeyboardVisible) _buildBottomNavigation(ctrl),
+              ],
             ),
-            _buildBottomNavigation(ctrl),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -234,12 +239,12 @@ class ProfileEdit extends StatelessWidget {
         },
         decoration: InputDecoration(
           counterText: "",
-          labelText: 'GST Number (Optional)',
+          labelText: 'GST Number (Required)',
           prefixIcon: const Icon(Icons.receipt_long, size: 20, color: Color(0xFF64748B)),
           suffixIcon: ctrl.isValidatingGST.value
               ? const SizedBox(
-                  width: 20,
-                  height: 20,
+                  width: 15,
+                  height: 15,
                   child: Padding(padding: EdgeInsets.all(12), child: CircularProgressIndicator(strokeWidth: 2)),
                 )
               : ctrl.gstValidationStatus.value == 'valid'

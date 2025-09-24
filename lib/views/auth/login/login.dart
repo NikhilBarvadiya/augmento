@@ -100,7 +100,7 @@ class Login extends StatelessWidget {
                                   suffixIcon: IconButton(
                                     onPressed: ctrl.togglePasswordVisibility,
                                     icon: Icon(ctrl.isPasswordVisible.value ? Icons.visibility_off_outlined : Icons.visibility_outlined, color: decoration.colorScheme.onSurfaceVariant),
-                                  ),
+                                  ).paddingOnly(right: 5),
                                   border: InputBorder.none,
                                   contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                                   labelStyle: TextStyle(color: decoration.colorScheme.onSurfaceVariant),

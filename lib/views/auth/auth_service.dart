@@ -43,18 +43,18 @@ class AuthService extends GetxService {
     }
   }
 
-  Future<void> register(dynamic request) async {
+  Future<bool> register(dynamic request) async {
     try {
       final response = await _apiManager.post(APIIndex.register, request);
       if (!response.success) {
         toaster.warning(response.message ?? 'Something went wrong');
-        return;
+        return false;
       }
       toaster.success(response.message.toString().capitalizeFirst.toString());
-      Get.back();
+      return true;
     } catch (err) {
       toaster.error(err.toString());
-      return;
+      return false;
     }
   }
 

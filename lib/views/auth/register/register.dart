@@ -221,7 +221,9 @@ class Register extends StatelessWidget {
         keyboardType: keyboardType,
         obscureText: obscureText,
         style: Theme.of(context).textTheme.bodyLarge,
+        maxLength: keyboardType == TextInputType.phone ? 10 : null,
         decoration: InputDecoration(
+          counterText: "",
           labelText: labelText,
           hintText: hintText,
           prefixIcon: Container(

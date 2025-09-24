@@ -53,13 +53,16 @@ class RegisterCtrl extends GetxController {
         'contactPerson': contactPersonCtrl.text.trim(),
       };
       dio.FormData formData = dio.FormData.fromMap(request);
-      await _authService.register(formData);
+      bool isCheck = await _authService.register(formData);
+      if (isCheck == true) {
+        Get.back();
+        emailCtrl.clear();
+        passwordCtrl.clear();
+        mobileCtrl.clear();
+        companyCtrl.clear();
+        contactPersonCtrl.clear();
+      }
     } finally {
-      emailCtrl.clear();
-      passwordCtrl.clear();
-      mobileCtrl.clear();
-      companyCtrl.clear();
-      contactPersonCtrl.clear();
       isLoading.value = false;
     }
   }
