@@ -238,18 +238,18 @@ class ProfileEditCtrl extends GetxController {
         'designation': designationCtrl.text.trim().isNotEmpty ? designationCtrl.text.trim() : null,
         'email': emailCtrl.text.trim().isNotEmpty ? emailCtrl.text.trim().toLowerCase() : null,
         'mobile': mobileCtrl.text.trim().isNotEmpty ? mobileCtrl.text.trim() : null,
-        'engagementModels': jsonEncode(engagementModels.map((model) => model.trim()).toList()),
+        'engagementModels': engagementModels.map((model) => model.trim()).toList(),
         'resourceCount': resourceCountCtrl.text.trim().isNotEmpty ? int.tryParse(resourceCountCtrl.text.trim()) ?? 1 : 1,
-        'timeZones': jsonEncode(timeZones.map((model) => model.trim()).toList()),
+        'timeZones': timeZones.map((model) => model.trim()).toList(),
         'comments': commentsCtrl.text.trim().isNotEmpty ? commentsCtrl.text.trim() : '',
         'gstNumber': gstNumberCtrl.text.trim().isNotEmpty ? gstNumberCtrl.text.trim() : null,
-        'bankDetails': jsonEncode({
+        'bankDetails': {
           'bankAccountHolderName': bankAccountHolderNameCtrl.text.trim().isNotEmpty ? bankAccountHolderNameCtrl.text.trim() : null,
           'bankAccountNumber': bankAccountNumberCtrl.text.trim(),
           'bankName': bankNameCtrl.text.trim(),
           'ifscCode': ifscCodeCtrl.text.trim(),
           'bankBranchName': bankBranchNameCtrl.text.trim().isNotEmpty ? bankBranchNameCtrl.text.trim() : null,
-        }),
+        },
       };
       await _authService.updateProfile(request, panCard.value, avatar.value, certificates);
     } catch (e) {
