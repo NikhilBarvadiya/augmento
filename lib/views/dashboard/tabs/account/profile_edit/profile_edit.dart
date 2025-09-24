@@ -425,13 +425,13 @@ class ProfileEdit extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: ctrl.previousStep,
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFF3B82F6)),
+                    side: BorderSide(color: decoration.colorScheme.primary),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Previous',
-                    style: TextStyle(color: Color(0xFF3B82F6), fontWeight: FontWeight.w600),
+                    style: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),

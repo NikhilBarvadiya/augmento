@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:augmento/utils/config/session.dart';
 import 'package:augmento/utils/storage.dart';
 import 'package:augmento/utils/toaster.dart';
@@ -24,8 +25,7 @@ class ProfileEditCtrl extends GetxController {
   final bankBranchNameCtrl = TextEditingController();
   final gstNumberCtrl = TextEditingController();
 
-  var engagementModels = <String>[].obs;
-  var timeZones = <String>[].obs;
+  var engagementModels = <String>[].obs, timeZones = <String>[].obs;
   var panCard = Rx<PlatformFile?>(null), avatar = Rx<PlatformFile?>(null);
   var certificates = <PlatformFile>[].obs;
 
@@ -49,23 +49,33 @@ class ProfileEditCtrl extends GetxController {
 
   void loadUserData() {
     final user = read(AppSession.userData) ?? {};
-    companyCtrl.text = user['company'] ?? '';
-    websiteCtrl.text = user['website'] ?? '';
-    addressCtrl.text = user['address'] ?? '';
-    contactPersonCtrl.text = user['contactPerson'] ?? '';
-    designationCtrl.text = user['designation'] ?? '';
-    emailCtrl.text = user['email'] ?? '';
-    mobileCtrl.text = user['mobile'] ?? '';
+    companyCtrl.text = user['company']?.toString() ?? '';
+    websiteCtrl.text = user['website']?.toString() ?? '';
+    addressCtrl.text = user['address']?.toString() ?? '';
+    contactPersonCtrl.text = user['contactPerson']?.toString() ?? '';
+    designationCtrl.text = user['designation']?.toString() ?? '';
+    emailCtrl.text = user['email']?.toString() ?? '';
+    mobileCtrl.text = user['mobile']?.toString() ?? '';
     resourceCountCtrl.text = user['resourceCount']?.toString() ?? '';
-    commentsCtrl.text = user['comments'] ?? '';
-    bankAccountHolderNameCtrl.text = user['bankAccountHolderName'] ?? '';
-    bankAccountNumberCtrl.text = user['bankAccountNumber'] ?? '';
-    ifscCodeCtrl.text = user['ifscCode'] ?? '';
-    bankNameCtrl.text = user['bankName'] ?? '';
-    gstNumberCtrl.text = user['gstNumber'] ?? '';
-    bankBranchNameCtrl.text = user['bankBranchName'] ?? '';
-    engagementModels.addAll((user['engagementModels'] as List?)?.cast<String>() ?? []);
-    timeZones.addAll((user['timeZones'] as List?)?.cast<String>() ?? []);
+    commentsCtrl.text = user['comments']?.toString() ?? '';
+    gstNumberCtrl.text = user['gstNumber']?.toString() ?? '';
+    Map<String, dynamic>? bankDetails = jsonDecode(user['bankDetails']) as Map<String, dynamic>? ?? {};
+    bankAccountHolderNameCtrl.text = bankDetails['bankAccountHolderName']?.toString() ?? '';
+    bankAccountNumberCtrl.text = bankDetails['bankAccountNumber']?.toString() ?? '';
+    bankNameCtrl.text = bankDetails['bankName']?.toString() ?? '';
+    bankBranchNameCtrl.text = bankDetails['bankBranchName']?.toString() ?? '';
+    if (user['engagementModels'] is List) {
+      engagementModels.addAll((user['engagementModels'] as List).cast<String>().where((item) => item.trim().isNotEmpty));
+    } else if (user['engagementModels'] is String) {
+      final models = (user['engagementModels'] as String).split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+      engagementModels.addAll(models);
+    }
+    if (user['timeZones'] is List) {
+      timeZones.addAll((user['timeZones'] as List).cast<String>().where((item) => item.trim().isNotEmpty));
+    } else if (user['timeZones'] is String) {
+      final zones = (user['timeZones'] as String).split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+      timeZones.addAll(zones);
+    }
   }
 
   void calculateCompletion() {
@@ -181,10 +191,23 @@ class ProfileEditCtrl extends GetxController {
     calculateCompletion();
   }
 
+  bool isValidBankAccountNumber(String input) {
+    final RegExp regex = RegExp(r'^\d{9,18}$');
+    return regex.hasMatch(input);
+  }
+
+  bool isValidArray(List<String> items) {
+    return items.every((item) => item.trim().isNotEmpty);
+  }
+
   Future<void> updateProfile() async {
     if (!formKey.currentState!.validate()) {
       _triggerShake();
       toaster.warning('Please fix the errors in the form');
+      return;
+    }
+    if (!isValidBankAccountNumber(bankAccountNumberCtrl.text)) {
+      toaster.warning('Bank account number must be 9 to 18 digits');
       return;
     }
     if (panCard.value == null) {
@@ -192,31 +215,41 @@ class ProfileEditCtrl extends GetxController {
       toaster.warning('PAN Card is required');
       return;
     }
-    // if (gstValidationStatus.value != 'valid' && gstNumberCtrl.text.isNotEmpty) {
-    //   _triggerShake();
-    //   toaster.warning('Please validate GST number');
-    //   return;
-    // }
+    if (engagementModels.isNotEmpty && !isValidArray(engagementModels)) {
+      toaster.warning('Engagement models must contain valid, non-empty strings');
+      return;
+    }
+    if (timeZones.isNotEmpty && !isValidArray(timeZones)) {
+      toaster.warning('Time zones must contain valid, non-empty strings');
+      return;
+    }
+    if (gstValidationStatus.value != 'valid' && gstNumberCtrl.text.isNotEmpty) {
+      _triggerShake();
+      toaster.warning('Please validate GST number');
+      return;
+    }
     isLoading.value = true;
     try {
       final request = {
-        'company': companyCtrl.text,
-        'website': websiteCtrl.text,
-        'address': addressCtrl.text,
-        'contactPerson': contactPersonCtrl.text,
-        'designation': designationCtrl.text,
-        'email': emailCtrl.text,
-        'mobile': mobileCtrl.text,
-        'engagementModels': engagementModels.toList(),
-        'resourceCount': resourceCountCtrl.text,
-        'timeZones': timeZones.toList(),
-        'comments': commentsCtrl.text,
-        'bankAccountHolderName': bankAccountHolderNameCtrl.text,
-        'bankAccountNumber': bankAccountNumberCtrl.text,
-        'ifscCode': ifscCodeCtrl.text,
-        'bankName': bankNameCtrl.text,
-        'bankBranchName': bankBranchNameCtrl.text,
-        'gstNumber': gstNumberCtrl.text,
+        'company': companyCtrl.text.trim().isNotEmpty ? companyCtrl.text.trim() : null,
+        'website': websiteCtrl.text.trim().isNotEmpty ? websiteCtrl.text.trim() : '',
+        'address': addressCtrl.text.trim().isNotEmpty ? addressCtrl.text.trim() : null,
+        'contactPerson': contactPersonCtrl.text.trim().isNotEmpty ? contactPersonCtrl.text.trim() : null,
+        'designation': designationCtrl.text.trim().isNotEmpty ? designationCtrl.text.trim() : null,
+        'email': emailCtrl.text.trim().isNotEmpty ? emailCtrl.text.trim().toLowerCase() : null,
+        'mobile': mobileCtrl.text.trim().isNotEmpty ? mobileCtrl.text.trim() : null,
+        'engagementModels': jsonEncode(engagementModels.map((model) => model.trim()).toList()),
+        'resourceCount': resourceCountCtrl.text.trim().isNotEmpty ? int.tryParse(resourceCountCtrl.text.trim()) ?? 1 : 1,
+        'timeZones': jsonEncode(timeZones.map((model) => model.trim()).toList()),
+        'comments': commentsCtrl.text.trim().isNotEmpty ? commentsCtrl.text.trim() : '',
+        'gstNumber': gstNumberCtrl.text.trim().isNotEmpty ? gstNumberCtrl.text.trim() : null,
+        'bankDetails': jsonEncode({
+          'bankAccountHolderName': bankAccountHolderNameCtrl.text.trim().isNotEmpty ? bankAccountHolderNameCtrl.text.trim() : null,
+          'bankAccountNumber': bankAccountNumberCtrl.text.trim(),
+          'bankName': bankNameCtrl.text.trim(),
+          'ifscCode': ifscCodeCtrl.text.trim(),
+          'bankBranchName': bankBranchNameCtrl.text.trim().isNotEmpty ? bankBranchNameCtrl.text.trim() : null,
+        }),
       };
       await _authService.updateProfile(request, panCard.value, avatar.value, certificates);
     } catch (e) {
