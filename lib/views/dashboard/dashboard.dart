@@ -17,31 +17,34 @@ class Dashboard extends StatelessWidget {
     return GetBuilder<DashboardCtrl>(
       init: DashboardCtrl(),
       builder: (ctrl) {
-        return Scaffold(
-          backgroundColor: const Color(0xFFF8FAFC),
-          body: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFFF8FAFC), Color(0xFFE2E8F0)]),
-            ),
-            child: SafeArea(
-              child: Obx(
-                () => AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: SlideTransition(
-                        position: Tween<Offset>(begin: const Offset(0.1, 0.0), end: Offset.zero).animate(CurvedAnimation(parent: animation, curve: Curves.easeInOutCubic)),
-                        child: child,
-                      ),
-                    );
-                  },
-                  child: _getCurrentTab(ctrl.currentIndex.value),
+        return PopScope(
+          canPop: false,
+          child: Scaffold(
+            backgroundColor: const Color(0xFFF8FAFC),
+            body: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFFF8FAFC), Color(0xFFE2E8F0)]),
+              ),
+              child: SafeArea(
+                child: Obx(
+                  () => AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: SlideTransition(
+                          position: Tween<Offset>(begin: const Offset(0.1, 0.0), end: Offset.zero).animate(CurvedAnimation(parent: animation, curve: Curves.easeInOutCubic)),
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: _getCurrentTab(ctrl.currentIndex.value),
+                  ),
                 ),
               ),
             ),
+            bottomNavigationBar: _buildProfessionalBottomNav(ctrl),
           ),
-          bottomNavigationBar: _buildProfessionalBottomNav(ctrl),
         );
       },
     );

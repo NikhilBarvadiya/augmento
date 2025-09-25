@@ -30,4 +30,12 @@ class APIIndex {
   static const String updateProduct = "update-digital-product";
   static const String digitalProducts = "list-digital-products";
   static const String deleteProduct = "delete-digital-product";
+
+  /// Jobs
+  static const listPublishedJobs = 'listPublishedJobs';
+  static const listStatusWiseCandidateJobs = 'listStatusWiseCandidateJobs';
+  static const listOnboardedCandidates = 'listOnboardedCandidates';
+  static const getJobAndJobApplicationCounts = 'getJobAndJobApplicationCounts';
+  static const applyForJob = 'applyForJob';
+  static const submitOnboardingDetails = 'submit-onboarding-details';
 }

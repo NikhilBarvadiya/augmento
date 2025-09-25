@@ -38,9 +38,9 @@ class DigitalProductForm extends StatelessWidget {
       title: Text(isEdit ? 'Edit Product' : 'Add New Product', style: const TextStyle(fontWeight: FontWeight.w600)),
       centerTitle: true,
       elevation: 0,
+      automaticallyImplyLeading: false,
       backgroundColor: decoration.colorScheme.primary,
       foregroundColor: decoration.colorScheme.onPrimary,
-      leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => Get.back()),
     );
   }
 

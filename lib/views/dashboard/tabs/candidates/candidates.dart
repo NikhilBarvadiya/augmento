@@ -1,3 +1,4 @@
+import 'package:augmento/utils/config/app_config.dart';
 import 'package:augmento/utils/decoration.dart';
 import 'package:augmento/utils/network/api_config.dart';
 import 'package:augmento/views/dashboard/tabs/candidates/ui/candidate_form.dart';
@@ -345,10 +346,10 @@ class Candidates extends StatelessWidget {
                 runSpacing: 4,
                 children: skills.take(3).map((skill) {
                   return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
                       color: Colors.blue[50],
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(4),
                       border: Border.all(color: Colors.blue[200]!),
                     ),
                     child: Text(skill.toString(), style: TextStyle(fontSize: 11, color: Colors.blue[700])),
@@ -367,15 +368,10 @@ class Candidates extends StatelessWidget {
         const SizedBox(width: 8),
         _buildAvailabilityChip(candidate['availability']),
         const Spacer(),
-        if (candidate['itfuturzCandidate'] == true)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(color: Colors.green[50], borderRadius: BorderRadius.circular(8)),
-            child: Text(
-              'IT Futurz',
-              style: TextStyle(fontSize: 10, color: Colors.green[700], fontWeight: FontWeight.w500),
-            ),
-          ),
+        Text(
+          "${AppConfig.rupee} ${candidate["charges"].toString()}",
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
       ],
     );
   }

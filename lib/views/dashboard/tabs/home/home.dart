@@ -1,4 +1,6 @@
 import 'package:augmento/utils/decoration.dart';
+import 'package:augmento/views/dashboard/dashboard_ctrl.dart';
+import 'package:augmento/views/dashboard/tabs/job_management/job_management.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -97,36 +99,50 @@ class Home extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Expanded(child: _buildStatItem('Total Jobs', ctrl.counts['jobs']?.toString() ?? '0', Icons.work_outline, Colors.blue, theme)),
+          Expanded(child: _buildStatItem('Total Jobs', ctrl.counts['jobs']?.toString() ?? '0', Icons.work_outline, Colors.blue, theme, onTap: () => Get.to(() => JobsManagement(initialTab: 0)))),
           Container(width: 1, height: 40, color: theme.dividerColor),
-          Expanded(child: _buildStatItem('Applications', ctrl.counts['applications']?.toString() ?? '0', Icons.description_outlined, Colors.orange, theme)),
+          Expanded(
+            child: _buildStatItem(
+              'Applications',
+              ctrl.counts['applications']?.toString() ?? '0',
+              Icons.description_outlined,
+              Colors.orange,
+              theme,
+              onTap: () => Get.to(() => JobsManagement(initialTab: 1)),
+            ),
+          ),
           Container(width: 1, height: 40, color: theme.dividerColor),
-          Expanded(child: _buildStatItem('Candidates', ctrl.counts['candidates']?.toString() ?? '0', Icons.people_outline, Colors.green, theme)),
+          Expanded(
+            child: _buildStatItem('Candidates', ctrl.counts['candidates']?.toString() ?? '0', Icons.people_outline, Colors.green, theme, onTap: () => Get.find<DashboardCtrl>().changeTabIndex(1)),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildStatItem(String label, String value, IconData icon, Color color, ThemeData theme) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-          child: Icon(icon, color: color, size: 24),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          value,
-          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: decoration.colorScheme.onSurface),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall?.copyWith(color: decoration.colorScheme.outline, fontWeight: FontWeight.w500),
-          textAlign: TextAlign.center,
-        ),
-      ],
+  Widget _buildStatItem(String label, String value, IconData icon, Color color, ThemeData theme, {VoidCallback? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+            child: Icon(icon, color: color, size: 24),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: decoration.colorScheme.onSurface),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: theme.textTheme.bodySmall?.copyWith(color: decoration.colorScheme.outline, fontWeight: FontWeight.w500),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 
@@ -151,10 +167,30 @@ class Home extends StatelessWidget {
             mainAxisSpacing: 16,
             childAspectRatio: 1.5,
             children: [
-              _buildMetricCard('Shortlisted', ctrl.counts['shortListed']?.toString() ?? '0', Icons.star_outline, Colors.purple, theme),
-              _buildMetricCard('Pending', ctrl.counts['pendingOnboarding']?.toString() ?? '0', Icons.hourglass_empty_outlined, Colors.orange, theme),
-              _buildMetricCard('Accepted', ctrl.counts['acceptedOnboarding']?.toString() ?? '0', Icons.check_circle_outline, Colors.green, theme),
-              _buildMetricCard('Rejected', ctrl.counts['rejectedOnboarding']?.toString() ?? '0', Icons.cancel_outlined, Colors.red, theme),
+              _buildMetricCard(
+                'Pending',
+                ctrl.counts['pendingOnboarding']?.toString() ?? '0',
+                Icons.hourglass_empty_outlined,
+                Colors.orange,
+                theme,
+                onTap: () => Get.to(() => JobsManagement(initialTab: 1, initialFilter: {'status': 'Pending'})),
+              ),
+              _buildMetricCard(
+                'Accepted',
+                ctrl.counts['acceptedOnboarding']?.toString() ?? '0',
+                Icons.check_circle_outline,
+                Colors.green,
+                theme,
+                onTap: () => Get.to(() => JobsManagement(initialTab: 2, initialFilter: {'status': 'Accepted'})),
+              ),
+              _buildMetricCard(
+                'Rejected',
+                ctrl.counts['rejectedOnboarding']?.toString() ?? '0',
+                Icons.cancel_outlined,
+                Colors.red,
+                theme,
+                onTap: () => Get.to(() => JobsManagement(initialTab: 3, initialFilter: {'status': 'Rejected'})),
+              ),
             ],
           ),
         ],
@@ -162,7 +198,7 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _buildMetricCard(String title, String value, IconData icon, Color color, ThemeData theme) {
+  Widget _buildMetricCard(String title, String value, IconData icon, Color color, ThemeData theme, {VoidCallback? onTap}) {
     return Container(
       decoration: BoxDecoration(
         color: decoration.colorScheme.surface,
@@ -173,7 +209,7 @@ class Home extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
-          onTap: () {},
+          onTap: onTap ?? () {},
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -380,7 +416,7 @@ class Home extends StatelessWidget {
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
             childAspectRatio: 1.4,
-            children: List.generate(4, (index) => _buildShimmerCard(120)),
+            children: List.generate(3, (index) => _buildShimmerCard(120)),
           ),
           const SizedBox(height: 32),
           _buildShimmerTitle(),

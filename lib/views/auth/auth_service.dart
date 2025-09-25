@@ -323,6 +323,96 @@ class AuthService extends GetxService {
     }
   }
 
+  Future<Map<String, dynamic>> listPublishedJobs(Map<String, dynamic> body) async {
+    try {
+      final response = await _apiManager.post(APIIndex.listPublishedJobs, body);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return {};
+      }
+      return response.data;
+    } catch (err) {
+      toaster.error(err.toString());
+      return {};
+    }
+  }
+
+  Future<Map<String, dynamic>> listStatusWiseCandidateJobs(Map<String, dynamic> body) async {
+    try {
+      final response = await _apiManager.post(APIIndex.listStatusWiseCandidateJobs, body);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return {};
+      }
+      return response.data;
+    } catch (err) {
+      toaster.error(err.toString());
+      return {};
+    }
+  }
+
+  Future<Map<String, dynamic>> listOnboardedCandidates(Map<String, dynamic> body) async {
+    try {
+      final response = await _apiManager.post(APIIndex.listOnboardedCandidates, body);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return {};
+      }
+      return response.data;
+    } catch (err) {
+      toaster.error(err.toString());
+      return {};
+    }
+  }
+
+  Future<Map<String, dynamic>> getJobAndJobApplicationCounts(Map<String, dynamic> body) async {
+    try {
+      final response = await _apiManager.post(APIIndex.getJobAndJobApplicationCounts, body);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return {};
+      }
+      return response.data;
+    } catch (err) {
+      toaster.error(err.toString());
+      return {};
+    }
+  }
+
+  Future<Map<String, dynamic>> applyForJob(Map<String, dynamic> body) async {
+    try {
+      final response = await _apiManager.post(APIIndex.applyForJob, body);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return {};
+      }
+      toaster.success('Applied successfully');
+      return response.data;
+    } catch (err) {
+      toaster.error(err.toString());
+      return {};
+    }
+  }
+
+  Future<Map<String, dynamic>> submitOnboardingDetails(Map<String, dynamic> body, PlatformFile? image) async {
+    try {
+      dio.FormData? formData = dio.FormData.fromMap(body);
+      if (image != null) {
+        formData.files.add(MapEntry('document', await dio.MultipartFile.fromFile(image.path!, filename: image.name)));
+      }
+      final response = await _apiManager.post(APIIndex.submitOnboardingDetails, formData);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return {};
+      }
+      toaster.success('Applied successfully');
+      return response.data;
+    } catch (err) {
+      toaster.error(err.toString());
+      return {};
+    }
+  }
+
   Future<void> logout() async {
     await clearStorage();
     Get.offAllNamed(AppRouteNames.login);

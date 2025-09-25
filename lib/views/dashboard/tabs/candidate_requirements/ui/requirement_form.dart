@@ -40,7 +40,7 @@ class RequirementForm extends StatelessWidget {
       elevation: 0,
       backgroundColor: decoration.colorScheme.primary,
       foregroundColor: decoration.colorScheme.onPrimary,
-      leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => Get.back()),
+      automaticallyImplyLeading: false,
     );
   }
 
