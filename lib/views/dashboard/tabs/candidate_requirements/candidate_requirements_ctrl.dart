@@ -184,7 +184,6 @@ class CandidateRequirementsCtrl extends GetxController {
       if (response == true) {
         requirements.removeWhere((e) => e["_id"] == id);
         fetchStats();
-        toaster.success('Requirement deleted successfully');
       }
     } catch (e) {
       toaster.error('Error deleting requirement: ${e.toString()}');

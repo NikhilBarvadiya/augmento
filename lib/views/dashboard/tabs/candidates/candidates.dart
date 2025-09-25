@@ -159,7 +159,7 @@ class Candidates extends StatelessWidget {
             return false;
           },
           child: ListView.separated(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: Get.height * 0.1),
             physics: BouncingScrollPhysics(),
             itemCount: ctrl.candidates.length + (ctrl.hasMore.value ? 1 : 0),
             separatorBuilder: (context, index) => const SizedBox(height: 12),

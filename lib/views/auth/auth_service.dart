@@ -275,6 +275,54 @@ class AuthService extends GetxService {
     }
   }
 
+  Future<Map<String, dynamic>> createDigitalProduct(Map<String, dynamic> product) async {
+    try {
+      String apiURL = product["id"] != null ? APIIndex.updateProduct : APIIndex.createProduct;
+      final response = await _apiManager.post(apiURL, product);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Failed to create candidate');
+        return {};
+      }
+      if (product["id"] != null) {
+        toaster.success(response.message?.toString().capitalizeFirst ?? 'Product updated successfully');
+      } else {
+        toaster.success(response.message?.toString().capitalizeFirst ?? 'Product created successfully');
+      }
+      return response.data;
+    } catch (e) {
+      throw Exception('Failed to create digital product: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> digitalProducts(Map<String, dynamic> body) async {
+    try {
+      final response = await _apiManager.post(APIIndex.digitalProducts, body);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return {};
+      }
+      return response.data;
+    } catch (err) {
+      toaster.error(err.toString());
+      return {};
+    }
+  }
+
+  Future<bool> deleteProduct(Map<String, dynamic> body) async {
+    try {
+      final response = await _apiManager.post(APIIndex.deleteProduct, body);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return false;
+      }
+      toaster.success(response.message ?? 'Product deleted successfully');
+      return true;
+    } catch (err) {
+      toaster.error(err.toString());
+      return false;
+    }
+  }
+
   Future<void> logout() async {
     await clearStorage();
     Get.offAllNamed(AppRouteNames.login);

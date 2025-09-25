@@ -24,4 +24,10 @@ class APIIndex {
   static const String getCandidateRequirementById = "get-candidate-requirement-by-id";
   static const String deleteCandidateRequirement = "delete-candidate-requirement";
   static const String getRequirementStats = "get-requirement-stats";
+
+  /// Digital Products
+  static const String createProduct = "create-digital-product";
+  static const String updateProduct = "update-digital-product";
+  static const String digitalProducts = "list-digital-products";
+  static const String deleteProduct = "delete-digital-product";
 }
