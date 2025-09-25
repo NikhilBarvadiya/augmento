@@ -30,6 +30,10 @@ class JobFilterCtrl extends GetxController {
     salaryMax.value = currentFilters['salaryMax'];
   }
 
+  void resetFilters() {
+    jobsCtrl.applyFilters({});
+  }
+
   void applyFilters() {
     final filters = <String, dynamic>{
       '_id': null,

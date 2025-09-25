@@ -266,7 +266,7 @@ class Home extends StatelessWidget {
                 ),
                 if (ctrl.activeJobs.isNotEmpty)
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () => Get.to(() => JobsManagement(initialTab: 0)),
                     child: Text(
                       'View All',
                       style: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),

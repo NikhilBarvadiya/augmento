@@ -10,60 +10,124 @@ class JobFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(JobFilterCtrl());
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text('Job Filters', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18)),
+        title: const Text(
+          'Job Filters',
+          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.white),
+        ),
         elevation: 0,
         centerTitle: true,
-        automaticallyImplyLeading: true,
         backgroundColor: decoration.colorScheme.primary,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Get.back(),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Obx(
-          () => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSectionTitle('Date Posted'),
-              _buildChoiceChips(
-                controller,
-                ['Past 24 hours', 'Past Week', 'Past Month', 'All Time'],
-                controller.selectedDatePosted,
-                (value) => controller.selectedDatePosted.value = value,
-                singleSelect: true,
-              ),
-              _buildSectionTitle('Skills'),
-              _buildSkillChips(controller),
-              _buildSectionTitle('Work Type'),
-              _buildChoiceChips(controller, ['Remote', 'Hybrid', 'On-site'], controller.selectedWorkTypes, (value) => controller.selectedWorkTypes.value = value),
-              _buildSectionTitle('Shift Timings'),
-              _buildChoiceChips(controller, ['IST', 'PST', 'EST', 'GMT'], controller.selectedShifts, (value) => controller.selectedShifts.value = value),
-              _buildSectionTitle('Job Type'),
-              _buildChoiceChips(controller, ['Full-time', 'Part-time', 'Contract', 'Internship'], controller.selectedJobTypes, (value) => controller.selectedJobTypes.value = value),
-              _buildSectionTitle('Experience Level'),
-              _buildChoiceChips(controller, ['Entry', 'Mid', 'Senior', 'Lead'], controller.selectedExperienceLevels, (value) => controller.selectedExperienceLevels.value = value),
-              _buildSectionTitle('Salary Range (₹/Month)'),
-              _buildSalaryRangeFields(controller),
-              _buildSectionTitle('Status (Onboard Tab)'),
-              _buildChoiceChips(controller, ['All', 'Accepted', 'Rejected', 'Pending'], controller.selectedStatuses, (value) => controller.selectedStatuses.value = value, singleSelect: true),
-              SizedBox(height: 16),
-              _buildActionButtons(controller),
-            ],
+        leading: Container(
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
+          child: IconButton(
+            icon: const Icon(Icons.close_rounded, color: Colors.white, size: 20),
+            onPressed: () => Get.back(),
           ),
         ),
+        actions: [
+          Container(
+            margin: const EdgeInsets.all(8),
+            child: TextButton(
+              onPressed: () => _showResetDialog(context, controller),
+              child: const Text(
+                'Reset',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Obx(
+                () => Column(
+                  children: [
+                    _buildFilterCard(
+                      'Date Posted',
+                      Icons.schedule_rounded,
+                      _buildChoiceChips(
+                        controller,
+                        ['Past 24 hours', 'Past Week', 'Past Month', 'All Time'],
+                        controller.selectedDatePosted,
+                        (value) => controller.selectedDatePosted.value = value,
+                        singleSelect: true,
+                      ),
+                    ),
+                    _buildFilterCard('Skills', Icons.code_rounded, _buildSkillChips(controller)),
+                    _buildFilterCard(
+                      'Work Type',
+                      Icons.business_center_rounded,
+                      _buildChoiceChips(controller, ['Remote', 'Hybrid', 'On-site'], controller.selectedWorkTypes, (value) => controller.selectedWorkTypes.value = value),
+                    ),
+                    _buildFilterCard(
+                      'Shift Timings',
+                      Icons.access_time_rounded,
+                      _buildChoiceChips(controller, ['IST', 'PST', 'EST', 'GMT'], controller.selectedShifts, (value) => controller.selectedShifts.value = value),
+                    ),
+                    _buildFilterCard(
+                      'Job Type',
+                      Icons.work_outline_rounded,
+                      _buildChoiceChips(controller, ['Full-time', 'Part-time', 'Contract', 'Internship'], controller.selectedJobTypes, (value) => controller.selectedJobTypes.value = value),
+                    ),
+                    _buildFilterCard(
+                      'Experience Level',
+                      Icons.trending_up_rounded,
+                      _buildChoiceChips(controller, ['Entry', 'Mid', 'Senior', 'Lead'], controller.selectedExperienceLevels, (value) => controller.selectedExperienceLevels.value = value),
+                    ),
+                    _buildFilterCard('Salary Range', Icons.payments_outlined, _buildSalaryRangeFields(controller)),
+                    _buildFilterCard(
+                      'Status',
+                      Icons.flag_rounded,
+                      _buildChoiceChips(controller, ['All', 'Accepted', 'Rejected', 'Pending'], controller.selectedStatuses, (value) => controller.selectedStatuses.value = value, singleSelect: true),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          _buildBottomActions(controller),
+        ],
       ),
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8, top: 16),
-      child: Text(
-        title,
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: decoration.colorScheme.primary),
+  Widget _buildFilterCard(String title, IconData icon, Widget content) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 8, offset: const Offset(0, 2))],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(color: decoration.colorScheme.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+                  child: Icon(icon, size: 18, color: decoration.colorScheme.primary),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: decoration.colorScheme.primary),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            content,
+          ],
+        ),
       ),
     );
   }
@@ -73,9 +137,13 @@ class JobFilter extends StatelessWidget {
       spacing: 8,
       runSpacing: 8,
       children: options.map((option) {
-        return ChoiceChip(
-          label: Text(option),
-          selected: selectedValues.contains(option),
+        final isSelected = selectedValues.contains(option);
+        return FilterChip(
+          label: Text(
+            option,
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: isSelected ? Colors.white : Colors.grey[700]),
+          ),
+          selected: isSelected,
           onSelected: (selected) {
             if (singleSelect) {
               selectedValues.clear();
@@ -89,8 +157,15 @@ class JobFilter extends StatelessWidget {
             }
             onChanged(selectedValues.toList());
           },
-          selectedColor: decoration.colorScheme.primary.withOpacity(0.2),
-          labelStyle: TextStyle(fontSize: 12, color: selectedValues.contains(option) ? decoration.colorScheme.primary : Colors.black87),
+          backgroundColor: Colors.grey[100],
+          selectedColor: decoration.colorScheme.primary,
+          checkmarkColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(color: isSelected ? decoration.colorScheme.primary : Colors.grey[300]!),
+          ),
+          elevation: 0,
+          pressElevation: 2,
         );
       }).toList(),
     );
@@ -109,10 +184,16 @@ class JobFilter extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Text(category.key, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+            if (skillCategories.keys.first != category.key) const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(8)),
+              child: Text(
+                category.key,
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black87),
+              ),
             ),
+            const SizedBox(height: 8),
             _buildChoiceChips(controller, category.value, controller.selectedSkills, (value) => controller.selectedSkills.value = value),
           ],
         );
@@ -124,48 +205,136 @@ class JobFilter extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: TextField(
-            decoration: InputDecoration(
-              labelText: 'Min (₹)',
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[50],
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[200]!),
             ),
-            keyboardType: TextInputType.number,
-            onChanged: (value) => controller.salaryMin.value = value.isEmpty ? null : int.tryParse(value),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: 'Min Amount',
+                prefixText: '₹ ',
+                prefixStyle: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.all(16),
+                labelStyle: TextStyle(color: Colors.grey[600]),
+              ),
+              keyboardType: TextInputType.number,
+              onChanged: (value) => controller.salaryMin.value = value.isEmpty ? null : int.tryParse(value),
+            ),
           ),
         ),
-        SizedBox(width: 16),
+        Container(margin: const EdgeInsets.symmetric(horizontal: 12), width: 20, height: 2, color: Colors.grey[400]),
         Expanded(
-          child: TextField(
-            decoration: InputDecoration(
-              labelText: 'Max (₹)',
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[50],
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[200]!),
             ),
-            keyboardType: TextInputType.number,
-            onChanged: (value) => controller.salaryMax.value = value.isEmpty ? null : int.tryParse(value),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: 'Max Amount',
+                prefixText: '₹ ',
+                prefixStyle: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.all(16),
+                labelStyle: TextStyle(color: Colors.grey[600]),
+              ),
+              keyboardType: TextInputType.number,
+              onChanged: (value) => controller.salaryMax.value = value.isEmpty ? null : int.tryParse(value),
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildActionButtons(JobFilterCtrl controller) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        TextButton(
-          onPressed: () => Get.back(),
-          child: Text('Cancel', style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+  Widget _buildBottomActions(JobFilterCtrl controller) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 10, offset: const Offset(0, -2))],
+      ),
+      child: SafeArea(
+        child: Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () => Get.back(),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.grey[600],
+                  side: BorderSide(color: Colors.grey[300]!),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                icon: const Icon(Icons.close_rounded, size: 18),
+                label: const Text('Cancel', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              flex: 2,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  controller.applyFilters();
+                  Get.back();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: decoration.colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 0,
+                ),
+                icon: const Icon(Icons.check_rounded, size: 18),
+                label: const Text('Apply Filters', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              ),
+            ),
+          ],
         ),
-        SizedBox(width: 8),
-        ElevatedButton(
-          onPressed: () {
-            controller.applyFilters();
-            Get.back();
-          },
-          style: ElevatedButton.styleFrom(backgroundColor: decoration.colorScheme.primary, padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
-          child: Text('Apply', style: TextStyle(fontSize: 14, color: decoration.colorScheme.onPrimary)),
+      ),
+    );
+  }
+
+  void _showResetDialog(BuildContext context, JobFilterCtrl controller) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(color: Colors.orange.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+              child: const Icon(Icons.refresh_rounded, color: Colors.orange, size: 20),
+            ),
+            const SizedBox(width: 12),
+            const Text('Reset Filters', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+          ],
         ),
-      ],
+        content: const Text('Are you sure you want to reset all filters? This action cannot be undone.', style: TextStyle(color: Colors.black87)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel', style: TextStyle(color: Colors.grey[600])),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              controller.resetFilters();
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            child: const Text('Reset'),
+          ),
+        ],
+      ),
     );
   }
 }

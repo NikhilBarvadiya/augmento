@@ -282,7 +282,7 @@ class CandidateRequirements extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(requirement['jobTitle'] ?? 'Unknown Position', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              Text(requirement['jobTitle']?.toString().capitalizeFirst ?? 'Unknown Position', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               const SizedBox(height: 4),
               Text(requirement['location'] ?? 'Location not specified', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
             ],

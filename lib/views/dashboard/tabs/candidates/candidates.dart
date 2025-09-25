@@ -270,7 +270,7 @@ class Candidates extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(candidate['name'] ?? 'Unknown', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              Text(candidate['name']?.toString().capitalizeFirst ?? 'Unknown', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               const SizedBox(height: 4),
               Text(candidate['candidateCode'] ?? 'No Code', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
             ],
