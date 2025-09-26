@@ -83,9 +83,4 @@ class MyBidsCtrl extends GetxController {
         return '📄';
     }
   }
-
-  int getBidCountByStatus(String status) {
-    if (status == 'all') return bids.length;
-    return bids.where((bid) => bid['status'] == status).length;
-  }
 }

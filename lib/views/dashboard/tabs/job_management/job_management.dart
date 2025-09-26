@@ -255,7 +255,7 @@ class JobsManagement extends StatelessWidget {
           children: [
             Row(
               children: [
-                _buildShimmerContainer(56, 56, isCircular: true),
+                _buildShimmerContainer(45, 45, borderRadius: 12),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildShimmerContainer(160, 18), const SizedBox(height: 8), _buildShimmerContainer(100, 14)]),
@@ -283,11 +283,11 @@ class JobsManagement extends StatelessWidget {
     );
   }
 
-  Widget _buildShimmerContainer(double width, double height, {bool isCircular = false, double borderRadius = 8}) {
+  Widget _buildShimmerContainer(double width, double height, {double borderRadius = 8}) {
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(color: Colors.grey[300], borderRadius: isCircular ? null : BorderRadius.circular(borderRadius), shape: isCircular ? BoxShape.circle : BoxShape.rectangle),
+      decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(borderRadius)),
     );
   }
 

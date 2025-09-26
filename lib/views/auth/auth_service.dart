@@ -487,6 +487,20 @@ class AuthService extends GetxService {
     }
   }
 
+  Future<Map<String, dynamic>> getNotifications(Map<String, dynamic> data) async {
+    try {
+      final response = await _apiManager.post(APIIndex.getNotifications, data);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return {};
+      }
+      return response.data;
+    } catch (err) {
+      toaster.error(err.toString());
+      return {};
+    }
+  }
+
   Future<void> logout() async {
     await clearStorage();
     Get.offAllNamed(AppRouteNames.login);

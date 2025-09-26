@@ -12,15 +12,18 @@ class MyBids extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<MyBidsCtrl>(
       init: MyBidsCtrl(),
-      builder: (ctrl) => Scaffold(
-        backgroundColor: Colors.grey[50],
-        appBar: _buildAppBar(),
-        body: Column(
-          children: [
-            _buildStatusTabs(ctrl),
-            _buildSearchBar(ctrl),
-            Expanded(child: _buildBidsList(ctrl)),
-          ],
+      builder: (ctrl) => DefaultTabController(
+        length: 4,
+        child: Scaffold(
+          backgroundColor: Colors.grey[50],
+          appBar: _buildAppBar(),
+          body: Column(
+            children: [
+              _buildTabBar(ctrl),
+              _buildSearchBar(ctrl),
+              Expanded(child: _buildTabViews(ctrl)),
+            ],
+          ),
         ),
       ),
     );
@@ -44,63 +47,48 @@ class MyBids extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusTabs(MyBidsCtrl ctrl) {
+  Widget _buildTabBar(MyBidsCtrl ctrl) {
     final statuses = [
-      {'key': 'all', 'label': 'All'},
-      {'key': 'pending', 'label': 'Pending'},
-      {'key': 'accepted', 'label': 'Accepted'},
-      {'key': 'rejected', 'label': 'Rejected'},
+      {'key': 'all', 'label': 'All', 'icon': Icons.list},
+      {'key': 'pending', 'label': 'Pending', 'icon': Icons.pending_actions},
+      {'key': 'accepted', 'label': 'Accepted', 'icon': Icons.check_circle_outline},
+      {'key': 'rejected', 'label': 'Rejected', 'icon': Icons.cancel_outlined},
     ];
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 4, offset: const Offset(0, 1))],
       ),
-      child: Obx(
-        () => Row(
-          children: statuses.map((status) {
-            final isSelected = ctrl.statusFilter.value == status['key'];
-            final count = ctrl.getBidCountByStatus(status['key'] as String);
-            return Expanded(
-              child: GestureDetector(
-                onTap: () => ctrl.changeStatusFilter(status['key'] as String),
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 6),
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-                  decoration: BoxDecoration(color: isSelected ? decoration.colorScheme.primary.withOpacity(0.08) : Colors.transparent, borderRadius: BorderRadius.circular(8)),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        count.toString(),
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: isSelected ? decoration.colorScheme.primary : Colors.grey[700]),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        status['label'] as String,
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: isSelected ? decoration.colorScheme.primary : Colors.grey[500]),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-        ),
+      child: TabBar(
+        isScrollable: true,
+        labelColor: decoration.colorScheme.primary,
+        unselectedLabelColor: Colors.grey[600],
+        labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+        indicatorColor: decoration.colorScheme.primary,
+        indicatorWeight: 3,
+        indicatorSize: TabBarIndicatorSize.tab,
+        tabAlignment: TabAlignment.start,
+        onTap: (index) => ctrl.changeStatusFilter(statuses[index]['key'] as String),
+        tabs: statuses.map((status) {
+          return Tab(
+            child: Row(mainAxisSize: MainAxisSize.min, children: [Icon(status['icon'] as IconData, size: 16), const SizedBox(width: 6), Text(status['label'] as String)]),
+          );
+        }).toList(),
       ),
     );
   }
 
   Widget _buildSearchBar(MyBidsCtrl ctrl) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(left: 16, right: 16),
       color: Colors.white,
       child: Container(
         decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(12)),
         child: TextField(
           decoration: InputDecoration(
-            hintText: 'Search bids by project name...',
+            hintText: 'Search bids by cover letter...',
             hintStyle: const TextStyle(fontSize: 14),
             prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
             border: InputBorder.none,
@@ -112,14 +100,22 @@ class MyBids extends StatelessWidget {
     );
   }
 
-  Widget _buildBidsList(MyBidsCtrl ctrl) {
+  Widget _buildTabViews(MyBidsCtrl ctrl) {
+    return TabBarView(
+      physics: const NeverScrollableScrollPhysics(),
+      children: [_buildBidsList(ctrl, 'all'), _buildBidsList(ctrl, 'pending'), _buildBidsList(ctrl, 'accepted'), _buildBidsList(ctrl, 'rejected')],
+    );
+  }
+
+  Widget _buildBidsList(MyBidsCtrl ctrl, String status) {
     return RefreshIndicator(
       onRefresh: () => ctrl.fetchMyBids(reset: true),
       child: Obx(() {
+        final filteredBids = status == 'all' ? ctrl.bids : ctrl.bids.where((bid) => bid['status'] == status).toList();
         if (ctrl.isLoading.value && ctrl.bids.isEmpty) {
           return _buildShimmerList();
         }
-        if (ctrl.bids.isEmpty) {
+        if (filteredBids.isEmpty) {
           return _buildEmptyState();
         }
         return NotificationListener<ScrollNotification>(
@@ -132,11 +128,11 @@ class MyBids extends StatelessWidget {
           child: ListView.separated(
             padding: const EdgeInsets.all(16),
             physics: const BouncingScrollPhysics(),
-            itemCount: ctrl.bids.length + (ctrl.hasMore.value ? 1 : 0),
+            itemCount: filteredBids.length + (ctrl.hasMore.value ? 1 : 0),
             separatorBuilder: (context, index) => const SizedBox(height: 16),
             itemBuilder: (context, index) {
-              if (index < ctrl.bids.length) {
-                return _buildBidCard(ctrl.bids[index], ctrl);
+              if (index < filteredBids.length) {
+                return _buildBidCard(filteredBids[index], ctrl);
               } else {
                 return _buildLoadMoreIndicator();
               }
@@ -150,10 +146,10 @@ class MyBids extends StatelessWidget {
   Widget _buildBidCard(Map<String, dynamic> bid, MyBidsCtrl ctrl) {
     final project = bid['project'] as Map<String, dynamic>;
     final status = bid['status'] as String;
+    final coverLetter = bid['coverLetter'] as String;
     final bidAmount = bid['bidAmount'];
     final duration = bid['duration'] as String;
     final createdAt = bid['createdAt'] as String;
-
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -172,7 +168,7 @@ class MyBids extends StatelessWidget {
               children: [
                 _buildBidHeader(project, status, ctrl),
                 const SizedBox(height: 12),
-                _buildProjectInfo(project),
+                _buildProjectInfo(project, coverLetter),
                 const SizedBox(height: 16),
                 _buildBidInfo(bidAmount, duration, createdAt),
                 const SizedBox(height: 12),
@@ -248,17 +244,23 @@ class MyBids extends StatelessWidget {
     );
   }
 
-  Widget _buildProjectInfo(Map<String, dynamic> project) {
+  Widget _buildProjectInfo(Map<String, dynamic> project, String coverLetter) {
     return Column(
+      spacing: 8.0,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           project['description']?.toString() ?? 'No description available',
-          style: TextStyle(fontSize: 14, color: Colors.grey[700], height: 1.4),
+          style: TextStyle(fontSize: 12, color: Colors.grey[700], height: 1.4),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: 8),
+        Text(
+          "Letter : ${coverLetter.toString()}",
+          style: TextStyle(fontSize: 12, color: Colors.grey[700], height: 1.4),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
         if (project['budget'] != null) _buildBudgetInfo(project['budget']),
       ],
     );
@@ -271,7 +273,6 @@ class MyBids extends StatelessWidget {
     } else if (budget['hourlyFrom'] != null && budget['hourlyTo'] != null) {
       budgetText = 'Budget: ₹${budget['hourlyFrom']} - ₹${budget['hourlyTo']}/hr';
     }
-
     if (budgetText.isNotEmpty) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -326,9 +327,7 @@ class MyBids extends StatelessWidget {
 
   Widget _buildSkillsSection(Map<String, dynamic> project) {
     final skills = project['skills'] as List? ?? [];
-
     if (skills.isEmpty) return const SizedBox.shrink();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -376,7 +375,7 @@ class MyBids extends StatelessWidget {
         children: [
           Row(
             children: [
-              _buildShimmerContainer(50, 50, isCircular: true),
+              _buildShimmerContainer(50, 50, borderRadius: 12),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildShimmerContainer(150, 16), const SizedBox(height: 8), _buildShimmerContainer(100, 12)]),
@@ -395,11 +394,11 @@ class MyBids extends StatelessWidget {
     );
   }
 
-  Widget _buildShimmerContainer(double width, double height, {bool isCircular = false, double borderRadius = 8}) {
+  Widget _buildShimmerContainer(double width, double height, {double borderRadius = 8}) {
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(color: Colors.grey[300], borderRadius: isCircular ? null : BorderRadius.circular(borderRadius), shape: isCircular ? BoxShape.circle : BoxShape.rectangle),
+      decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(borderRadius)),
     );
   }
 
@@ -433,7 +432,6 @@ class MyBids extends StatelessWidget {
       final date = DateTime.parse(dateString);
       final now = DateTime.now();
       final difference = now.difference(date);
-
       if (difference.inDays == 0) {
         return 'Today';
       } else if (difference.inDays == 1) {

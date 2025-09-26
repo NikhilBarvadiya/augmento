@@ -5,6 +5,7 @@ import 'package:augmento/views/dashboard/tabs/job_management/job_management.dart
 import 'package:augmento/views/dashboard/tabs/job_management/ui/job_details_card.dart';
 import 'package:augmento/views/dashboard/tabs/job_management/ui/recent_job_details_card.dart';
 import 'package:augmento/views/dashboard/tabs/my_bids/my_bids.dart';
+import 'package:augmento/views/dashboard/tabs/notifications/notifications.dart';
 import 'package:augmento/views/dashboard/tabs/projects/projects.dart';
 import 'package:augmento/views/dashboard/tabs/projects/ui/projects_details_card.dart';
 import 'package:augmento/widgets/interview_card.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
+
 import 'home_ctrl.dart';
 
 class Home extends StatelessWidget {
@@ -101,7 +103,7 @@ class Home extends StatelessWidget {
         ],
       ),
       actions: [
-        _buildHeaderButton(icon: Icons.notifications_outlined, onTap: () => {}),
+        _buildHeaderButton(icon: Icons.notifications_outlined, onTap: () => Get.to(() => Notifications())),
         const SizedBox(width: 8),
         _buildHeaderButton(icon: Icons.settings_outlined, onTap: () => Get.to(() => Account())),
         const SizedBox(width: 12),
@@ -142,7 +144,7 @@ class Home extends StatelessWidget {
         _buildProjectSection(ctrl, theme),
         const SizedBox(height: 24),
         _buildMetricsSection(ctrl, theme),
-        const SizedBox(height: 32),
+        const SizedBox(height: 15),
         if (ctrl.activeJobs.isNotEmpty) _buildActiveJobs(ctrl, theme),
         if (ctrl.jobApplications.isNotEmpty) _buildRecentJobs(ctrl, theme),
         if (ctrl.recentProjects.isNotEmpty) _buildRecentProjects(ctrl, theme),
@@ -154,21 +156,54 @@ class Home extends StatelessWidget {
 
   Widget _buildQuickStats(HomeCtrl ctrl, ThemeData theme) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 15),
-      padding: const EdgeInsets.only(top: 20, bottom: 20, left: 12, right: 12),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: decoration.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 20, offset: const Offset(0, 4))],
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 2))],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildStatItem('Total Jobs', ctrl.counts['jobs']?.toString() ?? '0', Icons.work_outline, Colors.blue, theme, onTap: () => Get.to(() => JobsManagement(initialTab: 0))),
-          Container(width: 1, height: 40, color: theme.dividerColor),
-          _buildStatItem('Applications', ctrl.counts['applications']?.toString() ?? '0', Icons.description_outlined, Colors.orange, theme, onTap: () => Get.to(() => JobsManagement(initialTab: 1))),
-          Container(width: 1, height: 40, color: theme.dividerColor),
-          _buildStatItem('Candidates', ctrl.counts['candidates']?.toString() ?? '0', Icons.people_outline, Colors.green, theme, onTap: () => Get.find<DashboardCtrl>().changeTabIndex(1)),
+          Row(
+            children: [
+              Icon(Icons.dashboard_outlined, color: decoration.colorScheme.primary, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                'Quick Stats',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: decoration.colorScheme.onSurface),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(child: _buildCompactStatItem('Jobs', ctrl.counts['jobs']?.toString() ?? '0', Icons.work_outline, Colors.blue, theme, onTap: () => Get.to(() => JobsManagement(initialTab: 0)))),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildCompactStatItem(
+                  'Applications',
+                  ctrl.counts['applications']?.toString() ?? '0',
+                  Icons.description_outlined,
+                  Colors.orange,
+                  theme,
+                  onTap: () => Get.to(() => JobsManagement(initialTab: 1)),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildCompactStatItem(
+                  'Candidates',
+                  ctrl.counts['candidates']?.toString() ?? '0',
+                  Icons.people_outline,
+                  Colors.green,
+                  theme,
+                  onTap: () => Get.find<DashboardCtrl>().changeTabIndex(1),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -176,31 +211,30 @@ class Home extends StatelessWidget {
 
   Widget _buildProjectSection(HomeCtrl ctrl, ThemeData theme) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 4, bottom: 16),
-            child: Text(
-              'Projects Summary',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: decoration.colorScheme.onSurface),
+          Expanded(
+            child: _buildInfoCard(
+              title: 'Projects',
+              value: ctrl.counts['publishedProjects']?.toString() ?? '0',
+              subtitle: 'Total Projects',
+              icon: Icons.folder_outlined,
+              color: Colors.purple,
+              theme: theme,
+              onTap: () => Get.to(() => Projects()),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.only(top: 20, bottom: 20, left: 12, right: 12),
-            decoration: BoxDecoration(
-              color: decoration.colorScheme.surface,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 20, offset: const Offset(0, 4))],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildStatItem('Total Projects', ctrl.counts['publishedProjects']?.toString() ?? '0', Icons.hourglass_empty_outlined, Colors.orange, theme, onTap: () => Get.to(() => Projects())),
-                Container(width: 1, height: 40, color: theme.dividerColor),
-                _buildStatItem('Your Bids', ctrl.counts['totalBids']?.toString() ?? '0', Icons.check_circle_outline, Colors.green, theme, onTap: () => Get.to(() => MyBids())),
-              ],
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildInfoCard(
+              title: 'Bids',
+              value: ctrl.counts['totalBids']?.toString() ?? '0',
+              subtitle: 'Your Bids',
+              icon: Icons.local_offer_outlined,
+              color: Colors.teal,
+              theme: theme,
+              onTap: () => Get.to(() => MyBids()),
             ),
           ),
         ],
@@ -210,37 +244,42 @@ class Home extends StatelessWidget {
 
   Widget _buildMetricsSection(HomeCtrl ctrl, ThemeData theme) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 15),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: decoration.colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 2))],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 4, bottom: 16),
-            child: Text(
-              'Onboarding',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: decoration.colorScheme.onSurface),
-            ),
+          Row(
+            children: [
+              Icon(Icons.trending_up, color: decoration.colorScheme.primary, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                'Onboarding Status',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: decoration.colorScheme.onSurface),
+              ),
+            ],
           ),
-          Container(
-            padding: const EdgeInsets.only(top: 20, bottom: 20, left: 12, right: 12),
-            decoration: BoxDecoration(
-              color: decoration.colorScheme.surface,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 20, offset: const Offset(0, 4))],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildStatItem(
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: _buildStatusItem(
                   'Pending',
                   ctrl.counts['pendingOnboarding']?.toString() ?? '0',
-                  Icons.hourglass_empty_outlined,
+                  Icons.schedule,
                   Colors.orange,
                   theme,
                   onTap: () => Get.to(() => JobsManagement(initialTab: 4, initialFilter: {'status': 'Pending'})),
                 ),
-                Container(width: 1, height: 40, color: theme.dividerColor),
-                _buildStatItem(
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildStatusItem(
                   'Accepted',
                   ctrl.counts['acceptedOnboarding']?.toString() ?? '0',
                   Icons.check_circle_outline,
@@ -248,8 +287,10 @@ class Home extends StatelessWidget {
                   theme,
                   onTap: () => Get.to(() => JobsManagement(initialTab: 4, initialFilter: {'status': 'Accepted'})),
                 ),
-                Container(width: 1, height: 40, color: theme.dividerColor),
-                _buildStatItem(
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildStatusItem(
                   'Rejected',
                   ctrl.counts['rejectedOnboarding']?.toString() ?? '0',
                   Icons.cancel_outlined,
@@ -257,45 +298,148 @@ class Home extends StatelessWidget {
                   theme,
                   onTap: () => Get.to(() => JobsManagement(initialTab: 4, initialFilter: {'status': 'Rejected'})),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildStatItem(String label, String value, IconData icon, Color color, ThemeData theme, {VoidCallback? onTap}) {
-    return SizedBox(
-      width: Get.width * .25,
+  Widget _buildCompactStatItem(String label, String value, IconData icon, Color color, ThemeData theme, {VoidCallback? onTap}) {
+    return Material(
+      color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        child: Column(
-          spacing: 6.0,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              spacing: 10.0,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
+        borderRadius: BorderRadius.circular(12),
+        highlightColor: color.withOpacity(0.1),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: color.withOpacity(0.2), width: 1),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                spacing: 10.0,
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(icon, color: color, size: 24),
+                  Text(
+                    value,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: decoration.colorScheme.onSurface),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(fontSize: 12, color: decoration.colorScheme.outline, fontWeight: FontWeight.w500),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoCard({required String title, required String value, required String subtitle, required IconData icon, required Color color, required ThemeData theme, VoidCallback? onTap}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: decoration.colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 2))],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          highlightColor: color.withOpacity(0.1),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-                  child: Icon(icon, color: color, size: 20),
+                Row(
+                  spacing: 10.0,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+                      child: Icon(icon, color: color, size: 20),
+                    ),
+                    Expanded(
+                      child: Text(
+                        value,
+                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: decoration.colorScheme.onSurface),
+                      ),
+                    ),
+                    Icon(Icons.arrow_forward_ios, color: decoration.colorScheme.outline, size: 14),
+                  ],
                 ),
+                const SizedBox(height: 10),
                 Text(
-                  value,
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: decoration.colorScheme.onSurface),
+                  subtitle,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodySmall?.copyWith(color: decoration.colorScheme.outline, fontWeight: FontWeight.w500),
                 ),
               ],
             ),
-            Text(
-              label,
-              style: theme.textTheme.bodySmall?.copyWith(color: decoration.colorScheme.outline, fontWeight: FontWeight.w500),
-              textAlign: TextAlign.center,
-            ),
-          ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatusItem(String label, String value, IconData icon, Color color, ThemeData theme, {VoidCallback? onTap}) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        highlightColor: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: color.withOpacity(0.2), width: 1),
+          ),
+          child: Column(
+            spacing: 6.0,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                spacing: 10.0,
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+                    child: Icon(icon, color: color, size: 20),
+                  ),
+                  Text(
+                    value,
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: decoration.colorScheme.onSurface),
+                  ),
+                ],
+              ),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodySmall?.copyWith(color: decoration.colorScheme.outline, fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -326,7 +470,7 @@ class Home extends StatelessWidget {
                   TextButton(
                     onPressed: () => Get.to(() => JobsManagement(initialTab: 0)),
                     child: Text(
-                      'View All',
+                      'View All (${ctrl.activeJobs.length})',
                       style: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -376,7 +520,7 @@ class Home extends StatelessWidget {
                   TextButton(
                     onPressed: () => Get.to(() => JobsManagement(initialTab: 1)),
                     child: Text(
-                      'View All',
+                      'View All (${ctrl.jobApplications.length})',
                       style: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -426,7 +570,7 @@ class Home extends StatelessWidget {
                   TextButton(
                     onPressed: () => Get.to(() => JobsManagement(initialTab: 1)),
                     child: Text(
-                      'View All',
+                      'View All (${ctrl.recentProjects.length})',
                       style: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -463,10 +607,20 @@ class Home extends StatelessWidget {
               children: [
                 Icon(Icons.work_outline, color: decoration.colorScheme.primary, size: 24),
                 const SizedBox(width: 8),
-                Text(
-                  'Recent Interviews',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: decoration.colorScheme.onSurface),
+                Expanded(
+                  child: Text(
+                    'Recent Interviews',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: decoration.colorScheme.onSurface),
+                  ),
                 ),
+                if (ctrl.interviews.isNotEmpty)
+                  TextButton(
+                    onPressed: null,
+                    child: Text(
+                      'Total (${ctrl.interviews.length})',
+                      style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600),
+                    ),
+                  ),
               ],
             ),
           ),

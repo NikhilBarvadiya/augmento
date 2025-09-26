@@ -13,6 +13,7 @@ class APIIndex {
   static const String bidOnProject = 'bid-on-project';
   static const String listMyBids = 'list-my-bids';
   static const String interviewTimeline = "get-vendor-interview-timeline";
+  static const String getNotifications = 'get-notification';
 
   /// Candidates
   static const String createCandidateProfile = "create-candidate-profile";
