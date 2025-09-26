@@ -1,5 +1,6 @@
 import 'package:augmento/utils/decoration.dart';
 import 'package:augmento/views/dashboard/tabs/candidate_requirements/ui/requirement_form.dart';
+import 'package:augmento/views/dashboard/tabs/job_management/ui/skill_section.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'candidate_requirements_ctrl.dart';
@@ -129,7 +130,7 @@ class CandidateRequirements extends StatelessWidget {
             hint: const Text('All Status', style: TextStyle(fontSize: 14)),
             isExpanded: true,
             items: const [
-              DropdownMenuItem(value: '', child: Text('All Statuses')),
+              DropdownMenuItem(value: '', child: Text('All Status')),
               DropdownMenuItem(value: 'Active', child: Text('Active')),
               DropdownMenuItem(value: 'Inactive', child: Text('Inactive')),
               DropdownMenuItem(value: 'Draft', child: Text('Draft')),
@@ -259,7 +260,7 @@ class CandidateRequirements extends StatelessWidget {
               const SizedBox(height: 12),
               _buildJobDetails(requirement),
               const SizedBox(height: 12),
-              _buildSkillsSection(requirement),
+              SkillSection(candidate: requirement),
               const SizedBox(height: 12),
               _buildStatusAndSalary(requirement),
             ],
@@ -347,37 +348,6 @@ class CandidateRequirements extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildSkillsSection(Map<String, dynamic> requirement) {
-    final requiredSkills = requirement['requiredSkills'] as List?;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Required Skills',
-          style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 4),
-        requiredSkills != null && requiredSkills.isNotEmpty
-            ? Wrap(
-                spacing: 6,
-                runSpacing: 4,
-                children: requiredSkills.take(3).map((skill) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.purple[50],
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.purple[200]!),
-                    ),
-                    child: Text(skill.toString(), style: TextStyle(fontSize: 11, color: Colors.purple[700])),
-                  );
-                }).toList(),
-              )
-            : Text('No skills specified', style: TextStyle(fontSize: 12, color: Colors.grey[500])),
-      ],
     );
   }
 

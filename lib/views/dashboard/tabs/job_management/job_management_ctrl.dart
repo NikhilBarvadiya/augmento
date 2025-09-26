@@ -52,7 +52,8 @@ class JobsCtrl extends GetxController {
         fetchStatusWiseJobs(reset: true, status: initialFilter?['status'] is List ? initialFilter!['status'] : ['Rejected']);
         break;
       case 4:
-        fetchOnboardJobs(reset: true, status: initialFilter?['status'] is List ? initialFilter!['status'] : ['Accepted', 'Rejected', 'Pending']);
+        statusFilter.value = initialFilter?['status'] ?? "";
+        fetchOnboardJobs(reset: true, status: statusFilter.value);
         break;
     }
   }

@@ -2,6 +2,7 @@ import 'package:augmento/utils/config/app_config.dart';
 import 'package:augmento/utils/decoration.dart';
 import 'package:augmento/utils/network/api_config.dart';
 import 'package:augmento/views/dashboard/tabs/candidates/ui/candidate_form.dart';
+import 'package:augmento/views/dashboard/tabs/job_management/ui/skill_section.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'candidates_ctrl.dart';
@@ -254,7 +255,13 @@ class Candidates extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [_buildCardHeader(ctrl, candidate), const SizedBox(height: 12), _buildSkillsSection(candidate), const SizedBox(height: 12), _buildStatusAndAvailability(candidate)],
+            children: [
+              _buildCardHeader(ctrl, candidate),
+              const SizedBox(height: 12),
+              SkillSection(candidate: candidate),
+              const SizedBox(height: 12),
+              _buildStatusAndAvailability(candidate),
+            ],
           ),
         ),
       ),
@@ -326,37 +333,6 @@ class Candidates extends StatelessWidget {
             ],
           ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildSkillsSection(Map<String, dynamic> candidate) {
-    final skills = candidate['skills'] as List;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Skills',
-          style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 4),
-        skills.isNotEmpty
-            ? Wrap(
-                spacing: 6,
-                runSpacing: 4,
-                children: skills.take(3).map((skill) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.blue[50],
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: Colors.blue[200]!),
-                    ),
-                    child: Text(skill.toString(), style: TextStyle(fontSize: 11, color: Colors.blue[700])),
-                  );
-                }).toList(),
-              )
-            : Text('No skills listed', style: TextStyle(fontSize: 12, color: Colors.grey[500])),
       ],
     );
   }

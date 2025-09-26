@@ -22,6 +22,34 @@ class Account extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
+                  Obx(() {
+                    final user = controller.userData.value;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: decoration.colorScheme.primary,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: decoration.colorScheme.primary.withOpacity(0.3), width: 1),
+                          ),
+                          child: const Icon(Icons.person, size: 30, color: Colors.white),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          user['company'] ?? 'Company Name',
+                          style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          user['email'] ?? 'EmailId',
+                          style: TextStyle(fontSize: 13, color: decoration.colorScheme.primary.withOpacity(0.8), fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    );
+                  }),
+                  const SizedBox(height: 20),
                   _buildQuickStatsCard(controller),
                   const SizedBox(height: 16),
                   _buildExpandableProfileSection(controller),
@@ -41,41 +69,21 @@ class Account extends StatelessWidget {
 
   PreferredSizeWidget _buildCompactAppBar(AccountCtrl controller) {
     return AppBar(
-      toolbarHeight: 80,
-      automaticallyImplyLeading: false,
-      title: Obx(() {
-        final user = controller.userData.value;
-        return Row(
-          spacing: 16.0,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(width: 0.1),
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: decoration.colorScheme.primary,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: decoration.colorScheme.primary.withOpacity(0.3), width: 1),
-              ),
-              child: const Icon(Icons.business_center, size: 30, color: Colors.white),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  user['company'] ?? 'Company Name',
-                  style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  user['email'] ?? 'EmailId',
-                  style: TextStyle(fontSize: 13, color: decoration.colorScheme.primary.withOpacity(0.8), fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
-          ],
-        );
-      }),
+      elevation: 0,
+      centerTitle: true,
+      backgroundColor: decoration.colorScheme.primary,
+      title: const Text(
+        'Account',
+        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.white),
+      ),
+      leading: Container(
+        margin: const EdgeInsets.all(8),
+        decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
+        child: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+          onPressed: () => Get.back(),
+        ),
+      ),
     );
   }
 

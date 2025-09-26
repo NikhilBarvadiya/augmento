@@ -1,6 +1,5 @@
 import 'package:augmento/utils/decoration.dart';
 import 'package:augmento/views/dashboard/dashboard_ctrl.dart';
-import 'package:augmento/views/dashboard/tabs/account/account.dart';
 import 'package:augmento/views/dashboard/tabs/candidate_requirements/candidate_requirements.dart';
 import 'package:augmento/views/dashboard/tabs/candidates/candidates.dart';
 import 'package:augmento/views/dashboard/tabs/digital_products/digital_products.dart';
@@ -70,7 +69,6 @@ class Dashboard extends StatelessWidget {
               _buildProfessionalNavItem(Icons.people_outline, Icons.people, 'Candidates', 1, ctrl),
               _buildProfessionalNavItem(Icons.pending_actions_outlined, Icons.pending_actions_rounded, 'Requirements', 2, ctrl),
               _buildProfessionalNavItem(Icons.shopping_bag_outlined, Icons.shopping_bag_rounded, 'Products', 3, ctrl),
-              _buildProfessionalNavItem(Icons.person_outline, Icons.person, 'Profile', 4, ctrl),
             ],
           ),
         ),
@@ -121,8 +119,6 @@ class Dashboard extends StatelessWidget {
         return const CandidateRequirements(key: ValueKey(2));
       case 3:
         return const DigitalProducts(key: ValueKey(3));
-      case 4:
-        return const Account(key: ValueKey(4));
       default:
         return const Home(key: ValueKey(0));
     }

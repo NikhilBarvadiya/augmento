@@ -9,6 +9,10 @@ class APIIndex {
 
   /// Dashboard
   static const String getCounts = "getCounts";
+  static const String listProjects = "list-projects";
+  static const String bidOnProject = 'bid-on-project';
+  static const String listMyBids = 'list-my-bids';
+  static const String interviewTimeline = "get-vendor-interview-timeline";
 
   /// Candidates
   static const String createCandidateProfile = "create-candidate-profile";

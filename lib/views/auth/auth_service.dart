@@ -134,6 +134,34 @@ class AuthService extends GetxService {
     }
   }
 
+  Future<List<dynamic>> interviewTimeline() async {
+    try {
+      final response = await _apiManager.post(APIIndex.interviewTimeline, {});
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return [];
+      }
+      return response.data;
+    } catch (err) {
+      toaster.error(err.toString());
+      return [];
+    }
+  }
+
+  Future<Map<String, dynamic>> listProjects(Map<String, dynamic> data) async {
+    try {
+      final response = await _apiManager.post(APIIndex.listProjects, data);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return {};
+      }
+      return response.data;
+    } catch (err) {
+      toaster.error(err.toString());
+      return {};
+    }
+  }
+
   Future<dynamic> createCandidateProfile(Map<String, dynamic> candidates, PlatformFile? profileImage, PlatformFile? resume) async {
     try {
       dio.FormData? formData;
@@ -406,6 +434,52 @@ class AuthService extends GetxService {
         return {};
       }
       toaster.success('Applied successfully');
+      return response.data;
+    } catch (err) {
+      toaster.error(err.toString());
+      return {};
+    }
+  }
+
+  Future<Map<String, dynamic>> bidOnProject(Map<String, dynamic> data, List<PlatformFile> attachments) async {
+    try {
+      final formData = dio.FormData.fromMap({
+        'projectId': data['projectId'],
+        'bidAmount': data['bidAmount'],
+        'coverLetter': data['coverLetter'],
+        'duration': data['duration'],
+        if (data['startDate'] != null) 'startDate': data['startDate'],
+        if (data['endDate'] != null) 'endDate': data['endDate'],
+      });
+      for (var doc in attachments) {
+        if (doc.path != null) {
+          formData.files.add(MapEntry('attachments', await dio.MultipartFile.fromFile(doc.path!, filename: doc.name)));
+        }
+      }
+      final response = await _apiManager.post(APIIndex.bidOnProject, formData);
+      if (!response.success || response.data == null) {
+        if (response.data.runtimeType == String) {
+          toaster.warning(response.data ?? 'Failed to submit proposal');
+          return {};
+        }
+        toaster.warning(response.message ?? 'Failed to submit proposal');
+        return {};
+      }
+      toaster.success(response.message?.toString().capitalizeFirst ?? 'Proposal submitted successfully');
+      return response.data;
+    } catch (err) {
+      toaster.error(err.toString());
+      return {};
+    }
+  }
+
+  Future<Map<String, dynamic>> listMyBids(Map<String, dynamic> data) async {
+    try {
+      final response = await _apiManager.post(APIIndex.listMyBids, data);
+      if (!response.success || response.data == null) {
+        toaster.warning(response.message ?? 'Something went wrong');
+        return {};
+      }
       return response.data;
     } catch (err) {
       toaster.error(err.toString());

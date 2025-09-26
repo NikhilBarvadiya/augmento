@@ -1,10 +1,9 @@
 import 'package:augmento/utils/decoration.dart';
 import 'package:augmento/views/dashboard/tabs/job_management/job_filter/job_filter.dart';
 import 'package:augmento/views/dashboard/tabs/job_management/job_management_ctrl.dart';
-import 'package:augmento/views/dashboard/tabs/job_management/job_details/job_details.dart';
+import 'package:augmento/views/dashboard/tabs/job_management/ui/job_details_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class JobsManagement extends StatelessWidget {
   final int initialTab;
@@ -226,7 +225,7 @@ class JobsManagement extends StatelessWidget {
                   itemCount: jobs.length + (ctrl.hasMore[type] == true ? 1 : 0),
                   separatorBuilder: (context, index) => const SizedBox(height: 16),
                   itemBuilder: (context, index) {
-                    if (index < jobs.length) return _buildJobCard(context, ctrl, jobs[index], type);
+                    if (index < jobs.length) return JobDetailsCard(job: jobs[index], type: type);
                     return _buildLoadMoreIndicator();
                   },
                 ),
@@ -330,223 +329,6 @@ class JobsManagement extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: Center(
         child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(decoration.colorScheme.primary), strokeWidth: 3)),
-      ),
-    );
-  }
-
-  Widget _buildJobCard(BuildContext context, JobsCtrl ctrl, Map<String, dynamic> job, String type) {
-    String jobApplicationId = job["_id"] ?? "";
-    String createdAt = job["createdAt"] ?? "";
-    List candidates = job["candidates"] ?? [];
-
-    if (job["job"] != null) {
-      job = job["job"] ?? {};
-    } else if (job["jobDetails"] != null) {
-      job = job["jobDetails"] ?? {};
-    }
-    job["createdAt"] = createdAt;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 8, offset: const Offset(0, 2))],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: () => Get.to(() => JobDetails(job: job, candidates: candidates, jobApplicationId: jobApplicationId, type: type)),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildCardHeader(ctrl, job, type),
-                const SizedBox(height: 16),
-                if (candidates.isNotEmpty) _buildCandidatesSection(candidates),
-                _buildSkillsSection(job),
-                const SizedBox(height: 16),
-                _buildDetailsRow(job),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCardHeader(JobsCtrl ctrl, Map<String, dynamic> job, String type) {
-    return Row(
-      children: [
-        Container(
-          width: 56,
-          height: 56,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [decoration.colorScheme.primary, decoration.colorScheme.primary.withOpacity(0.8)]),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: const Icon(Icons.work_outline_rounded, color: Colors.white, size: 24),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                job['jobTitle']?.toString().capitalizeFirst.toString() ?? 'Unknown Job',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black87),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                _formatDate(job['createdAt']),
-                style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  String _formatDate(String? dateString) {
-    if (dateString == null || dateString.isEmpty) return 'Date not available';
-    try {
-      final date = DateTime.parse(dateString);
-      final now = DateTime.now();
-      final difference = now.difference(date);
-
-      if (difference.inDays == 0) {
-        return 'Today';
-      } else if (difference.inDays == 1) {
-        return 'Yesterday';
-      } else if (difference.inDays < 7) {
-        return '${difference.inDays} days ago';
-      } else {
-        return DateFormat('MMM d, yyyy').format(date);
-      }
-    } catch (e) {
-      return dateString;
-    }
-  }
-
-  Widget _buildCandidatesSection(List candidates) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(Icons.people_outline_rounded, size: 14, color: Colors.grey[600]),
-            const SizedBox(width: 4),
-            Text(
-              'Applied Candidates (${candidates.length})',
-              style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 6,
-          runSpacing: 6,
-          children: candidates.take(3).map((candidate) {
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.blue[50],
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.blue[200]!),
-              ),
-              child: Text(
-                candidate['candidateDetails']?['name'] ?? 'Unknown',
-                style: TextStyle(fontSize: 11, color: Colors.blue[700], fontWeight: FontWeight.w500),
-              ),
-            );
-          }).toList(),
-        ),
-        const SizedBox(height: 16),
-      ],
-    );
-  }
-
-  Widget _buildSkillsSection(Map<String, dynamic> job) {
-    final requiredSkills = job['requiredSkills'] as List? ?? [];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(Icons.code_rounded, size: 14, color: Colors.grey[600]),
-            const SizedBox(width: 4),
-            Text(
-              'Required Skills',
-              style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        requiredSkills.isNotEmpty
-            ? Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: requiredSkills.take(4).map((skill) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.purple[50],
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.purple[200]!),
-                    ),
-                    child: Text(
-                      skill.toString(),
-                      style: TextStyle(fontSize: 11, color: Colors.purple[700], fontWeight: FontWeight.w500),
-                    ),
-                  );
-                }).toList(),
-              )
-            : Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(12)),
-                child: Text('No skills specified', style: TextStyle(fontSize: 11, color: Colors.grey[600])),
-              ),
-      ],
-    );
-  }
-
-  Widget _buildDetailsRow(Map<String, dynamic> job) {
-    return Row(
-      children: [
-        Expanded(child: _buildDetailChip('Type: ${job['jobType'] ?? 'N/A'}', Icons.business_center_outlined, Colors.green)),
-        const SizedBox(width: 8),
-        Expanded(child: _buildDetailChip('Salary: ₹${job['minSalary'] ?? 'N/A'} - ₹${job['maxSalary'] ?? 'N/A'}', Icons.payments_outlined, Colors.orange)),
-      ],
-    );
-  }
-
-  Widget _buildDetailChip(String text, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 12, color: color.withOpacity(.7)),
-          const SizedBox(width: 4),
-          Expanded(
-            child: Text(
-              text,
-              style: TextStyle(fontSize: 10, color: color.withOpacity(.7), fontWeight: FontWeight.w600),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
       ),
     );
   }
