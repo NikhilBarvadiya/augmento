@@ -3,7 +3,6 @@ import 'package:augmento/views/dashboard/tabs/my_bids/my_bids_ctrl.dart';
 import 'package:augmento/views/dashboard/tabs/my_bids/ui/bid_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class MyBids extends StatelessWidget {
   const MyBids({super.key});
@@ -300,7 +299,7 @@ class MyBids extends StatelessWidget {
           Container(width: 1, height: 30, color: Colors.blue.withOpacity(0.3)),
           Expanded(child: _buildInfoItem('Duration', duration, Icons.schedule, Colors.blue)),
           Container(width: 1, height: 30, color: Colors.blue.withOpacity(0.3)),
-          Expanded(child: _buildInfoItem('Submitted', _formatDate(createdAt), Icons.calendar_today, Colors.blue)),
+          Expanded(child: _buildInfoItem('Submitted', decoration.formatDate(createdAt), Icons.calendar_today, Colors.blue)),
         ],
       ),
     );
@@ -425,24 +424,5 @@ class MyBids extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(decoration.colorScheme.primary), strokeWidth: 2.5)),
     );
-  }
-
-  String _formatDate(String dateString) {
-    try {
-      final date = DateTime.parse(dateString);
-      final now = DateTime.now();
-      final difference = now.difference(date);
-      if (difference.inDays == 0) {
-        return 'Today';
-      } else if (difference.inDays == 1) {
-        return 'Yesterday';
-      } else if (difference.inDays < 7) {
-        return '${difference.inDays}d ago';
-      } else {
-        return DateFormat('MMM d').format(date);
-      }
-    } catch (e) {
-      return 'Unknown';
-    }
   }
 }

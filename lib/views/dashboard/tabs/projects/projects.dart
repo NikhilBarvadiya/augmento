@@ -1,4 +1,5 @@
 import 'package:augmento/utils/decoration.dart';
+import 'package:augmento/views/dashboard/tabs/my_bids/my_bids.dart';
 import 'package:augmento/views/dashboard/tabs/projects/projects_ctrl.dart';
 import 'package:augmento/views/dashboard/tabs/projects/ui/projects_details_card.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class Projects extends StatelessWidget {
             Expanded(child: _buildProjectsList(ctrl)),
           ],
         ),
+        floatingActionButton: _buildFAB(context, ctrl),
       ),
     );
   }
@@ -256,6 +258,16 @@ class Projects extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       child: Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(decoration.colorScheme.primary), strokeWidth: 2.5)),
+    );
+  }
+
+  Widget _buildFAB(BuildContext context, ProjectsCtrl ctrl) {
+    return FloatingActionButton.extended(
+      onPressed:  () => Get.to(() => MyBids()),
+      icon: const Icon(Icons.gavel),
+      label: const Text('My Bids'),
+      foregroundColor: Colors.white,
+      backgroundColor: decoration.colorScheme.primary,
     );
   }
 }

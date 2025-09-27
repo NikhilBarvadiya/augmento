@@ -44,6 +44,7 @@ class ProfileEdit extends StatelessWidget {
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       elevation: 0,
+      centerTitle: true,
       backgroundColor: Colors.transparent,
       flexibleSpace: Container(
         decoration: BoxDecoration(
@@ -53,6 +54,14 @@ class ProfileEdit extends StatelessWidget {
       title: const Text(
         'Edit Profile',
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+      ),
+      leading: Container(
+        margin: const EdgeInsets.all(8),
+        decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
+        child: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+          onPressed: () => Get.back(),
+        ),
       ),
       iconTheme: const IconThemeData(color: Colors.white),
       actions: [

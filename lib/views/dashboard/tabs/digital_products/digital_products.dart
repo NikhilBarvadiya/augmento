@@ -1,6 +1,7 @@
 import 'package:augmento/utils/decoration.dart';
 import 'package:augmento/views/dashboard/tabs/digital_products/digital_products_ctrl.dart';
 import 'package:augmento/views/dashboard/tabs/digital_products/ui/digital_product_form.dart';
+import 'package:augmento/views/dashboard/tabs/digital_products/ui/product_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -27,7 +28,7 @@ class DigitalProducts extends StatelessWidget {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      title: const Text('Digital Products', style: TextStyle(fontWeight: FontWeight.w600)),
+      title: const Text('My Digital Products', style: TextStyle(fontWeight: FontWeight.w600)),
       centerTitle: true,
       elevation: 0,
       backgroundColor: decoration.colorScheme.primary,
@@ -165,7 +166,7 @@ class DigitalProducts extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () => _showDetailsDialog(context, product),
+        onTap: () => Get.to(() => ProductDetails(product: product)),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -358,181 +359,6 @@ class DigitalProducts extends StatelessWidget {
       label: const Text('Add Product'),
       foregroundColor: Colors.white,
       backgroundColor: decoration.colorScheme.primary,
-    );
-  }
-
-  void _showDetailsDialog(BuildContext context, Map<String, dynamic> product) {
-    showDialog(
-      context: context,
-      barrierColor: Colors.black54,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 8,
-        backgroundColor: Colors.white,
-        child: Container(
-          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85, maxHeight: MediaQuery.of(context).size.height * 0.8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: decoration.colorScheme.primary,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                ),
-                child: Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.white24,
-                      child: Icon(Icons.inventory_2, size: 30, color: Colors.white),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        product['title'] ?? 'Unknown',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: decoration.colorScheme.onPrimary),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildSectionTitle('Product Details'),
-                      _buildDetailRow('Title', product['title']),
-                      _buildDetailRow('Description', product['description']),
-                      _buildChipRow('Tech Stack', product['techStack']),
-                      _buildLinkRow('Links', product['links']),
-                      _buildDetailRow('Created At', product['createdAt'] != null ? DateTime.parse(product['createdAt']).toLocal().toString().split('.')[0] : 'N/A'),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: decoration.colorScheme.primary,
-                        foregroundColor: decoration.colorScheme.onPrimary,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      ),
-                      child: const Text('Close'),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        title,
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: decoration.colorScheme.primary),
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(String label, String? value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 140,
-            child: Text(
-              '$label:',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey[700]),
-            ),
-          ),
-          Expanded(
-            child: Text(value ?? 'N/A', style: const TextStyle(fontSize: 14, color: Colors.black87)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildChipRow(String label, List<dynamic>? items) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 140,
-            child: Text(
-              '$label:',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey[700]),
-            ),
-          ),
-          Expanded(
-            child: items == null || items.isEmpty
-                ? const Text('N/A', style: TextStyle(fontSize: 14, color: Colors.black87))
-                : Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: items
-                        .map(
-                          (item) => Chip(
-                            label: Text(item.toString(), style: TextStyle(fontSize: 12, color: decoration.colorScheme.primary)),
-                            backgroundColor: decoration.colorScheme.secondaryContainer,
-                          ),
-                        )
-                        .toList(),
-                  ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLinkRow(String label, List<dynamic>? links) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 140,
-            child: Text(
-              '$label:',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey[700]),
-            ),
-          ),
-          Expanded(
-            child: links == null || links.isEmpty
-                ? const Text('N/A', style: TextStyle(fontSize: 14, color: Colors.black87))
-                : Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: links
-                        .map(
-                          (link) => Chip(
-                            label: Text(link['linkTitle'].toString(), style: TextStyle(fontSize: 12, color: decoration.colorScheme.primary)),
-                            backgroundColor: decoration.colorScheme.secondaryContainer,
-                          ),
-                        )
-                        .toList(),
-                  ),
-          ),
-        ],
-      ),
     );
   }
 }

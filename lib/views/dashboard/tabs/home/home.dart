@@ -1,4 +1,5 @@
 import 'package:augmento/utils/decoration.dart';
+import 'package:augmento/utils/routes/route_name.dart';
 import 'package:augmento/views/dashboard/dashboard_ctrl.dart';
 import 'package:augmento/views/dashboard/tabs/account/account.dart';
 import 'package:augmento/views/dashboard/tabs/job_management/job_management.dart';
@@ -10,6 +11,7 @@ import 'package:augmento/views/dashboard/tabs/projects/projects.dart';
 import 'package:augmento/views/dashboard/tabs/projects/ui/projects_details_card.dart';
 import 'package:augmento/widgets/interview_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
@@ -138,10 +140,63 @@ class Home extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (ctrl.getCompletionPercentage() != 100) ...[
+          const SizedBox(height: 20),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: decoration.colorScheme.surface,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 2))],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  Get.toNamed(AppRouteNames.profileDetails);
+                },
+                borderRadius: BorderRadius.circular(16),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.analytics, color: decoration.colorScheme.primary),
+                          const SizedBox(width: 12),
+                          const Text(
+                            'Profile Overview',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                          ),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(color: decoration.colorScheme.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
+                            child: Text(
+                              '${(ctrl.getCompletionPercentage() * 100).toInt()}% Complete',
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: decoration.colorScheme.primary),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      LinearProgressIndicator(
+                        value: ctrl.getCompletionPercentage(),
+                        backgroundColor: const Color(0xFFE2E8F0),
+                        valueColor: AlwaysStoppedAnimation<Color>(decoration.colorScheme.primary),
+                        minHeight: 8,
+                        borderRadius: decoration.allBorderRadius(10.0),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
         const SizedBox(height: 20),
         _buildQuickStats(ctrl, theme),
-        const SizedBox(height: 24),
-        _buildProjectSection(ctrl, theme),
         const SizedBox(height: 24),
         _buildMetricsSection(ctrl, theme),
         const SizedBox(height: 15),
@@ -164,6 +219,7 @@ class Home extends StatelessWidget {
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 2))],
       ),
       child: Column(
+        spacing: 12.0,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -176,7 +232,6 @@ class Home extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
           Row(
             children: [
               Expanded(child: _buildCompactStatItem('Jobs', ctrl.counts['jobs']?.toString() ?? '0', Icons.work_outline, Colors.blue, theme, onTap: () => Get.to(() => JobsManagement(initialTab: 0)))),
@@ -204,38 +259,14 @@ class Home extends StatelessWidget {
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProjectSection(HomeCtrl ctrl, ThemeData theme) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          Expanded(
-            child: _buildInfoCard(
-              title: 'Projects',
-              value: ctrl.counts['publishedProjects']?.toString() ?? '0',
-              subtitle: 'Total Projects',
-              icon: Icons.folder_outlined,
-              color: Colors.purple,
-              theme: theme,
-              onTap: () => Get.to(() => Projects()),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildInfoCard(
-              title: 'Bids',
-              value: ctrl.counts['totalBids']?.toString() ?? '0',
-              subtitle: 'Your Bids',
-              icon: Icons.local_offer_outlined,
-              color: Colors.teal,
-              theme: theme,
-              onTap: () => Get.to(() => MyBids()),
-            ),
+          _buildInfoCard(
+            title: 'Bids',
+            value: ctrl.counts['totalBids']?.toString() ?? '0',
+            subtitle: 'Your Bids',
+            icon: Icons.local_offer_outlined,
+            color: Colors.teal,
+            theme: theme,
+            onTap: () => Get.to(() => MyBids()),
           ),
         ],
       ),
@@ -461,7 +492,7 @@ class Home extends StatelessWidget {
                     Icon(Icons.work_outline, color: decoration.colorScheme.primary, size: 24),
                     const SizedBox(width: 8),
                     Text(
-                      'Active Jobs',
+                      'Latest Jobs',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: decoration.colorScheme.onSurface),
                     ),
                   ],
@@ -478,7 +509,7 @@ class Home extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: Get.height * .274,
+            height: Get.height * .2,
             child: ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
@@ -511,7 +542,7 @@ class Home extends StatelessWidget {
                     Icon(Icons.work_outline, color: decoration.colorScheme.primary, size: 24),
                     const SizedBox(width: 8),
                     Text(
-                      'Recent Jobs',
+                      'Latest Applied',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: decoration.colorScheme.onSurface),
                     ),
                   ],
@@ -529,7 +560,7 @@ class Home extends StatelessWidget {
           ),
           if (ctrl.jobApplications.isNotEmpty)
             SizedBox(
-              height: Get.height * .21,
+              height: Get.height * .2,
               child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
@@ -561,14 +592,14 @@ class Home extends StatelessWidget {
                     Icon(Icons.work_outline, color: decoration.colorScheme.primary, size: 24),
                     const SizedBox(width: 8),
                     Text(
-                      'Recent Project',
+                      'Recent Bids',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: decoration.colorScheme.onSurface),
                     ),
                   ],
                 ),
                 if (ctrl.recentProjects.isNotEmpty)
                   TextButton(
-                    onPressed: () => Get.to(() => JobsManagement(initialTab: 1)),
+                    onPressed: () => Get.to(() => Projects()),
                     child: Text(
                       'View All (${ctrl.recentProjects.length})',
                       style: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
@@ -579,7 +610,7 @@ class Home extends StatelessWidget {
           ),
           if (ctrl.recentProjects.isNotEmpty)
             SizedBox(
-              height: Get.height * .274,
+              height: Get.height * .2,
               child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
@@ -609,7 +640,7 @@ class Home extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Recent Interviews',
+                    'Interview Updates',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: decoration.colorScheme.onSurface),
                   ),
                 ),
@@ -626,7 +657,7 @@ class Home extends StatelessWidget {
           ),
           if (ctrl.interviews.isNotEmpty)
             SizedBox(
-              height: Get.height * .295,
+              height: Get.height * .268,
               child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,

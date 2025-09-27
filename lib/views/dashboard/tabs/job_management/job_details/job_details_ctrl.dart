@@ -12,7 +12,7 @@ class JobDetailsCtrl extends GetxController {
   var selectedCandidates = <String>[].obs;
   var isLoading = false.obs, hasMore = true.obs;
   var image = Rx<PlatformFile?>(null);
-  var page = 1.obs;
+  var page = 1.obs, currentOnboardingStep = 0.obs;
   var searchQuery = ''.obs;
 
   @override
@@ -61,6 +61,10 @@ class JobDetailsCtrl extends GetxController {
     }
   }
 
+  void resetOnboardingStep() {
+    currentOnboardingStep.value = 0;
+  }
+
   Future<void> startOnboarding({
     required String? candidateId,
     required String? jobApplicationId,
@@ -100,6 +104,7 @@ class JobDetailsCtrl extends GetxController {
       final response = await _authService.submitOnboardingDetails(json, image.value);
       if (response.isNotEmpty) {
         final jobsCtrl = Get.find<JobsCtrl>();
+        Get.back();
         jobsCtrl.onTabChanged(4);
       }
     } catch (e) {

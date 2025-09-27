@@ -24,6 +24,7 @@ dependencies:
   file_picker: ^10.3.3
   flutter_keyboard_visibility: ^6.0.0
   shimmer: ^3.0.0
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

@@ -2,7 +2,6 @@ import 'package:augmento/utils/decoration.dart';
 import 'package:augmento/views/dashboard/tabs/notifications/notifications_ctrl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class Notifications extends StatelessWidget {
   const Notifications({super.key});
@@ -223,7 +222,7 @@ class Notifications extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                'Received: ${_formatDate(createdAt)}',
+                'Received: ${decoration.formatDate(createdAt)}',
                 style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w500),
               ),
             ),
@@ -299,25 +298,6 @@ class Notifications extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(decoration.colorScheme.primary), strokeWidth: 2.5)),
     );
-  }
-
-  String _formatDate(String dateString) {
-    try {
-      final date = DateTime.parse(dateString);
-      final now = DateTime.now();
-      final difference = now.difference(date);
-      if (difference.inDays == 0) {
-        return 'Today';
-      } else if (difference.inDays == 1) {
-        return 'Yesterday';
-      } else if (difference.inDays < 7) {
-        return '${difference.inDays}d ago';
-      } else {
-        return DateFormat('MMM d').format(date);
-      }
-    } catch (e) {
-      return 'Unknown';
-    }
   }
 
   IconData _getEventIcon(String eventType) {

@@ -45,6 +45,7 @@ class ProfileDetails extends StatelessWidget {
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       elevation: 0,
+      centerTitle: true,
       backgroundColor: Colors.transparent,
       flexibleSpace: Container(
         decoration: BoxDecoration(
@@ -54,6 +55,14 @@ class ProfileDetails extends StatelessWidget {
       title: const Text(
         'Profile',
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+      ),
+      leading: Container(
+        margin: const EdgeInsets.all(8),
+        decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
+        child: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+          onPressed: () => Get.back(),
+        ),
       ),
       iconTheme: const IconThemeData(color: Colors.white),
       actions: [
@@ -77,58 +86,55 @@ class ProfileDetails extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
       ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    const Icon(Icons.analytics, color: Color(0xFF3B82F6)),
-                    const SizedBox(width: 12),
-                    const Text(
-                      'Profile Overview',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
-                    ),
-                    const Spacer(),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(color: const Color(0xFF10B981).withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
-                      child: Text(
-                        '${(controller.getCompletionPercentage() * 100).toInt()}% Complete',
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF10B981)),
-                      ),
-                    ),
-                  ],
+                Icon(Icons.analytics, color: decoration.colorScheme.primary),
+                const SizedBox(width: 12),
+                const Text(
+                  'Profile Overview',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
                 ),
-                const SizedBox(height: 16),
-                LinearProgressIndicator(
-                  value: controller.getCompletionPercentage(),
-                  backgroundColor: const Color(0xFFE2E8F0),
-                  valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF10B981)),
-                  minHeight: 8,
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(child: _buildQuickStat(Icons.business, 'Company', user['company'] ?? 'Not set', const Color(0xFF3B82F6))),
-                    const SizedBox(width: 16),
-                    Expanded(child: _buildQuickStat(Icons.email, 'Email', user['email'] ?? 'Not set', const Color(0xFF10B981))),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(child: _buildQuickStat(Icons.phone, 'Mobile', user['mobile'] ?? 'Not set', const Color(0xFF8B5CF6))),
-                    const SizedBox(width: 16),
-                    Expanded(child: _buildQuickStat(Icons.location_on, 'Location', user['address']?.split(',').first ?? 'Not set', const Color(0xFFF59E0B))),
-                  ],
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(color: decoration.colorScheme.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
+                  child: Text(
+                    '${(controller.getCompletionPercentage() * 100).toInt()}% Complete',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: decoration.colorScheme.primary),
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            LinearProgressIndicator(
+              value: controller.getCompletionPercentage(),
+              backgroundColor: const Color(0xFFE2E8F0),
+              valueColor: AlwaysStoppedAnimation<Color>(decoration.colorScheme.primary),
+              minHeight: 8,
+              borderRadius: decoration.allBorderRadius(10.0),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(child: _buildQuickStat(Icons.business, 'Company', user['company'] ?? 'Not set', const Color(0xFF3B82F6))),
+                const SizedBox(width: 16),
+                Expanded(child: _buildQuickStat(Icons.email, 'Email', user['email'] ?? 'Not set', const Color(0xFF10B981))),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(child: _buildQuickStat(Icons.phone, 'Mobile', user['mobile'] ?? 'Not set', const Color(0xFF8B5CF6))),
+                const SizedBox(width: 16),
+                Expanded(child: _buildQuickStat(Icons.location_on, 'Location', user['address']?.split(',').first ?? 'Not set', const Color(0xFFF59E0B))),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

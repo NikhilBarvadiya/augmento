@@ -1,11 +1,11 @@
 import 'package:augmento/utils/decoration.dart';
 import 'package:augmento/utils/toaster.dart';
 import 'package:augmento/views/auth/auth_service.dart';
+import 'package:augmento/views/dashboard/tabs/job_management/ui/skill_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:intl/intl.dart';
 
 class ProjectBid extends StatefulWidget {
   final Map<String, dynamic> project;
@@ -129,19 +129,17 @@ class _ProjectBidState extends State<ProjectBid> {
             ],
           ),
           const SizedBox(height: 16),
+          SkillSection(candidate: widget.project),
+          const SizedBox(height: 16),
           Row(
             children: [
               Icon(Icons.code_rounded, size: 14, color: Colors.grey[600]),
               const SizedBox(width: 4),
               Expanded(
                 child: Text(
-                  'Required Skills',
+                  'Skills',
                   style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w600),
                 ),
-              ),
-              Text(
-                _formatDate(widget.project['createdAt']),
-                style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w500),
               ),
             ],
           ),
@@ -170,33 +168,6 @@ class _ProjectBidState extends State<ProjectBid> {
                   decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(12)),
                   child: Text('No skills specified', style: TextStyle(fontSize: 11, color: Colors.grey[600])),
                 ),
-          const SizedBox(height: 16),
-          Text(widget.project['description']?.toString() ?? 'No description available', style: TextStyle(fontSize: 14, color: Colors.grey[700], height: 1.5)),
-          if (widget.project['budget'] != null) ...[
-            const SizedBox(height: 12),
-            if (widget.project['budget']['fixedRate'] != null)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(color: Colors.green.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
-                child: Text(
-                  'Budget: ₹${widget.project['budget']['fixedRate']?.toString() ?? 'Not specified'}',
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.green),
-                ),
-              ),
-            if (widget.project['budget']["hourlyFrom"] != null)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.green[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.green[200]!),
-                ),
-                child: Text(
-                  'From : ${widget.project['budget']["hourlyFrom"]} - To : ${widget.project['budget']["hourlyTo"]}',
-                  style: TextStyle(fontSize: 11, color: Colors.green[700], fontWeight: FontWeight.w500),
-                ),
-              ),
-          ],
         ],
       ),
     );
@@ -625,26 +596,6 @@ class _ProjectBidState extends State<ProjectBid> {
       setState(() {
         isLoading = false;
       });
-    }
-  }
-
-  String _formatDate(String? dateString) {
-    if (dateString == null || dateString.isEmpty) return 'Date not available';
-    try {
-      final date = DateTime.parse(dateString);
-      final now = DateTime.now();
-      final difference = now.difference(date);
-      if (difference.inDays == 0) {
-        return 'Today';
-      } else if (difference.inDays == 1) {
-        return 'Yesterday';
-      } else if (difference.inDays < 7) {
-        return '${difference.inDays} days ago';
-      } else {
-        return DateFormat('MMM d, yyyy').format(date);
-      }
-    } catch (e) {
-      return dateString;
     }
   }
 }

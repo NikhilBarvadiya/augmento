@@ -442,51 +442,53 @@ class RequirementForm extends StatelessWidget {
   }
 
   Widget _buildBottomBar(BuildContext context, CandidateRequirementsCtrl ctrl) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, MediaQuery.of(context).viewInsets.bottom + 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, -2))],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => Get.back(),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                side: BorderSide(color: Colors.grey[400]!),
-              ),
-              child: const Text('Cancel', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            flex: 2,
-            child: Obx(
-              () => ElevatedButton(
-                onPressed: ctrl.isLoading.value
-                    ? null
-                    : () async {
-                        await ctrl.createRequirement(candidateId: isEdit ? requirement!['_id'] : null);
-                      },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: decoration.colorScheme.primary,
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.fromLTRB(16, 16, 16, MediaQuery.of(context).viewInsets.bottom + 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, -2))],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: () => Get.back(),
+                style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  elevation: 2,
+                  side: BorderSide(color: Colors.grey[400]!),
                 ),
-                child: ctrl.isLoading.value
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : Text(
-                        isEdit ? 'Update Requirement' : 'Create Requirement',
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-                      ),
+                child: const Text('Cancel', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
               ),
             ),
-          ),
-        ],
+            const SizedBox(width: 16),
+            Expanded(
+              flex: 2,
+              child: Obx(
+                () => ElevatedButton(
+                  onPressed: ctrl.isLoading.value
+                      ? null
+                      : () async {
+                          await ctrl.createRequirement(candidateId: isEdit ? requirement!['_id'] : null);
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: decoration.colorScheme.primary,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 2,
+                  ),
+                  child: ctrl.isLoading.value
+                      ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                      : Text(
+                          isEdit ? 'Update Requirement' : 'Create Requirement',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                        ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:augmento/utils/config/app_config.dart';
 import 'package:augmento/utils/decoration.dart';
 import 'package:augmento/utils/network/api_config.dart';
+import 'package:augmento/views/dashboard/tabs/candidates/ui/candidate_details.dart';
 import 'package:augmento/views/dashboard/tabs/candidates/ui/candidate_form.dart';
 import 'package:augmento/views/dashboard/tabs/job_management/ui/skill_section.dart';
 import 'package:flutter/material.dart';
@@ -250,16 +251,15 @@ class Candidates extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () => _showDetailsDialog(context, candidate),
+        onTap: () => _showCandidateDetails(context, candidate),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
+            spacing: 12.0,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildCardHeader(ctrl, candidate),
-              const SizedBox(height: 12),
               SkillSection(candidate: candidate),
-              const SizedBox(height: 12),
               _buildStatusAndAvailability(candidate),
             ],
           ),
@@ -344,9 +344,17 @@ class Candidates extends StatelessWidget {
         const SizedBox(width: 8),
         _buildAvailabilityChip(candidate['availability']),
         const Spacer(),
-        Text(
-          "${AppConfig.rupee} ${candidate["charges"].toString()}",
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
+        Row(
+          children: [
+            Text(
+              "${AppConfig.rupee} ${candidate["charges"].toString()}",
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+            Text(
+              "/Monthly",
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.grey),
+            ),
+          ],
         ),
       ],
     );
@@ -442,157 +450,11 @@ class Candidates extends StatelessWidget {
     );
   }
 
-  void _showDetailsDialog(BuildContext context, Map<String, dynamic> candidate) {
-    showDialog(
-      context: context,
-      barrierColor: Colors.black54,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 8,
-        backgroundColor: Colors.white,
-        child: Container(
-          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85, maxHeight: MediaQuery.of(context).size.height * 0.8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: decoration.colorScheme.primary,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                ),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage: candidate['profileImage'] != null ? NetworkImage('${APIConfig.resourceBaseURL}/${candidate['profileImage']}') : null,
-                      backgroundColor: decoration.colorScheme.primaryContainer,
-                      child: candidate['profileImage'] == null ? const Icon(Icons.person, size: 30, color: Colors.white) : null,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        candidate['name'] ?? 'Unknown',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: decoration.colorScheme.onPrimary),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildSectionTitle('Personal Details'),
-                      _buildDetailRow('Candidate Code', candidate['candidateCode']),
-                      _buildDetailRow('Mobile', candidate['mobile']),
-                      _buildDetailRow('Status', candidate['status']),
-                      _buildDetailRow('Profile Completed', (candidate['isProfilCompleted'] ?? false) ? 'Yes' : 'No'),
-                      _buildDetailRow('IT Futurz Candidate', (candidate['itfuturzCandidate'] ?? false) ? 'Yes' : 'No'),
-                      const SizedBox(height: 16),
-                      _buildSectionTitle('Professional Details'),
-                      _buildChipRow('Skills', candidate['skills']),
-                      _buildChipRow('Tech Stack', candidate['techStack']),
-                      _buildChipRow('Education', candidate['education']),
-                      _buildDetailRow('Experience', '${candidate['experience'] ?? 0} years'),
-                      _buildDetailRow('Availability', candidate['availability']),
-                      const SizedBox(height: 16),
-                      _buildSectionTitle('Financial Details'),
-                      _buildDetailRow('Charges', candidate['charges']?.toString()),
-                      _buildDetailRow('Current Salary', candidate['currentSalary']?.toString()),
-                      if (candidate['resume'] != null && candidate['resume'].isNotEmpty) ...[const SizedBox(height: 16), _buildSectionTitle('Resume')],
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: decoration.colorScheme.primary,
-                        foregroundColor: decoration.colorScheme.onPrimary,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      ),
-                      child: const Text('Close'),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        title,
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: decoration.colorScheme.primary),
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(String label, String? value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 140,
-            child: Text(
-              '$label:',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey[700]),
-            ),
-          ),
-          Expanded(
-            child: Text(value ?? 'N/A', style: const TextStyle(fontSize: 14, color: Colors.black87)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildChipRow(String label, List<dynamic>? items) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 140,
-            child: Text(
-              '$label:',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey[700]),
-            ),
-          ),
-          Expanded(
-            child: items == null || items.isEmpty
-                ? const Text('N/A', style: TextStyle(fontSize: 14, color: Colors.black87))
-                : Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: items
-                        .map(
-                          (item) => Chip(
-                            label: Text(item.toString(), style: TextStyle(fontSize: 12, color: decoration.colorScheme.primary)),
-                            backgroundColor: decoration.colorScheme.secondaryContainer,
-                          ),
-                        )
-                        .toList(),
-                  ),
-          ),
-        ],
-      ),
+  void _showCandidateDetails(BuildContext context, Map<String, dynamic> candidate) {
+    Get.to(
+      () => CandidateDetails(candidate: candidate),
+      transition: Transition.rightToLeft,
+      duration: const Duration(milliseconds: 300),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 Decoration decoration = Decoration();
 
@@ -42,5 +43,31 @@ class Decoration {
       bottomLeft: Radius.circular(selectedSide[2] != null ? radius : 0),
       bottomRight: Radius.circular(selectedSide[3] != null ? radius : 0),
     );
+  }
+
+  String formatDate(String? dateString) {
+    if (dateString == null || dateString.isEmpty) return 'Date not available';
+    try {
+      final date = DateTime.parse(dateString);
+      final now = DateTime.now();
+      final difference = now.difference(date);
+      if (difference.inSeconds < 60) {
+        return 'Now';
+      } else if (difference.inMinutes < 60) {
+        return '${difference.inMinutes} min ago';
+      } else if (difference.inHours < 24) {
+        return '${difference.inHours} hour${difference.inHours == 1 ? '' : 's'} ago';
+      } else if (difference.inDays == 0) {
+        return 'Today';
+      } else if (difference.inDays == 1) {
+        return 'Yesterday';
+      } else if (difference.inDays < 7) {
+        return '${difference.inDays} days ago';
+      } else {
+        return DateFormat('MMM d, yyyy').format(date);
+      }
+    } catch (e) {
+      return dateString;
+    }
   }
 }

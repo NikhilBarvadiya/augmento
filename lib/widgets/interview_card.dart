@@ -1,7 +1,6 @@
 import 'package:augmento/utils/decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class InterviewCard extends StatefulWidget {
   final Map<String, dynamic> interview;
@@ -44,7 +43,7 @@ class _InterviewCardState extends State<InterviewCard> {
                       ),
                     ),
                     Text(
-                      _formatDate(widget.interview['timestamp']),
+                      decoration.formatDate(widget.interview['timestamp']),
                       style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w500),
                     ),
                   ],
@@ -69,17 +68,13 @@ class _InterviewCardState extends State<InterviewCard> {
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
-                        'Details',
+                        'Note',
                         style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w600),
                       ),
                     ),
-                    Text(
-                      widget.interview['action'],
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w500),
-                    ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
@@ -123,27 +118,19 @@ class _InterviewCardState extends State<InterviewCard> {
             overflow: TextOverflow.ellipsis,
           ),
         ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: decoration.colorScheme.primary.withOpacity(.05),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: decoration.colorScheme.primary.withOpacity(.2)),
+          ),
+          child: Text(
+            widget.interview['action'],
+            style: TextStyle(fontSize: 10, letterSpacing: .5, color: decoration.colorScheme.primary.withOpacity(.6), fontWeight: FontWeight.w500),
+          ),
+        ),
       ],
     );
-  }
-
-  String _formatDate(String? dateString) {
-    if (dateString == null || dateString.isEmpty) return 'Date not available';
-    try {
-      final date = DateTime.parse(dateString);
-      final now = DateTime.now();
-      final difference = now.difference(date);
-      if (difference.inDays == 0) {
-        return 'Today';
-      } else if (difference.inDays == 1) {
-        return 'Yesterday';
-      } else if (difference.inDays < 7) {
-        return '${difference.inDays} days ago';
-      } else {
-        return DateFormat('MMM d, yyyy').format(date);
-      }
-    } catch (e) {
-      return dateString;
-    }
   }
 }
