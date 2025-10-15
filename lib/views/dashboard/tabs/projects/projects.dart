@@ -33,14 +33,6 @@ class Projects extends StatelessWidget {
       elevation: 0,
       backgroundColor: decoration.colorScheme.primary,
       foregroundColor: decoration.colorScheme.onPrimary,
-      leading: Container(
-        margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
-        child: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-          onPressed: () => Get.back(),
-        ),
-      ),
     );
   }
 
