@@ -64,7 +64,10 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 20, offset: const Offset(0, 10))],
                           ),
-                          child: Icon(Icons.join_left_rounded, size: 60, color: decoration.colorScheme.primary),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.asset('assets/applogo.png', width: 60, height: 60, fit: BoxFit.cover),
+                          ),
                         ),
                       );
                     },
@@ -76,7 +79,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                       return Opacity(
                         opacity: _fadeAnimation.value,
                         child: const Text(
-                          'Augmento',
+                          'Augmento Staff',
                           style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0),
                         ),
                       );
@@ -98,7 +101,11 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                     builder: (context, child) {
                       return Opacity(
                         opacity: _fadeAnimation.value,
-                        child: const SizedBox(width: 30, height: 30, child: CircularProgressIndicator(strokeWidth: 3, valueColor: AlwaysStoppedAnimation<Color>(Colors.white))),
+                        child: const SizedBox(
+                          width: 30,
+                          height: 30,
+                          child: CircularProgressIndicator(strokeWidth: 3, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+                        ),
                       );
                     },
                   ),
