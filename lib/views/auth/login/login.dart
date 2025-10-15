@@ -172,12 +172,14 @@ class Login extends StatelessWidget {
                               ),
                             ],
                           ),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 50),
+                              child: Text('© 2025 Augmento. All rights reserved.', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: decoration.colorScheme.onSurfaceVariant.withOpacity(0.6))),
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: Text('© 2024 Augmento. All rights reserved.', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: decoration.colorScheme.onSurfaceVariant.withOpacity(0.6))),
                     ),
                   ],
                 ),

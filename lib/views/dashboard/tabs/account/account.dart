@@ -57,6 +57,8 @@ class Account extends StatelessWidget {
                   _buildExpandableSecuritySection(controller),
                   const SizedBox(height: 16),
                   _buildLogoutCard(controller),
+                  const SizedBox(height: 16),
+                  _buildDeleteAccountCard(controller),
                   const SizedBox(height: 100),
                 ],
               ),
@@ -439,6 +441,33 @@ class Account extends StatelessWidget {
         ),
         subtitle: const Text('Sign out of your account', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
         onTap: () => controller.showLogoutDialog(),
+      ),
+    );
+  }
+
+  Widget _buildDeleteAccountCard(AccountCtrl controller) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFEF4444).withOpacity(0.2)),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 5),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(color: const Color(0xFFEF4444).withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+          child: const Icon(Icons.delete_forever_rounded, color: Color(0xFFEF4444), size: 20),
+        ),
+        title: const Text(
+          'Delete Account',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xFFEF4444)),
+        ),
+        subtitle: const Text('Delete your account permanently', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+        onTap: () => controller.showDeleteAccountDialog(),
       ),
     );
   }

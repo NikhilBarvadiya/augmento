@@ -14,32 +14,13 @@ class ForgotPassword extends StatelessWidget {
         return Scaffold(
           backgroundColor: decoration.colorScheme.surface,
           body: SafeArea(
-            child: SingleChildScrollView(
-              child: Container(
-                height: Get.height - MediaQuery.of(context).padding.top,
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Stack(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: decoration.colorScheme.surfaceContainerHighest.withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: decoration.colorScheme.outline.withOpacity(0.2)),
-                            ),
-                            child: IconButton(
-                              onPressed: () => Get.back(),
-                              icon: Icon(Icons.arrow_back_ios_rounded, color: decoration.colorScheme.onSurface, size: 20),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Column(
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Container(
+                    height: Get.height - MediaQuery.of(context).padding.top,
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Column(
                       children: [
                         Expanded(
                           flex: 2,
@@ -183,18 +164,39 @@ class ForgotPassword extends StatelessWidget {
                                   ),
                                 ],
                               ),
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 50),
+                                  child: Text('Need help? Contact support', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: decoration.colorScheme.onSurfaceVariant.withOpacity(0.6))),
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: Text('Need help? Contact support', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: decoration.colorScheme.onSurfaceVariant.withOpacity(0.6))),
-                        ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: decoration.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: decoration.colorScheme.outline.withOpacity(0.2)),
+                        ),
+                        child: IconButton(
+                          onPressed: () => Get.back(),
+                          icon: Icon(Icons.arrow_back_ios_rounded, color: decoration.colorScheme.onSurface, size: 20),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         );
