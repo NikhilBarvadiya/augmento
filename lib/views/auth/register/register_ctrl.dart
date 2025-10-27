@@ -31,10 +31,7 @@ class RegisterCtrl extends GetxController {
     if (passwordCtrl.text.length < 6) {
       return toaster.warning('Password must be at least 6 characters');
     }
-    if (mobileCtrl.text.isEmpty) {
-      return toaster.warning('Please enter your mobile number');
-    }
-    if (!GetUtils.isPhoneNumber(mobileCtrl.text)) {
+    if (mobileCtrl.text.isNotEmpty && !GetUtils.isPhoneNumber(mobileCtrl.text)) {
       return toaster.warning('Please enter a valid mobile number');
     }
     if (companyCtrl.text.isEmpty) {
@@ -48,7 +45,7 @@ class RegisterCtrl extends GetxController {
       final request = {
         'email': emailCtrl.text.trim(),
         'password': passwordCtrl.text.trim(),
-        'mobile': mobileCtrl.text.trim(),
+        'mobile': mobileCtrl.text.isEmpty ? "9999999999" : mobileCtrl.text.trim(),
         'company': companyCtrl.text.trim(),
         'contactPerson': contactPersonCtrl.text.trim(),
       };
