@@ -17,7 +17,7 @@ class Login extends StatelessWidget {
             child: SingleChildScrollView(
               child: Container(
                 height: Get.height - MediaQuery.of(context).padding.top,
-                padding: const EdgeInsets.symmetric(horizontal: 32),
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width > 600 ? 60 : 32),
                 child: Column(
                   children: [
                     Expanded(
@@ -175,7 +175,10 @@ class Login extends StatelessWidget {
                           Center(
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 50),
-                              child: Text('© 2025 Augmento. All rights reserved.', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: decoration.colorScheme.onSurfaceVariant.withOpacity(0.6))),
+                              child: Text(
+                                '© 2025 Augmento. All rights reserved.',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: decoration.colorScheme.onSurfaceVariant.withOpacity(0.6)),
+                              ),
                             ),
                           ),
                         ],
