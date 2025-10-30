@@ -509,7 +509,7 @@ class Home extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: Get.height * .2,
+            height: Get.height * .255,
             child: ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
@@ -560,7 +560,7 @@ class Home extends StatelessWidget {
           ),
           if (ctrl.jobApplications.isNotEmpty)
             SizedBox(
-              height: Get.height * .2,
+              height: Get.height * .255,
               child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
@@ -610,7 +610,7 @@ class Home extends StatelessWidget {
           ),
           if (ctrl.recentProjects.isNotEmpty)
             SizedBox(
-              height: Get.height * .2,
+              height: Get.height * .255,
               child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
