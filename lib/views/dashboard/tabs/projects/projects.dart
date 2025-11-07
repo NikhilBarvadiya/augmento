@@ -188,7 +188,12 @@ class Projects extends StatelessWidget {
   }
 
   Widget _buildShimmerList() {
-    return ListView.separated(padding: const EdgeInsets.all(16), itemCount: 6, separatorBuilder: (context, index) => const SizedBox(height: 12), itemBuilder: (context, index) => _buildShimmerCard());
+    return ListView.separated(
+      padding: const EdgeInsets.all(16),
+      itemCount: 6,
+      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      itemBuilder: (context, index) => _buildShimmerCard(),
+    );
   }
 
   Widget _buildShimmerCard() {
@@ -205,7 +210,10 @@ class Projects extends StatelessWidget {
                 _buildShimmerContainer(50, 50, isCircular: true),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildShimmerContainer(120, 16), const SizedBox(height: 8), _buildShimmerContainer(80, 14)]),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [_buildShimmerContainer(120, 16), const SizedBox(height: 8), _buildShimmerContainer(80, 14)],
+                  ),
                 ),
                 _buildShimmerContainer(24, 24),
               ],
@@ -224,7 +232,11 @@ class Projects extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(color: Colors.grey[300], borderRadius: isCircular ? null : BorderRadius.circular(borderRadius), shape: isCircular ? BoxShape.circle : BoxShape.rectangle),
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: isCircular ? null : BorderRadius.circular(borderRadius),
+        shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
+      ),
     );
   }
 
@@ -255,7 +267,7 @@ class Projects extends StatelessWidget {
 
   Widget _buildFAB(BuildContext context, ProjectsCtrl ctrl) {
     return FloatingActionButton.extended(
-      onPressed:  () => Get.to(() => MyBids()),
+      onPressed: () => Get.to(() => MyBids()),
       icon: const Icon(Icons.gavel),
       label: const Text('My Bids'),
       foregroundColor: Colors.white,

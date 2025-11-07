@@ -19,7 +19,7 @@ class Login extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width > 600 ? 60 : 32),
                 child: Column(
                   children: [
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 100),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -27,7 +27,11 @@ class Login extends StatelessWidget {
                           width: 80,
                           height: 80,
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [decoration.colorScheme.primary, decoration.colorScheme.primary.withOpacity(0.7)]),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [decoration.colorScheme.primary, decoration.colorScheme.primary.withOpacity(0.7)],
+                            ),
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [BoxShadow(color: decoration.colorScheme.primary.withOpacity(0.3), blurRadius: 20, offset: const Offset(0, 8))],
                           ),
@@ -71,7 +75,7 @@ class Login extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Obx(
-                          () => Container(
+                      () => Container(
                         decoration: BoxDecoration(
                           color: decoration.colorScheme.surfaceContainerHighest.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(16),
@@ -92,7 +96,10 @@ class Login extends StatelessWidget {
                             ),
                             suffixIcon: IconButton(
                               onPressed: ctrl.togglePasswordVisibility,
-                              icon: Icon(ctrl.isPasswordVisible.value ? Icons.visibility_off_outlined : Icons.visibility_outlined, color: decoration.colorScheme.onSurfaceVariant),
+                              icon: Icon(
+                                ctrl.isPasswordVisible.value ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                                color: decoration.colorScheme.onSurfaceVariant,
+                              ),
                             ).paddingOnly(right: 5),
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -112,18 +119,20 @@ class Login extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Obx(
-                          () => Container(
+                      () => Container(
                         height: 56,
                         decoration: BoxDecoration(
                           gradient: ctrl.isLoading.value
                               ? null
                               : LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [decoration.colorScheme.primary, decoration.colorScheme.primary.withOpacity(0.8)],
-                          ),
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: [decoration.colorScheme.primary, decoration.colorScheme.primary.withOpacity(0.8)],
+                                ),
                           borderRadius: BorderRadius.circular(16),
-                          boxShadow: ctrl.isLoading.value ? null : [BoxShadow(color: decoration.colorScheme.primary.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 8))],
+                          boxShadow: ctrl.isLoading.value
+                              ? null
+                              : [BoxShadow(color: decoration.colorScheme.primary.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 8))],
                         ),
                         child: ElevatedButton(
                           onPressed: ctrl.isLoading.value ? null : ctrl.login,
@@ -136,9 +145,11 @@ class Login extends StatelessWidget {
                           child: ctrl.isLoading.value
                               ? SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: decoration.colorScheme.primary))
                               : Text(
-                            'Sign In',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: decoration.colorScheme.onPrimary, fontWeight: FontWeight.bold),
-                          ),
+                                  'Sign In',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleMedium?.copyWith(color: decoration.colorScheme.onPrimary, fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                     ),
@@ -157,7 +168,10 @@ class Login extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Don't have an account? ", style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: decoration.colorScheme.onSurfaceVariant)),
+                        Text(
+                          "Don't have an account? ",
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: decoration.colorScheme.onSurfaceVariant),
+                        ),
                         TextButton(
                           onPressed: ctrl.goToRegister,
                           style: TextButton.styleFrom(foregroundColor: decoration.colorScheme.primary, padding: const EdgeInsets.symmetric(horizontal: 4)),

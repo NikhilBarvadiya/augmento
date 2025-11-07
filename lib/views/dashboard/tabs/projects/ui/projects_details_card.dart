@@ -42,7 +42,13 @@ class _ProjectsDetailsCardState extends State<ProjectsDetailsCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildCardHeader(),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
+                Text(
+                  widget.project["description"]?.toString().capitalizeFirst.toString() ?? "Unknown description",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
+                ),
+                const SizedBox(height: 12),
                 SkillSection(candidate: widget.project),
               ],
             ),

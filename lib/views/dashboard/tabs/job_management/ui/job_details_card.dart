@@ -40,7 +40,9 @@ class JobDetailsCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildCardHeader(jobDetails, type),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
+                Text(job['summary'], maxLines: 3, overflow: TextOverflow.ellipsis),
+                SizedBox(height: 12),
                 if (candidates.isNotEmpty) _buildCandidatesSection(candidates),
                 SkillSection(candidate: jobDetails),
               ],

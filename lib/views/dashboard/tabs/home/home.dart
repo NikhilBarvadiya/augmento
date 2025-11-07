@@ -234,7 +234,16 @@ class Home extends StatelessWidget {
           ),
           Row(
             children: [
-              Expanded(child: _buildCompactStatItem('Jobs', ctrl.counts['jobs']?.toString() ?? '0', Icons.work_outline, Colors.blue, theme, onTap: () => Get.to(() => JobsManagement(initialTab: 0)))),
+              Expanded(
+                child: _buildCompactStatItem(
+                  'Jobs',
+                  ctrl.counts['jobs']?.toString() ?? '0',
+                  Icons.work_outline,
+                  Colors.blue,
+                  theme,
+                  onTap: () => Get.to(() => JobsManagement(initialTab: 0)),
+                ),
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: _buildCompactStatItem(
@@ -379,7 +388,15 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoCard({required String title, required String value, required String subtitle, required IconData icon, required Color color, required ThemeData theme, VoidCallback? onTap}) {
+  Widget _buildInfoCard({
+    required String title,
+    required String value,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+    required ThemeData theme,
+    VoidCallback? onTap,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: decoration.colorScheme.surface,
@@ -567,7 +584,10 @@ class Home extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 itemCount: ctrl.jobApplications.length,
                 itemBuilder: (context, index) {
-                  return RecentJobDetailsCard(job: ctrl.jobApplications[index], type: "applied").paddingOnly(right: index != ctrl.jobApplications.length - 1 ? 15 : 0, bottom: 15);
+                  return RecentJobDetailsCard(
+                    job: ctrl.jobApplications[index],
+                    type: "applied",
+                  ).paddingOnly(right: index != ctrl.jobApplications.length - 1 ? 15 : 0, bottom: 15);
                 },
               ),
             ),
@@ -599,7 +619,7 @@ class Home extends StatelessWidget {
                 ),
                 if (ctrl.recentProjects.isNotEmpty)
                   TextButton(
-                    onPressed: () => Get.to(() => Projects()),
+                    onPressed: () => Get.find<DashboardCtrl>().changeTabIndex(4),
                     child: Text(
                       'View All (${ctrl.recentProjects.length})',
                       style: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
@@ -617,7 +637,9 @@ class Home extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 itemCount: ctrl.recentProjects.length,
                 itemBuilder: (context, index) {
-                  return ProjectsDetailsCard(project: ctrl.recentProjects[index]).paddingOnly(right: index != ctrl.recentProjects.length - 1 ? 15 : 0, bottom: 15);
+                  return ProjectsDetailsCard(
+                    project: ctrl.recentProjects[index],
+                  ).paddingOnly(right: index != ctrl.recentProjects.length - 1 ? 15 : 0, bottom: 15);
                 },
               ),
             ),
