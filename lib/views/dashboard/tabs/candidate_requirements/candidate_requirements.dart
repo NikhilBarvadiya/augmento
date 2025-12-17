@@ -3,6 +3,7 @@ import 'package:augmento/views/dashboard/tabs/candidate_requirements/ui/requirem
 import 'package:augmento/views/dashboard/tabs/job_management/ui/skill_section.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'candidate_requirements_ctrl.dart';
 
 class CandidateRequirements extends StatelessWidget {
@@ -245,27 +246,31 @@ class CandidateRequirements extends StatelessWidget {
   }
 
   Widget _buildShimmerCard() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildShimmerContainer(150, 18), const SizedBox(height: 8), _buildShimmerContainer(100, 14)]),
-                ),
-                _buildShimmerContainer(24, 24),
-              ],
-            ),
-            const SizedBox(height: 12),
-            _buildShimmerContainer(double.infinity, 14),
-            const SizedBox(height: 8),
-            Row(children: [_buildShimmerContainer(60, 20, borderRadius: 10), const SizedBox(width: 8), _buildShimmerContainer(80, 20, borderRadius: 10)]),
-          ],
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade200,
+      highlightColor: Colors.grey.shade50,
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildShimmerContainer(150, 18), const SizedBox(height: 8), _buildShimmerContainer(100, 14)]),
+                  ),
+                  _buildShimmerContainer(24, 24),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _buildShimmerContainer(double.infinity, 14),
+              const SizedBox(height: 8),
+              Row(children: [_buildShimmerContainer(60, 20, borderRadius: 10), const SizedBox(width: 8), _buildShimmerContainer(80, 20, borderRadius: 10)]),
+            ],
+          ),
         ),
       ),
     );

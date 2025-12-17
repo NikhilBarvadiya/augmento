@@ -6,6 +6,7 @@ import 'package:augmento/views/dashboard/tabs/candidates/ui/candidate_form.dart'
 import 'package:augmento/views/dashboard/tabs/job_management/ui/skill_section.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'candidates_ctrl.dart';
 
 class Candidates extends StatelessWidget {
@@ -158,23 +159,116 @@ class Candidates extends StatelessWidget {
   Widget _buildAvailabilityFilter(CandidatesCtrl ctrl) {
     return Obx(
       () => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        height: 45,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]!),
-          borderRadius: BorderRadius.circular(8),
+          color: decoration.colorScheme.surface,
+          border: Border.all(color: ctrl.availabilityFilter.value.isEmpty ? decoration.colorScheme.outline.withOpacity(0.3) : decoration.colorScheme.primary.withOpacity(0.5), width: .6),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: ctrl.availabilityFilter.value.isEmpty ? null : [BoxShadow(color: decoration.colorScheme.primary.withOpacity(0.1), blurRadius: 8, offset: const Offset(0, 2))],
         ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<String>(
             value: ctrl.availabilityFilter.value.isEmpty ? null : ctrl.availabilityFilter.value,
-            hint: const Text('Availability', style: TextStyle(fontSize: 14)),
+            padding: const EdgeInsets.only(left: 5, right: 5),
+            hint: Row(
+              children: [
+                Icon(Icons.schedule_rounded, size: 20, color: decoration.colorScheme.onSurfaceVariant),
+                const SizedBox(width: 6),
+                const Expanded(
+                  child: Text(
+                    'Availability',
+                    style: TextStyle(fontSize: 13, letterSpacing: .5, fontWeight: FontWeight.w500),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
             isExpanded: true,
+            icon: Icon(Icons.arrow_drop_down_rounded, color: decoration.colorScheme.onSurfaceVariant, size: 24),
+            style: TextStyle(fontSize: 13, letterSpacing: .5, overflow: TextOverflow.ellipsis, fontWeight: FontWeight.w600, color: decoration.colorScheme.onSurface),
+            dropdownColor: Colors.white,
             items: [
-              const DropdownMenuItem(value: '', child: Text('All Availabilities')),
-              const DropdownMenuItem(value: 'Immediate', child: Text('Immediate')),
-              const DropdownMenuItem(value: '1 Week', child: Text('1 Week')),
-              const DropdownMenuItem(value: '2 Weeks', child: Text('2 Weeks')),
-              const DropdownMenuItem(value: '1 Month', child: Text('1 Month')),
-              const DropdownMenuItem(value: 'Other', child: Text('Other')),
+              DropdownMenuItem(
+                value: '',
+                child: Row(
+                  children: [
+                    Icon(Icons.clear_rounded, size: 16, color: decoration.colorScheme.onSurfaceVariant),
+                    const SizedBox(width: 6),
+                    const Text('All Availabilities', style: TextStyle(letterSpacing: .5)),
+                  ],
+                ),
+              ),
+              DropdownMenuItem(
+                value: 'Immediate',
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(color: Colors.green[600], shape: BoxShape.circle),
+                    ),
+                    const SizedBox(width: 6),
+                    const Text('Immediate', style: TextStyle(letterSpacing: .5)),
+                  ],
+                ),
+              ),
+              DropdownMenuItem(
+                value: '1 Week',
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(color: Colors.blue[600], shape: BoxShape.circle),
+                    ),
+                    const SizedBox(width: 6),
+                    const Text('1 Week', style: TextStyle(letterSpacing: .5)),
+                  ],
+                ),
+              ),
+              DropdownMenuItem(
+                value: '2 Weeks',
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(color: Colors.orange[600], shape: BoxShape.circle),
+                    ),
+                    const SizedBox(width: 6),
+                    const Text('2 Weeks', style: TextStyle(letterSpacing: .5)),
+                  ],
+                ),
+              ),
+              DropdownMenuItem(
+                value: '1 Month',
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(color: Colors.amber[700], shape: BoxShape.circle),
+                    ),
+                    const SizedBox(width: 6),
+                    const Text('1 Month', style: TextStyle(letterSpacing: .5)),
+                  ],
+                ),
+              ),
+              DropdownMenuItem(
+                value: 'Other',
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(color: Colors.grey[600], shape: BoxShape.circle),
+                    ),
+                    const SizedBox(width: 6),
+                    const Text('Other', style: TextStyle(letterSpacing: .5)),
+                  ],
+                ),
+              ),
             ],
             onChanged: (value) => ctrl.availabilityFilter.value = value ?? '',
           ),
@@ -238,29 +332,33 @@ class Candidates extends StatelessWidget {
   }
 
   Widget _buildShimmerCard() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                _buildShimmerContainer(50, 50, isCircular: true),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildShimmerContainer(120, 16), const SizedBox(height: 8), _buildShimmerContainer(80, 14)]),
-                ),
-                _buildShimmerContainer(24, 24),
-              ],
-            ),
-            const SizedBox(height: 12),
-            _buildShimmerContainer(double.infinity, 14),
-            const SizedBox(height: 8),
-            Row(children: [_buildShimmerContainer(60, 20, borderRadius: 10), const SizedBox(width: 8), _buildShimmerContainer(80, 20, borderRadius: 10)]),
-          ],
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade200,
+      highlightColor: Colors.grey.shade50,
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  _buildShimmerContainer(50, 50, isCircular: true),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildShimmerContainer(120, 16), const SizedBox(height: 8), _buildShimmerContainer(80, 14)]),
+                  ),
+                  _buildShimmerContainer(24, 24),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _buildShimmerContainer(double.infinity, 14),
+              const SizedBox(height: 8),
+              Row(children: [_buildShimmerContainer(60, 20, borderRadius: 10), const SizedBox(width: 8), _buildShimmerContainer(80, 20, borderRadius: 10)]),
+            ],
+          ),
         ),
       ),
     );

@@ -376,8 +376,8 @@ class _JobsManagementState extends State<JobsManagement> {
 
   Widget _buildShimmerCard() {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: Colors.grey.shade200,
+      highlightColor: Colors.grey.shade50,
       child: Container(
         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
         child: Padding(
