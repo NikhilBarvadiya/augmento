@@ -104,7 +104,7 @@ class JobDetailsCtrl extends GetxController {
       final response = await _authService.submitOnboardingDetails(json, image.value);
       if (response.isNotEmpty) {
         final jobsCtrl = Get.find<JobsCtrl>();
-        Get.back();
+        Get.close(1);
         jobsCtrl.onTabChanged(4);
       }
     } catch (e) {

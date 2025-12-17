@@ -58,7 +58,7 @@ class _CandidateDetailsState extends State<CandidateDetails> {
         decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
         child: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-          onPressed: () => Get.back(),
+          onPressed: () => Get.close(1),
         ),
       ),
       flexibleSpace: FlexibleSpaceBar(
@@ -417,7 +417,7 @@ class _CandidateDetailsState extends State<CandidateDetails> {
             ),
             content: Text('Are you sure you want to delete ${widget.candidate['name']}? This action cannot be undone.'),
             actions: [
-              TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+              TextButton(onPressed: () => Get.close(1), child: const Text('Cancel')),
               ElevatedButton(
                 onPressed: () {
                   Get.close(2);

@@ -7,7 +7,6 @@ import 'package:augmento/views/dashboard/tabs/job_management/ui/job_details_card
 import 'package:augmento/views/dashboard/tabs/job_management/ui/recent_job_details_card.dart';
 import 'package:augmento/views/dashboard/tabs/my_bids/my_bids.dart';
 import 'package:augmento/views/dashboard/tabs/notifications/notifications.dart';
-import 'package:augmento/views/dashboard/tabs/projects/projects.dart';
 import 'package:augmento/views/dashboard/tabs/projects/ui/projects_details_card.dart';
 import 'package:augmento/widgets/interview_card.dart';
 import 'package:flutter/material.dart';

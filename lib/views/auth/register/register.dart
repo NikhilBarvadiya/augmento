@@ -202,7 +202,7 @@ class Register extends StatelessWidget {
                           border: Border.all(color: decoration.colorScheme.outline.withOpacity(0.2)),
                         ),
                         child: IconButton(
-                          onPressed: () => Get.back(),
+                          onPressed: () => Get.close(1),
                           icon: Icon(Icons.arrow_back_ios_rounded, color: decoration.colorScheme.onSurface, size: 20),
                         ),
                       ),

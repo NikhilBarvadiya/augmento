@@ -328,10 +328,10 @@ class DigitalProducts extends StatelessWidget {
             ),
             content: const Text('Are you sure you want to delete this product? This action cannot be undone.'),
             actions: [
-              TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+              TextButton(onPressed: () => Get.close(1), child: const Text('Cancel')),
               ElevatedButton(
                 onPressed: () {
-                  Get.back();
+                  Get.close(1);
                   ctrl.deleteProduct(product['_id']);
                 },
                 style: ElevatedButton.styleFrom(

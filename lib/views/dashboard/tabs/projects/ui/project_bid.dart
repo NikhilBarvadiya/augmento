@@ -1,7 +1,6 @@
 import 'package:augmento/utils/decoration.dart';
 import 'package:augmento/utils/toaster.dart';
 import 'package:augmento/views/auth/auth_service.dart';
-import 'package:augmento/views/dashboard/tabs/candidates/candidates.dart';
 import 'package:augmento/views/dashboard/tabs/job_management/ui/skill_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -59,10 +58,7 @@ class _ProjectBidState extends State<ProjectBid> {
                   padding: const EdgeInsets.all(20),
                   child: Form(
                     key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [_buildProjectOverview(), const SizedBox(height: 24), _buildProposalSection()],
-                    ),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildProjectOverview(), const SizedBox(height: 24), _buildProposalSection()]),
                   ),
                 ),
               ),
@@ -86,7 +82,7 @@ class _ProjectBidState extends State<ProjectBid> {
         decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
         child: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-          onPressed: () => Get.back(),
+          onPressed: () => Get.close(1),
         ),
       ),
     );
@@ -305,11 +301,7 @@ class _ProjectBidState extends State<ProjectBid> {
             const SizedBox(width: 12),
             Text(
               option.label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? decoration.colorScheme.primary : Colors.grey[700],
-              ),
+              style: TextStyle(fontSize: 14, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500, color: isSelected ? decoration.colorScheme.primary : Colors.grey[700]),
             ),
             const Spacer(),
             if (isSelected) Icon(Icons.check_circle, color: decoration.colorScheme.primary, size: 20),
@@ -525,11 +517,7 @@ class _ProjectBidState extends State<ProjectBid> {
               elevation: 2,
             ),
             child: isLoading
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
-                  )
+                ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))
                 : const Text('Submit Proposal', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           ),
         ),
@@ -569,11 +557,7 @@ class _ProjectBidState extends State<ProjectBid> {
 
   Future<void> _pickSupportingDocs() async {
     try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        allowMultiple: true,
-        type: FileType.custom,
-        allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'],
-      );
+      FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png']);
       if (result != null) {
         setState(() {
           supportingDocs.addAll(result.files);
@@ -606,7 +590,7 @@ class _ProjectBidState extends State<ProjectBid> {
       }
       Map<String, dynamic> response = await Get.find<AuthService>().bidOnProject(requestData, supportingDocs);
       if (response.isNotEmpty) {
-        Get.back(result: true);
+        Get.close(1);
       }
     } catch (e) {
       toaster.error(e.toString());

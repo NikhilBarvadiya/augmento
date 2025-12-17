@@ -47,7 +47,7 @@ class BidDetails extends StatelessWidget {
         decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
         child: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-          onPressed: () => Get.back(),
+          onPressed: () => Get.close(1),
         ),
       ),
     );

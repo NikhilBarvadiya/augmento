@@ -158,38 +158,39 @@ class CandidateRequirementsCtrl extends GetxController {
       requirements.insert(0, Map<String, dynamic>.from(response));
       toaster.success('Requirement created successfully');
     }
-    Get.back();
+    Get.close(1);
   }
 
   Future<void> deleteRequirement(String id) async {
-    final confirmed = await Get.dialog<bool>(
+    await Get.dialog<bool>(
       AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Delete Requirement'),
         content: const Text('Are you sure you want to delete this job requirement? This action cannot be undone.'),
         actions: [
-          TextButton(onPressed: () => Get.back(result: false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Get.close(1), child: const Text('Cancel')),
           ElevatedButton(
-            onPressed: () => Get.back(result: true),
+            onPressed: () async {
+              Get.close(1);
+              isLoading.value = true;
+              try {
+                final response = await _authService.deleteCandidateRequirement({'id': id});
+                if (response == true) {
+                  requirements.removeWhere((e) => e["_id"] == id);
+                  fetchStats();
+                }
+              } catch (e) {
+                toaster.error('Error deleting requirement: ${e.toString()}');
+              } finally {
+                isLoading.value = false;
+              }
+            },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: const Text('Delete', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
     );
-    if (confirmed != true) return;
-    isLoading.value = true;
-    try {
-      final response = await _authService.deleteCandidateRequirement({'id': id});
-      if (response == true) {
-        requirements.removeWhere((e) => e["_id"] == id);
-        fetchStats();
-      }
-    } catch (e) {
-      toaster.error('Error deleting requirement: ${e.toString()}');
-    } finally {
-      isLoading.value = false;
-    }
   }
 
   bool _validateForm() {

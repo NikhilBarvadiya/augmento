@@ -511,7 +511,7 @@ class CandidateForm extends StatelessWidget {
           children: [
             Expanded(
               child: OutlinedButton(
-                onPressed: () => Get.back(),
+                onPressed: () => Get.close(1),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

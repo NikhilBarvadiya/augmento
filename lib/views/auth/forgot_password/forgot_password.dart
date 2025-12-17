@@ -158,7 +158,7 @@ class ForgotPassword extends StatelessWidget {
                                 children: [
                                   Text('Remember your password? ', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: decoration.colorScheme.onSurfaceVariant)),
                                   TextButton(
-                                    onPressed: () => Get.back(),
+                                    onPressed: () => Get.close(1),
                                     style: TextButton.styleFrom(foregroundColor: decoration.colorScheme.primary, padding: const EdgeInsets.symmetric(horizontal: 4)),
                                     child: Text('Sign In', style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
                                   ),
@@ -189,7 +189,7 @@ class ForgotPassword extends StatelessWidget {
                           border: Border.all(color: decoration.colorScheme.outline.withOpacity(0.2)),
                         ),
                         child: IconButton(
-                          onPressed: () => Get.back(),
+                          onPressed: () => Get.close(1),
                           icon: Icon(Icons.arrow_back_ios_rounded, color: decoration.colorScheme.onSurface, size: 20),
                         ),
                       ),

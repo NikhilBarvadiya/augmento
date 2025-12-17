@@ -100,7 +100,7 @@ class CandidatesCtrl extends GetxController {
           isLoading.value = false;
           await fetchCandidates(reset: true);
         }
-        Get.back();
+        Get.close(1);
       }
     } catch (e) {
       toaster.error('Error: ${e.toString()}');

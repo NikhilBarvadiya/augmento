@@ -86,10 +86,10 @@ class AccountCtrl extends GetxController with GetTickerProviderStateMixin {
         ),
         content: const Text('Are you sure you want to logout from your account?'),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(onPressed: () => Get.close(1), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
-              Get.back();
+              Get.close(1);
               Get.find<AuthService>().logout();
             },
             style: ElevatedButton.styleFrom(
@@ -117,10 +117,10 @@ class AccountCtrl extends GetxController with GetTickerProviderStateMixin {
         ),
         content: const Text('Are you sure you want to delete from your account?'),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(onPressed: () => Get.close(1), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
-              Get.back();
+              Get.close(1);
               // helper.launchURL("https://docs.google.com/forms/d/e/1FAIpQLSe_6UsyVHh5hX02k2N-uaAz26Kl9iTim2fTskkyppcthKmlDQ/viewform?pli=1");
               helper.launchURL("https://augmento.itfuturz.in/account-delete");
               Get.find<AuthService>().logout();

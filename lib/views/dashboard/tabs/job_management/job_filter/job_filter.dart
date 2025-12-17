@@ -24,7 +24,7 @@ class JobFilter extends StatelessWidget {
           decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
           child: IconButton(
             icon: const Icon(Icons.close_rounded, color: Colors.white, size: 20),
-            onPressed: () => Get.back(),
+            onPressed: () => Get.close(1),
           ),
         ),
         actions: [
@@ -263,7 +263,7 @@ class JobFilter extends StatelessWidget {
           children: [
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: () => Get.back(),
+                onPressed: () => Get.close(1),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.grey[600],
                   side: BorderSide(color: Colors.grey[300]!),
@@ -280,7 +280,7 @@ class JobFilter extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: () {
                   controller.applyFilters();
-                  Get.back();
+                  Get.close(1);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: decoration.colorScheme.primary,

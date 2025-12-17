@@ -37,7 +37,7 @@ class AuthService extends GetxService {
         return;
       }
       toaster.success(response.message.toString().capitalizeFirst.toString());
-      Get.back();
+      Get.close(1);
     } catch (err) {
       toaster.error(err.toString());
       return;
@@ -114,7 +114,7 @@ class AuthService extends GetxService {
       final updatedUser = {...read(AppSession.userData) ?? {}, ...data};
       await write(AppSession.userData, updatedUser);
       toaster.success(response.message.toString().capitalizeFirst.toString());
-      Get.back();
+      Get.close(1);
     } catch (err) {
       toaster.error(err.toString());
     }

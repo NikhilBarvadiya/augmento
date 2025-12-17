@@ -52,7 +52,7 @@ class RegisterCtrl extends GetxController {
       dio.FormData formData = dio.FormData.fromMap(request);
       bool isCheck = await _authService.register(formData);
       if (isCheck == true) {
-        Get.back();
+        Get.close(1);
         emailCtrl.clear();
         passwordCtrl.clear();
         mobileCtrl.clear();

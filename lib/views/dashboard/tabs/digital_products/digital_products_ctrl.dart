@@ -68,7 +68,7 @@ class DigitalProductsCtrl extends GetxController {
         } else {
           products.insert(0, Map<String, dynamic>.from(response));
         }
-        Get.back();
+        Get.close(1);
       }
     } catch (e) {
       toaster.error('Error: ${e.toString()}');
