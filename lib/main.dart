@@ -17,7 +17,6 @@ import 'package:intl/date_symbol_data_local.dart';
 Future<void> main() async {
   await GetStorage.init();
   GestureBinding.instance.resamplingEnabled = true;
-  WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('en', null);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Color(0xFF2B6777), statusBarIconBrightness: Brightness.light));
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);

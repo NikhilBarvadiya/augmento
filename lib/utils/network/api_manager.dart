@@ -6,7 +6,7 @@ import 'package:augmento/utils/network/api_response.dart';
 import 'package:augmento/utils/routes/route_name.dart';
 import 'package:augmento/utils/storage.dart';
 import 'package:augmento/utils/toaster.dart';
-import 'package:augmento/views/splash/splash_ctrl.dart';
+import 'package:augmento/views/auth/splash/splash_ctrl.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

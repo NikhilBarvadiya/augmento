@@ -6,7 +6,7 @@ import 'package:augmento/views/dashboard/dashboard.dart';
 import 'package:augmento/views/dashboard/tabs/account/profile_details/profile_details.dart';
 import 'package:augmento/views/dashboard/tabs/account/profile_edit/profile_edit.dart';
 import 'package:augmento/views/no_internet.dart';
-import 'package:augmento/views/splash/splash.dart';
+import 'package:augmento/views/auth/splash/splash.dart';
 import 'package:get/get.dart';
 
 class AppRouteMethods {
