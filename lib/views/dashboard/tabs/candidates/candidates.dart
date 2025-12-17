@@ -79,20 +79,74 @@ class Candidates extends StatelessWidget {
   Widget _buildStatusFilter(CandidatesCtrl ctrl) {
     return Obx(
       () => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        height: 45,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]!),
-          borderRadius: BorderRadius.circular(8),
+          color: decoration.colorScheme.surface,
+          border: Border.all(color: ctrl.statusFilter.value.isEmpty ? decoration.colorScheme.outline.withOpacity(0.3) : decoration.colorScheme.primary.withOpacity(0.5), width: .6),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: ctrl.statusFilter.value.isEmpty ? null : [BoxShadow(color: decoration.colorScheme.primary.withOpacity(0.1), blurRadius: 8, offset: const Offset(0, 2))],
         ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<String>(
             value: ctrl.statusFilter.value.isEmpty ? null : ctrl.statusFilter.value,
-            hint: const Text('Status', style: TextStyle(fontSize: 14)),
+            padding: EdgeInsets.only(left: 5, right: 5),
+            hint: Row(
+              children: [
+                Icon(Icons.filter_list_rounded, size: 20, color: decoration.colorScheme.onSurfaceVariant),
+                const SizedBox(width: 6),
+                const Expanded(
+                  child: Text(
+                    'Status',
+                    style: TextStyle(fontSize: 13, letterSpacing: .5, fontWeight: FontWeight.w500),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
             isExpanded: true,
+            icon: Icon(Icons.arrow_drop_down_rounded, color: decoration.colorScheme.onSurfaceVariant, size: 24),
+            style: TextStyle(fontSize: 13, letterSpacing: .5, overflow: TextOverflow.ellipsis, fontWeight: FontWeight.w600, color: decoration.colorScheme.onSurface),
+            dropdownColor: Colors.white,
             items: [
-              const DropdownMenuItem(value: '', child: Text('All Statuses')),
-              const DropdownMenuItem(value: 'Available', child: Text('Available')),
-              const DropdownMenuItem(value: 'Not Available', child: Text('Not Available')),
+              DropdownMenuItem(
+                value: '',
+                child: Row(
+                  children: [
+                    Icon(Icons.clear_rounded, size: 16, color: decoration.colorScheme.onSurfaceVariant),
+                    const SizedBox(width: 6),
+                    const Text('All Statuses', style: TextStyle(letterSpacing: .5)),
+                  ],
+                ),
+              ),
+              DropdownMenuItem(
+                value: 'Available',
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(color: Colors.green[600], shape: BoxShape.circle),
+                    ),
+                    const SizedBox(width: 6),
+                    const Text('Available', style: TextStyle(letterSpacing: .5)),
+                  ],
+                ),
+              ),
+              DropdownMenuItem(
+                value: 'Not Available',
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(color: Colors.red[600], shape: BoxShape.circle),
+                    ),
+                    const SizedBox(width: 6),
+                    const Text('Not Available', style: TextStyle(letterSpacing: .5)),
+                  ],
+                ),
+              ),
             ],
             onChanged: (value) => ctrl.statusFilter.value = value ?? '',
           ),

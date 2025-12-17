@@ -56,7 +56,6 @@ class BidDetails extends StatelessWidget {
   Widget _buildStatusCard() {
     final status = bid['status'] as String;
     final createdAt = bid['createdAt'] as String;
-
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -93,14 +92,21 @@ class BidDetails extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(color: Colors.grey[50], borderRadius: BorderRadius.circular(12)),
-            child: Row(
+            child: Column(
+              spacing: 10.0,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.schedule, color: Colors.grey[600], size: 16),
-                const SizedBox(width: 8),
-                Text(
-                  'Submitted on ${_formatFullDate(createdAt)}',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[700], fontWeight: FontWeight.w500),
+                Row(
+                  children: [
+                    Icon(Icons.schedule, color: Colors.grey[600], size: 16),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Submitted on',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[700], fontWeight: FontWeight.w500),
+                    ),
+                  ],
                 ),
+                Text(_formatFullDate(createdAt), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
               ],
             ),
           ),
@@ -182,7 +188,7 @@ class BidDetails extends StatelessWidget {
                   children: [
                     Text(
                       project['title']?.toString().capitalizeFirst ?? 'Unknown Project',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black87),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black87),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -203,9 +209,7 @@ class BidDetails extends StatelessWidget {
   }
 
   Widget _buildBudgetCard(Map<String, dynamic> budget) {
-    String budgetText = '';
-    String budgetType = '';
-
+    String budgetText = '', budgetType = '';
     if (budget['fixedRate'] != null) {
       budgetText = '₹${budget['fixedRate']}';
       budgetType = 'Fixed Budget';

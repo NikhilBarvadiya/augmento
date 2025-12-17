@@ -14,6 +14,7 @@ class CandidateRequirementsCtrl extends GetxController {
 
   final jobTitleCtrl = TextEditingController();
   final jobTypeCtrl = TextEditingController();
+  final workTypeCtrl = TextEditingController();
   final experienceLevelCtrl = TextEditingController();
   final locationCtrl = TextEditingController();
   final responsibilityCtrl = TextEditingController();
@@ -54,6 +55,7 @@ class CandidateRequirementsCtrl extends GetxController {
   void _disposeControllers() {
     jobTitleCtrl.dispose();
     jobTypeCtrl.dispose();
+    workTypeCtrl.dispose();
     experienceLevelCtrl.dispose();
     locationCtrl.dispose();
     responsibilityCtrl.dispose();
@@ -130,6 +132,7 @@ class CandidateRequirementsCtrl extends GetxController {
     return {
       'jobTitle': jobTitleCtrl.text.trim(),
       'jobType': jobTypeCtrl.text.trim(),
+      'workType': workTypeCtrl.text.trim(),
       'experienceLevel': experienceLevelCtrl.text.trim(),
       'location': locationCtrl.text.trim(),
       'requiredSkills': requiredSkillsList.toList(),
@@ -202,6 +205,10 @@ class CandidateRequirementsCtrl extends GetxController {
       toaster.warning('Please select a valid job type');
       return false;
     }
+    if (!['Remote', 'Hybrid', 'On-site'].contains(workTypeCtrl.text.trim())) {
+      toaster.warning('Please select a valid work type');
+      return false;
+    }
     if (!['Entry', 'Mid', 'Senior', 'Lead'].contains(experienceLevelCtrl.text.trim())) {
       toaster.warning('Please select a valid experience level');
       return false;
@@ -254,6 +261,7 @@ class CandidateRequirementsCtrl extends GetxController {
   void clearForm() {
     jobTitleCtrl.clear();
     jobTypeCtrl.clear();
+    workTypeCtrl.clear();
     experienceLevelCtrl.clear();
     locationCtrl.clear();
     responsibilityCtrl.clear();
@@ -316,6 +324,7 @@ class CandidateRequirementsCtrl extends GetxController {
     clearForm();
     jobTitleCtrl.text = '${requirement['jobTitle'] ?? ''} (Copy)';
     jobTypeCtrl.text = requirement['jobType'] ?? '';
+    workTypeCtrl.text = requirement['workType'] ?? '';
     experienceLevelCtrl.text = requirement['experienceLevel'] ?? '';
     locationCtrl.text = requirement['location'] ?? '';
     responsibilityCtrl.text = requirement['responsibility'] ?? '';

@@ -4,6 +4,7 @@ import 'package:augmento/views/dashboard/tabs/digital_products/ui/digital_produc
 import 'package:augmento/views/dashboard/tabs/digital_products/ui/product_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class DigitalProducts extends StatelessWidget {
   const DigitalProducts({super.key});
@@ -99,29 +100,33 @@ class DigitalProducts extends StatelessWidget {
   }
 
   Widget _buildShimmerCard() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                _buildShimmerContainer(50, 50, isCircular: true),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildShimmerContainer(120, 16), const SizedBox(height: 8), _buildShimmerContainer(80, 14)]),
-                ),
-                _buildShimmerContainer(24, 24),
-              ],
-            ),
-            const SizedBox(height: 12),
-            _buildShimmerContainer(double.infinity, 14),
-            const SizedBox(height: 8),
-            Row(children: [_buildShimmerContainer(60, 20, borderRadius: 10), const SizedBox(width: 8), _buildShimmerContainer(80, 20, borderRadius: 10)]),
-          ],
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade200,
+      highlightColor: Colors.grey.shade50,
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  _buildShimmerContainer(50, 50, isCircular: true),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildShimmerContainer(120, 16), const SizedBox(height: 8), _buildShimmerContainer(80, 14)]),
+                  ),
+                  _buildShimmerContainer(24, 24),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _buildShimmerContainer(double.infinity, 14),
+              const SizedBox(height: 8),
+              Row(children: [_buildShimmerContainer(60, 20, borderRadius: 10), const SizedBox(width: 8), _buildShimmerContainer(80, 20, borderRadius: 10)]),
+            ],
+          ),
         ),
       ),
     );
@@ -131,7 +136,7 @@ class DigitalProducts extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(color: Colors.grey[300], borderRadius: isCircular ? null : BorderRadius.circular(borderRadius), shape: isCircular ? BoxShape.circle : BoxShape.rectangle),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: isCircular ? null : BorderRadius.circular(borderRadius), shape: isCircular ? BoxShape.circle : BoxShape.rectangle),
     );
   }
 
@@ -176,9 +181,13 @@ class DigitalProducts extends StatelessWidget {
               const SizedBox(height: 12),
               _buildDescription(product),
               const SizedBox(height: 12),
-              _buildTechStackSection(product),
-              const SizedBox(height: 12),
-              _buildLinksSection(product),
+              Row(
+                children: [
+                  Expanded(child: _buildTechStackSection(product)),
+                  const SizedBox(width: 12),
+                  Expanded(child: _buildLinksSection(product)),
+                ],
+              ),
             ],
           ),
         ),
@@ -266,7 +275,7 @@ class DigitalProducts extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.blue[50],
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: Colors.blue[200]!),
                     ),
                     child: Text(tech.toString(), style: TextStyle(fontSize: 11, color: Colors.blue[700])),
@@ -297,7 +306,7 @@ class DigitalProducts extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.green[50],
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: Colors.green[200]!),
                     ),
                     child: Text(link['linkTitle']?.toString() ?? 'Link', style: TextStyle(fontSize: 11, color: Colors.green[700])),

@@ -119,21 +119,81 @@ class CandidateRequirements extends StatelessWidget {
   Widget _buildStatusFilter(CandidateRequirementsCtrl ctrl) {
     return Obx(
       () => Container(
+        height: 48,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]!),
-          borderRadius: BorderRadius.circular(8),
+          color: decoration.colorScheme.surface,
+          border: Border.all(color: ctrl.statusFilter.value.isEmpty ? decoration.colorScheme.outline.withOpacity(0.3) : decoration.colorScheme.primary.withOpacity(0.5), width: 1.5),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: ctrl.statusFilter.value.isEmpty ? null : [BoxShadow(color: decoration.colorScheme.primary.withOpacity(0.1), blurRadius: 8, offset: const Offset(0, 2))],
         ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<String>(
             value: ctrl.statusFilter.value.isEmpty ? null : ctrl.statusFilter.value,
-            hint: const Text('All Status', style: TextStyle(fontSize: 14)),
+            hint: Row(
+              children: [
+                Icon(Icons.filter_list_rounded, size: 18, color: decoration.colorScheme.onSurfaceVariant),
+                const SizedBox(width: 8),
+                const Text('Status', style: TextStyle(fontSize: 14, letterSpacing: .5, fontWeight: FontWeight.w500)),
+              ],
+            ),
             isExpanded: true,
-            items: const [
-              DropdownMenuItem(value: '', child: Text('All Status')),
-              DropdownMenuItem(value: 'Active', child: Text('Active')),
-              DropdownMenuItem(value: 'Inactive', child: Text('Inactive')),
-              DropdownMenuItem(value: 'Draft', child: Text('Draft')),
+            icon: SizedBox.shrink(),
+            style: TextStyle(fontSize: 13, letterSpacing: .5, overflow: TextOverflow.ellipsis, fontWeight: FontWeight.w600, color: decoration.colorScheme.onSurface),
+            dropdownColor: Colors.white,
+            items: [
+              DropdownMenuItem(
+                value: '',
+                child: Row(
+                  children: [
+                    Icon(Icons.clear_rounded, size: 18, color: decoration.colorScheme.onSurfaceVariant),
+                    const SizedBox(width: 10),
+                    const Text('All', style: TextStyle(letterSpacing: .5)),
+                  ],
+                ),
+              ),
+              DropdownMenuItem(
+                value: 'Active',
+                child: Row(
+                  children: [
+                    Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(color: Colors.green[600], shape: BoxShape.circle),
+                    ),
+                    const SizedBox(width: 10),
+                    const Text('Active', style: TextStyle(letterSpacing: .5)),
+                  ],
+                ),
+              ),
+              DropdownMenuItem(
+                value: 'Inactive',
+                child: Row(
+                  children: [
+                    Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(color: Colors.red[600], shape: BoxShape.circle),
+                    ),
+                    const SizedBox(width: 10),
+                    const Text('Inactive', style: TextStyle(letterSpacing: .5)),
+                  ],
+                ),
+              ),
+              DropdownMenuItem(
+                value: 'Draft',
+                child: Row(
+                  children: [
+                    Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(color: Colors.amber[600], shape: BoxShape.circle),
+                    ),
+                    const SizedBox(width: 10),
+                    const Text('Draft', style: TextStyle(letterSpacing: .5)),
+                  ],
+                ),
+              ),
             ],
             onChanged: (value) => ctrl.statusFilter.value = value ?? '',
           ),

@@ -28,87 +28,100 @@ class Dashboard extends StatelessWidget {
             }
           },
           child: Scaffold(
-            backgroundColor: const Color(0xFFF8FAFC),
+            backgroundColor: decoration.colorScheme.surface,
             body: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFFF8FAFC), Color(0xFFE2E8F0)]),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [decoration.colorScheme.surface, decoration.colorScheme.surfaceContainerLowest]),
               ),
-              child: Obx(
-                () => AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: SlideTransition(
-                        position: Tween<Offset>(begin: const Offset(0.1, 0.0), end: Offset.zero).animate(CurvedAnimation(parent: animation, curve: Curves.easeInOutCubic)),
-                        child: child,
-                      ),
-                    );
-                  },
-                  child: _getCurrentTab(ctrl.currentIndex.value),
-                ),
-              ),
+              child: Obx(() => _getCurrentTab(ctrl.currentIndex.value)),
             ),
-            bottomNavigationBar: _buildProfessionalBottomNav(ctrl),
+            bottomNavigationBar: _buildModernBottomNav(ctrl),
           ),
         );
       },
     );
   }
 
-  Widget _buildProfessionalBottomNav(DashboardCtrl ctrl) {
+  Widget _buildModernBottomNav(DashboardCtrl ctrl) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 30, offset: const Offset(0, -10))],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 30, offset: const Offset(0, -8), spreadRadius: 0)],
       ),
-      child: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 6,
-        color: Colors.white,
-        elevation: 0,
-        child: Row(
-          children: [
-            _buildProfessionalNavItem(Icons.dashboard_outlined, Icons.dashboard, 'Dashboard', 0, ctrl),
-            _buildProfessionalNavItem(Icons.people_outline, Icons.people, 'Candidates', 1, ctrl),
-            _buildProfessionalNavItem(Icons.pending_actions_outlined, Icons.pending_actions_rounded, 'Requirements', 2, ctrl),
-            _buildProfessionalNavItem(Icons.shopping_bag_outlined, Icons.shopping_bag_rounded, 'Products', 3, ctrl),
-            _buildProfessionalNavItem(Icons.gavel_outlined, Icons.gavel, 'Bids', 4, ctrl),
-          ],
+      child: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavItem(icon: Icons.home_rounded, label: 'Home', index: 0, ctrl: ctrl),
+              _buildNavItem(icon: Icons.people_rounded, label: 'Candidates', index: 1, ctrl: ctrl),
+              _buildNavItem(icon: Icons.assignment_rounded, label: 'Requirements', index: 2, ctrl: ctrl),
+              _buildNavItem(icon: Icons.inventory_2_rounded, label: 'Products', index: 3, ctrl: ctrl),
+              _buildNavItem(icon: Icons.workspace_premium_rounded, label: 'Bids', index: 4, ctrl: ctrl, showBadge: true, badgeCount: ctrl.counts['publishedProjects']?.toString() ?? '0'),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildProfessionalNavItem(IconData outlineIcon, IconData filledIcon, String label, int index, DashboardCtrl ctrl) {
+  Widget _buildNavItem({required IconData icon, required String label, required int index, required DashboardCtrl ctrl, bool showBadge = false, String badgeCount = '0'}) {
     return Obx(() {
       final isSelected = ctrl.currentIndex.value == index;
       return Expanded(
         child: GestureDetector(
           onTap: () {
-            HapticFeedback.lightImpact();
+            HapticFeedback.mediumImpact();
             ctrl.changeTabIndex(index);
           },
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-            decoration: BoxDecoration(color: isSelected ? decoration.colorScheme.primary.withOpacity(0.1) : Colors.transparent, borderRadius: BorderRadius.circular(12)),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Badge(
-                  isLabelVisible: index == 4,
-                  label: Text(ctrl.counts['publishedProjects']?.toString() ?? '0'),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(isSelected ? filledIcon : outlineIcon, key: ValueKey(isSelected), color: isSelected ? decoration.colorScheme.primary : const Color(0xFF64748B), size: 24),
-                  ),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOutCubic,
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(color: isSelected ? decoration.colorScheme.primary : Colors.transparent, borderRadius: BorderRadius.circular(12)),
+                      child: Icon(icon, color: isSelected ? Colors.white : decoration.colorScheme.onSurfaceVariant, size: 24),
+                    ),
+                    if (showBadge && badgeCount != '0')
+                      Positioned(
+                        right: -4,
+                        top: -4,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFEF4444),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.white, width: 2),
+                          ),
+                          constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                          child: Text(
+                            badgeCount,
+                            style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
                 AnimatedDefaultTextStyle(
-                  duration: const Duration(milliseconds: 200),
-                  style: TextStyle(color: isSelected ? decoration.colorScheme.primary : const Color(0xFF64748B), fontSize: 11, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500),
+                  duration: const Duration(milliseconds: 300),
+                  style: TextStyle(
+                    color: isSelected ? decoration.colorScheme.primary : decoration.colorScheme.onSurfaceVariant,
+                    fontSize: 11,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                    letterSpacing: 0.2,
+                  ),
                   child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
                 ),
               ],
@@ -122,17 +135,35 @@ class Dashboard extends StatelessWidget {
   void _showExitConfirmationDialog(BuildContext context, DashboardCtrl ctrl) {
     Get.dialog(
       AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: Colors.white,
+        title: Row(
           children: [
-            Icon(Icons.exit_to_app, color: Color(0xFFEF4444)),
-            SizedBox(width: 8),
-            Text('Exit App'),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(color: const Color(0xFFEF4444).withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+              child: const Icon(Icons.exit_to_app_rounded, color: Color(0xFFEF4444), size: 24),
+            ),
+            const SizedBox(width: 12),
+            const Text('Exit App', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           ],
         ),
-        content: const Text('Are you sure you want to exit the app?'),
+        content: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text('Are you sure you want to exit Augmento Staff?', style: TextStyle(fontSize: 15, color: Colors.grey[700], height: 1.5)),
+        ),
+        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         actions: [
-          TextButton(onPressed: () => Get.close(1), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Get.close(1),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.grey[700],
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+          ),
+          const SizedBox(width: 8),
           ElevatedButton(
             onPressed: () {
               Get.close(1);
@@ -141,10 +172,11 @@ class Dashboard extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFEF4444),
               foregroundColor: Colors.white,
-              padding: EdgeInsets.only(top: 5, bottom: 5),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              elevation: 0,
             ),
-            child: const Text('Exit'),
+            child: const Text('Exit', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
           ),
         ],
       ),

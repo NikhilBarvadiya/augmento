@@ -86,7 +86,9 @@ class DigitalProductForm extends StatelessWidget {
         const SizedBox(height: 8),
         Obx(
           () => ctrl.linksList.isEmpty
-              ? Text('No links added', style: TextStyle(fontSize: 14, color: Colors.grey[600]))
+              ? Center(
+                  child: Text('No links added', style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+                )
               : Wrap(
                   spacing: 8,
                   runSpacing: 4,
@@ -193,7 +195,7 @@ class DigitalProductForm extends StatelessWidget {
           filled: true,
           fillColor: Colors.grey[50],
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          labelStyle: TextStyle(color: isRequired ? Colors.red[700] : Colors.grey[700]),
+          labelStyle: TextStyle(color:  Colors.grey[700]),
         ),
       ),
     );
@@ -217,7 +219,7 @@ class DigitalProductForm extends StatelessWidget {
           children: [
             Text(
               '$label${isRequired ? ' *' : ''}',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: isRequired ? Colors.red[700] : Colors.grey[700]),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color:  Colors.grey[700]),
             ),
             const SizedBox(height: 8),
             Container(
@@ -253,6 +255,7 @@ class DigitalProductForm extends StatelessWidget {
                           controller: txtController,
                           decoration: InputDecoration(
                             hintText: 'Type and press Enter to add',
+                            hintStyle: TextStyle(fontSize: 12, letterSpacing: .5),
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.zero,
                             prefixIcon: Icon(icon, size: 20),

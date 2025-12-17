@@ -8,7 +8,7 @@ class MyBidsCtrl extends GetxController {
 
   var bids = <Map<String, dynamic>>[].obs;
   var isLoading = false.obs, hasMore = true.obs;
-  var page = 1.obs;
+  var page = 1.obs, currentTab = 0.obs;
   var searchQuery = ''.obs, statusFilter = 'all'.obs;
 
   @override
@@ -48,6 +48,10 @@ class MyBidsCtrl extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void changeTabIndex(int index) {
+    currentTab.value = index;
   }
 
   void changeStatusFilter(String status) {

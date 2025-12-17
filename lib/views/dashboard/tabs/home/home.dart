@@ -233,19 +233,10 @@ class Home extends StatelessWidget {
           ),
           Row(
             children: [
-              Expanded(
-                child: _buildCompactStatItem(
-                  'Jobs',
-                  ctrl.counts['jobs']?.toString() ?? '0',
-                  Icons.work_outline,
-                  Colors.blue,
-                  theme,
-                  onTap: () => Get.to(() => JobsManagement(initialTab: 0)),
-                ),
-              ),
+              Expanded(child: _buildStatusItem('Jobs', ctrl.counts['jobs']?.toString() ?? '0', Icons.work_outline, Colors.blue, theme, onTap: () => Get.to(() => JobsManagement(initialTab: 0)))),
               const SizedBox(width: 12),
               Expanded(
-                child: _buildCompactStatItem(
+                child: _buildStatusItem(
                   'Applications',
                   ctrl.counts['applications']?.toString() ?? '0',
                   Icons.description_outlined,
@@ -256,7 +247,7 @@ class Home extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _buildCompactStatItem(
+                child: _buildStatusItem(
                   'Candidates',
                   ctrl.counts['candidates']?.toString() ?? '0',
                   Icons.people_outline,
@@ -345,57 +336,7 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _buildCompactStatItem(String label, String value, IconData icon, Color color, ThemeData theme, {VoidCallback? onTap}) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        highlightColor: color.withOpacity(0.1),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.08),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: color.withOpacity(0.2), width: 1),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                spacing: 10.0,
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(icon, color: color, size: 24),
-                  Text(
-                    value,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: decoration.colorScheme.onSurface),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(fontSize: 12, color: decoration.colorScheme.outline, fontWeight: FontWeight.w500),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoCard({
-    required String title,
-    required String value,
-    required String subtitle,
-    required IconData icon,
-    required Color color,
-    required ThemeData theme,
-    VoidCallback? onTap,
-  }) {
+  Widget _buildInfoCard({required String title, required String value, required String subtitle, required IconData icon, required Color color, required ThemeData theme, VoidCallback? onTap}) {
     return Container(
       decoration: BoxDecoration(
         color: decoration.colorScheme.surface,
@@ -482,7 +423,9 @@ class Home extends StatelessWidget {
               ),
               Text(
                 label,
+                maxLines: 1,
                 textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodySmall?.copyWith(color: decoration.colorScheme.outline, fontWeight: FontWeight.w500),
               ),
             ],
@@ -513,28 +456,25 @@ class Home extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (ctrl.activeJobs.isNotEmpty)
-                  TextButton(
-                    onPressed: () => Get.to(() => JobsManagement(initialTab: 0)),
-                    child: Text(
-                      'View All (${ctrl.activeJobs.length})',
-                      style: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
-                    ),
+                TextButton(
+                  onPressed: () => Get.to(() => JobsManagement(initialTab: 0)),
+                  child: Text(
+                    'View All (${ctrl.activeJobs.length})',
+                    style: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
                   ),
+                ),
               ],
             ),
           ),
-          SizedBox(
-            height: Get.height * .255,
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              itemCount: ctrl.activeJobs.length,
-              itemBuilder: (context, index) {
-                final job = ctrl.activeJobs[index];
-                return JobDetailsCard(job: job, type: "available").paddingOnly(right: index != ctrl.activeJobs.length - 1 ? 15 : 0, bottom: 15);
-              },
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                ...ctrl.activeJobs.map((job) {
+                  final index = ctrl.activeJobs.indexOf(job);
+                  return JobDetailsCard(job: job, type: "available").paddingOnly(right: index != ctrl.activeJobs.length - 1 ? 15 : 0, bottom: 15);
+                }),
+              ],
             ),
           ),
         ],
@@ -563,33 +503,27 @@ class Home extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (ctrl.jobApplications.isNotEmpty)
-                  TextButton(
-                    onPressed: () => Get.to(() => JobsManagement(initialTab: 1)),
-                    child: Text(
-                      'View All (${ctrl.jobApplications.length})',
-                      style: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
-                    ),
+                TextButton(
+                  onPressed: () => Get.to(() => JobsManagement(initialTab: 1)),
+                  child: Text(
+                    'View All (${ctrl.jobApplications.length})',
+                    style: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
                   ),
+                ),
               ],
             ),
           ),
-          if (ctrl.jobApplications.isNotEmpty)
-            SizedBox(
-              height: Get.height * .255,
-              child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: ctrl.jobApplications.length,
-                itemBuilder: (context, index) {
-                  return RecentJobDetailsCard(
-                    job: ctrl.jobApplications[index],
-                    type: "applied",
-                  ).paddingOnly(right: index != ctrl.jobApplications.length - 1 ? 15 : 0, bottom: 15);
-                },
-              ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                ...ctrl.jobApplications.map((job) {
+                  final index = ctrl.jobApplications.indexOf(job);
+                  return RecentJobDetailsCard(job: ctrl.jobApplications[index], type: "applied").paddingOnly(right: index != ctrl.jobApplications.length - 1 ? 15 : 0, bottom: 15);
+                }),
+              ],
             ),
+          ),
         ],
       ),
     );
@@ -616,32 +550,27 @@ class Home extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (ctrl.recentProjects.isNotEmpty)
-                  TextButton(
-                    onPressed: () => Get.find<DashboardCtrl>().changeTabIndex(4),
-                    child: Text(
-                      'View All (${ctrl.recentProjects.length})',
-                      style: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
-                    ),
+                TextButton(
+                  onPressed: () => Get.find<DashboardCtrl>().changeTabIndex(4),
+                  child: Text(
+                    'View All (${ctrl.recentProjects.length})',
+                    style: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
                   ),
+                ),
               ],
             ),
           ),
-          if (ctrl.recentProjects.isNotEmpty)
-            SizedBox(
-              height: Get.height * .255,
-              child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: ctrl.recentProjects.length,
-                itemBuilder: (context, index) {
-                  return ProjectsDetailsCard(
-                    project: ctrl.recentProjects[index],
-                  ).paddingOnly(right: index != ctrl.recentProjects.length - 1 ? 15 : 0, bottom: 15);
-                },
-              ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                ...ctrl.recentProjects.map((job) {
+                  final index = ctrl.recentProjects.indexOf(job);
+                  return ProjectsDetailsCard(project: ctrl.recentProjects[index]).paddingOnly(right: index != ctrl.recentProjects.length - 1 ? 15 : 0, bottom: 15);
+                }),
+              ],
             ),
+          ),
         ],
       ),
     );
@@ -665,30 +594,27 @@ class Home extends StatelessWidget {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: decoration.colorScheme.onSurface),
                   ),
                 ),
-                if (ctrl.interviews.isNotEmpty)
-                  TextButton(
-                    onPressed: null,
-                    child: Text(
-                      'Total (${ctrl.interviews.length})',
-                      style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600),
-                    ),
+                TextButton(
+                  onPressed: null,
+                  child: Text(
+                    'Total (${ctrl.interviews.length})',
+                    style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600),
                   ),
+                ),
               ],
             ),
           ),
-          if (ctrl.interviews.isNotEmpty)
-            SizedBox(
-              height: Get.height * .268,
-              child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: ctrl.interviews.length,
-                itemBuilder: (context, index) {
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                ...ctrl.interviews.map((job) {
+                  final index = ctrl.interviews.indexOf(job);
                   return InterviewCard(interview: ctrl.interviews[index]).paddingOnly(right: index != ctrl.interviews.length - 1 ? 15 : 0, bottom: 15);
-                },
-              ),
+                }),
+              ],
             ),
+          ),
         ],
       ),
     );
@@ -717,8 +643,8 @@ class Home extends StatelessWidget {
 
   Widget _buildShimmerCard(double height) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: Colors.grey.shade200,
+      highlightColor: Colors.grey.shade50,
       child: Container(
         height: height,
         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
@@ -728,8 +654,8 @@ class Home extends StatelessWidget {
 
   Widget _buildShimmerTitle() {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: Colors.grey.shade200,
+      highlightColor: Colors.grey.shade50,
       child: Container(
         height: 24,
         width: 200,

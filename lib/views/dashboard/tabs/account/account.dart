@@ -156,7 +156,7 @@ class Account extends StatelessWidget {
                 'Profile Information',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xFF1E293B)),
               ),
-              subtitle: const Text('View and manage your profile_edit details', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+              subtitle: const Text('View and manage your profile details', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
               trailing: Obx(() => Icon(controller.isProfileExpanded.value ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, color: const Color(0xFF64748B))),
               onTap: () {
                 HapticFeedback.lightImpact();

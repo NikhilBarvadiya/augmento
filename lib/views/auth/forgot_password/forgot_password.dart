@@ -276,7 +276,7 @@ class _ForgotPasswordState extends State<ForgotPassword> with SingleTickerProvid
       children: [
         Text('Remember your password?', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: decoration.colorScheme.onSurfaceVariant)),
         TextButton(
-          onPressed: () => Get.back(),
+          onPressed: () => Get.close(1),
           style: TextButton.styleFrom(foregroundColor: decoration.colorScheme.primary, padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
           child: Text(
             'Sign In',

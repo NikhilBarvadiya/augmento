@@ -2,6 +2,7 @@ import 'package:augmento/utils/decoration.dart';
 import 'package:augmento/views/dashboard/tabs/notifications/notifications_ctrl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class Notifications extends StatelessWidget {
   const Notifications({super.key});
@@ -238,31 +239,31 @@ class Notifications extends StatelessWidget {
   }
 
   Widget _buildShimmerCard() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 8, offset: const Offset(0, 2))],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              _buildShimmerContainer(50, 50, borderRadius: 12),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildShimmerContainer(150, 16), const SizedBox(height: 8), _buildShimmerContainer(100, 12)]),
-              ),
-              _buildShimmerContainer(80, 24, borderRadius: 20),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _buildShimmerContainer(double.infinity, 14),
-          const SizedBox(height: 8),
-          _buildShimmerContainer(120, 20, borderRadius: 8),
-        ],
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade200,
+      highlightColor: Colors.grey.shade50,
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                _buildShimmerContainer(50, 50, borderRadius: 12),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildShimmerContainer(150, 16), const SizedBox(height: 8), _buildShimmerContainer(100, 12)]),
+                ),
+                _buildShimmerContainer(80, 24, borderRadius: 20),
+              ],
+            ),
+            const SizedBox(height: 12),
+            _buildShimmerContainer(double.infinity, 14),
+            const SizedBox(height: 8),
+            _buildShimmerContainer(120, 20, borderRadius: 8),
+          ],
+        ),
       ),
     );
   }
@@ -271,7 +272,7 @@ class Notifications extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(borderRadius)),
+      decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(borderRadius)),
     );
   }
 

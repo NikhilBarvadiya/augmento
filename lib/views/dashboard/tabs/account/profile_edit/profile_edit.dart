@@ -1,4 +1,5 @@
 import 'package:augmento/utils/decoration.dart';
+import 'package:augmento/utils/toaster.dart';
 import 'package:augmento/views/dashboard/tabs/account/profile_edit/profile_edit_ctrl.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ class ProfileEdit extends StatelessWidget {
   Widget build(BuildContext context) {
     final ctrl = Get.put(ProfileEditCtrl());
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: decoration.colorScheme.surfaceContainerLowest,
       appBar: _buildAppBar(context),
       body: KeyboardVisibilityBuilder(
         builder: (context, isKeyboardVisible) {
@@ -23,13 +24,13 @@ class ProfileEdit extends StatelessWidget {
                 _buildProgressHeader(ctrl),
                 Expanded(
                   child: SingleChildScrollView(
-                    child: Obx(
-                      () => AnimatedContainer(
+                    child: Obx(() {
+                      return AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         transform: Matrix4.translationValues(ctrl.shakeForm.value ? (8 * (DateTime.now().millisecondsSinceEpoch % 2 == 0 ? 1 : -1)) : 0, 0, 0),
                         child: Form(key: ctrl.formKey, child: _buildStepContent(ctrl).paddingOnly(top: 20, bottom: 20)),
-                      ),
-                    ),
+                      );
+                    }),
                   ),
                 ),
                 if (!isKeyboardVisible) _buildBottomNavigation(ctrl),
@@ -59,55 +60,62 @@ class ProfileEdit extends StatelessWidget {
         margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
         child: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-          onPressed: () => Get.close(1),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+          onPressed: () => Get.back(),
         ),
       ),
       iconTheme: const IconThemeData(color: Colors.white),
-      actions: [
-        IconButton(onPressed: () => Get.close(1), icon: const Icon(Icons.close)),
-        const SizedBox(width: 10),
-      ],
     );
   }
 
   Widget _buildProgressHeader(ProfileEditCtrl ctrl) {
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Column(
         children: [
           Row(
             children: [
-              const Icon(Icons.timeline, color: Color(0xFF3B82F6)),
-              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(color: decoration.colorScheme.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+                child: Icon(Icons.timeline_rounded, color: decoration.colorScheme.primary, size: 20),
+              ),
+              const SizedBox(width: 12),
               const Text(
                 'Profile Completion',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xFF1E293B)),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
               ),
               const Spacer(),
               Obx(
                 () => Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(color: const Color(0xFF10B981).withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [const Color(0xFF10B981), const Color(0xFF10B981).withOpacity(0.8)]),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [BoxShadow(color: const Color(0xFF10B981).withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 2))],
+                  ),
                   child: Text(
                     '${(ctrl.completionPercentage.value * 100).toInt()}%',
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF10B981)),
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           Obx(
-            () => LinearProgressIndicator(
-              value: ctrl.completionPercentage.value,
-              backgroundColor: const Color(0xFFE2E8F0),
-              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF10B981)),
-              minHeight: 6,
+            () => ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: LinearProgressIndicator(
+                value: ctrl.completionPercentage.value,
+                backgroundColor: decoration.colorScheme.surfaceContainerHighest,
+                valueColor: AlwaysStoppedAnimation<Color>(decoration.colorScheme.primary),
+                minHeight: 8,
+              ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           _buildStepIndicator(ctrl),
         ],
       ),
@@ -115,37 +123,59 @@ class ProfileEdit extends StatelessWidget {
   }
 
   Widget _buildStepIndicator(ProfileEditCtrl ctrl) {
-    final steps = ['Company', 'Business', 'Banking', 'Documents'];
-    return Row(
-      children: List.generate(steps.length, (index) {
-        return Expanded(
-          child: Row(
-            children: [
-              Obx(
-                () => Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(color: ctrl.currentStep.value >= index ? decoration.colorScheme.primary : const Color(0xFFE2E8F0), borderRadius: BorderRadius.circular(16)),
-                  child: Center(
-                    child: ctrl.currentStep.value > index
-                        ? const Icon(Icons.check, color: Colors.white, size: 16)
-                        : Text(
-                            '${index + 1}',
-                            style: TextStyle(color: ctrl.currentStep.value >= index ? Colors.white : const Color(0xFF64748B), fontWeight: FontWeight.w600, fontSize: 12),
-                          ),
-                  ),
+    final steps = [
+      {'name': 'Company', 'icon': Icons.business_rounded},
+      {'name': 'Business', 'icon': Icons.work_rounded},
+      {'name': 'Banking', 'icon': Icons.account_balance_rounded},
+      {'name': 'Documents', 'icon': Icons.folder_rounded},
+    ];
+    return Obx(() {
+      return Row(
+        children: List.generate(steps.length, (index) {
+          final isCompleted = ctrl.currentStep.value > index;
+          final isCurrent = ctrl.currentStep.value == index;
+          return Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: isCompleted || isCurrent ? decoration.colorScheme.primary : decoration.colorScheme.surfaceContainerHighest,
+                        shape: BoxShape.circle,
+                        boxShadow: isCompleted || isCurrent ? [BoxShadow(color: decoration.colorScheme.primary.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 2))] : null,
+                      ),
+                      child: Center(
+                        child: isCompleted
+                            ? const Icon(Icons.check_rounded, color: Colors.white, size: 20)
+                            : Icon(steps[index]['icon'] as IconData, color: isCurrent ? Colors.white : const Color(0xFF94A3B8), size: 18),
+                      ),
+                    ),
+                    if (index < steps.length - 1)
+                      Expanded(
+                        child: Container(
+                          height: 2,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(color: isCompleted ? decoration.colorScheme.primary : decoration.colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(1)),
+                        ),
+                      ),
+                  ],
                 ),
-              ),
-              if (index < steps.length - 1) ...[
-                const SizedBox(width: 8),
-                Expanded(child: Container(height: 2, color: ctrl.currentStep.value > index ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0))),
-                const SizedBox(width: 8),
+                const SizedBox(height: 8),
+                Text(
+                  steps[index]['name'] as String,
+                  style: TextStyle(fontSize: 11, fontWeight: isCurrent ? FontWeight.bold : FontWeight.w500, color: isCurrent ? decoration.colorScheme.primary : const Color(0xFF64748B)),
+                ),
               ],
-            ],
-          ),
-        );
-      }),
-    );
+            ),
+          );
+        }),
+      );
+    });
   }
 
   Widget _buildStepContent(ProfileEditCtrl ctrl) {
@@ -165,69 +195,138 @@ class ProfileEdit extends StatelessWidget {
     });
   }
 
+  bool _validateCompanyStep(ProfileEditCtrl ctrl) {
+    if (ctrl.companyCtrl.text.trim().isEmpty) {
+      _showValidationError('Please enter company name');
+      return false;
+    }
+    if (ctrl.contactPersonCtrl.text.trim().isEmpty) {
+      _showValidationError('Please enter contact person name');
+      return false;
+    }
+    if (ctrl.emailCtrl.text.trim().isEmpty) {
+      _showValidationError('Please enter email address');
+      return false;
+    }
+    if (!GetUtils.isEmail(ctrl.emailCtrl.text.trim())) {
+      _showValidationError('Please enter a valid email address');
+      return false;
+    }
+    if (ctrl.mobileCtrl.text.trim().isEmpty) {
+      _showValidationError('Please enter mobile number');
+      return false;
+    }
+    if (ctrl.mobileCtrl.text.trim().length != 10) {
+      _showValidationError('Mobile number must be 10 digits');
+      return false;
+    }
+    if (ctrl.gstNumberCtrl.text.trim().isEmpty) {
+      _showValidationError('Please enter GST number');
+      return false;
+    }
+    if (ctrl.gstNumberCtrl.text.trim().length != 15) {
+      _showValidationError('GST number must be 15 characters');
+      return false;
+    }
+    if (ctrl.gstValidationStatus.value != 'valid') {
+      _showValidationError('Please validate GST number');
+      return false;
+    }
+    return true;
+  }
+
+  bool _validateBusinessStep(ProfileEditCtrl ctrl) {
+    if (ctrl.engagementModels.isEmpty) {
+      _showValidationError('Please select at least one engagement model');
+      return false;
+    }
+    if (ctrl.timeZones.isEmpty) {
+      _showValidationError('Please select at least one time zone');
+      return false;
+    }
+    if (ctrl.resourceCountCtrl.text.trim().isEmpty) {
+      _showValidationError('Please enter available resources count');
+      return false;
+    }
+    return true;
+  }
+
+  bool _validateBankingStep(ProfileEditCtrl ctrl) {
+    if (ctrl.bankAccountHolderNameCtrl.text.trim().isEmpty) {
+      _showValidationError('Please enter account holder name');
+      return false;
+    }
+    if (ctrl.bankAccountNumberCtrl.text.trim().isEmpty) {
+      _showValidationError('Please enter account number');
+      return false;
+    }
+    if (ctrl.bankNameCtrl.text.trim().isEmpty) {
+      _showValidationError('Please enter bank name');
+      return false;
+    }
+    if (ctrl.bankBranchNameCtrl.text.trim().isEmpty) {
+      _showValidationError('Please enter branch name');
+      return false;
+    }
+    if (ctrl.ifscCodeCtrl.text.trim().isEmpty) {
+      _showValidationError('Please enter IFSC code');
+      return false;
+    }
+    return true;
+  }
+
+  bool _validateDocumentsStep(ProfileEditCtrl ctrl) {
+    if (ctrl.panCard.value == null) {
+      _showValidationError('Please upload PAN Card');
+      return false;
+    }
+    return true;
+  }
+
+  void _showValidationError(String message) => toaster.warning(message);
+
   Widget _buildCompanyStep(ProfileEditCtrl ctrl) {
     return _buildStepCard(
       'Company Information',
-      Icons.business,
-      const Color(0xFF3B82F6),
+      Icons.business_rounded,
+      decoration.colorScheme.primary,
       Column(
+        spacing: 16.0,
         children: [
-          _buildTextField(controller: ctrl.companyCtrl, label: 'Company Name', icon: Icons.business, validator: (value) => value?.isEmpty == true ? 'Company name is required' : null),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _buildTextField(
-                  controller: ctrl.contactPersonCtrl,
-                  label: 'Contact Person',
-                  icon: Icons.person,
-                  validator: (value) => value?.isEmpty == true ? 'Contact person is required' : null,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildTextField(controller: ctrl.designationCtrl, label: 'Designation', icon: Icons.badge, validator: (value) => value?.isEmpty == true ? 'Designation is required' : null),
-              ),
-            ],
+          _buildTextField(controller: ctrl.companyCtrl, label: 'Company Name', icon: Icons.business_rounded, validator: (value) => value?.isEmpty == true ? 'Company name is required' : null),
+          _buildTextField(controller: ctrl.contactPersonCtrl, label: 'Contact Person', icon: Icons.person_rounded, validator: (value) => value?.isEmpty == true ? 'Contact person is required' : null),
+          _buildTextField(controller: ctrl.designationCtrl, label: 'Designation', icon: Icons.badge_rounded, validator: (value) => value?.isEmpty == true ? 'Designation is required' : null),
+          _buildTextField(
+            controller: ctrl.emailCtrl,
+            label: 'Email Address',
+            icon: Icons.email_rounded,
+            keyboardType: TextInputType.emailAddress,
+            validator: (value) {
+              if (value?.isEmpty == true) return 'Email is required';
+              if (!GetUtils.isEmail(value!)) return 'Invalid email format';
+              return null;
+            },
           ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _buildTextField(
-                  controller: ctrl.emailCtrl,
-                  label: 'Email Address',
-                  icon: Icons.email,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value?.isEmpty == true) return 'Email is required';
-                    if (!GetUtils.isEmail(value!)) return 'Invalid email format';
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildTextField(
-                  controller: ctrl.mobileCtrl,
-                  label: 'Mobile Number',
-                  icon: Icons.phone,
-                  keyboardType: TextInputType.phone,
-                  maxLength: 10,
-                  validator: (value) {
-                    if (value?.isEmpty == true) return 'Mobile number is required';
-                    if (value!.length != 10) return 'Enter 10 digit mobile number';
-                    return null;
-                  },
-                ),
-              ),
-            ],
+          _buildTextField(
+            controller: ctrl.mobileCtrl,
+            label: 'Mobile Number',
+            icon: Icons.phone_rounded,
+            keyboardType: TextInputType.phone,
+            maxLength: 10,
+            validator: (value) {
+              if (value?.isEmpty == true) return 'Mobile number is required';
+              if (value!.length != 10) return 'Enter 10 digit mobile number';
+              return null;
+            },
           ),
-          const SizedBox(height: 16),
-          _buildTextField(controller: ctrl.websiteCtrl, label: 'Website URL (Optional)', icon: Icons.language, keyboardType: TextInputType.url),
-          const SizedBox(height: 16),
-          _buildTextField(controller: ctrl.addressCtrl, label: 'Company Address', icon: Icons.location_on, maxLines: 2, validator: (value) => value?.isEmpty == true ? 'Address is required' : null),
-          const SizedBox(height: 16),
+          _buildTextField(controller: ctrl.websiteCtrl, label: 'Website URL (Optional)', icon: Icons.language_rounded, keyboardType: TextInputType.url),
+          _buildTextField(
+            controller: ctrl.addressCtrl,
+            label: 'Company Address',
+            icon: Icons.location_on_rounded,
+            maxLines: 2,
+            validator: (value) => value?.isEmpty == true ? 'Address is required' : null,
+          ),
           _buildGSTField(ctrl),
         ],
       ),
@@ -241,15 +340,14 @@ class ProfileEdit extends StatelessWidget {
         maxLength: 15,
         style: const TextStyle(fontSize: 14),
         validator: (value) {
-          if (value?.isNotEmpty == true && value!.length != 15) {
-            return 'GST number must be 15 characters';
-          }
+          if (value?.isEmpty == true) return 'GST number is required';
+          if (value!.length != 15) return 'GST number must be 15 characters';
           return null;
         },
         decoration: InputDecoration(
           counterText: "",
-          labelText: 'GST Number (Required)',
-          prefixIcon: const Icon(Icons.receipt_long, size: 20, color: Color(0xFF64748B)),
+          labelText: 'GST Number *',
+          prefixIcon: Icon(Icons.receipt_long_rounded, size: 20, color: decoration.colorScheme.onSurfaceVariant),
           suffixIcon: ctrl.isValidatingGST.value
               ? const SizedBox(
                   width: 15,
@@ -257,34 +355,37 @@ class ProfileEdit extends StatelessWidget {
                   child: Padding(padding: EdgeInsets.all(12), child: CircularProgressIndicator(strokeWidth: 2)),
                 )
               : ctrl.gstValidationStatus.value == 'valid'
-              ? const Icon(Icons.check_circle, color: Color(0xFF10B981))
+              ? const Icon(Icons.check_circle_rounded, color: Color(0xFF10B981))
               : ctrl.gstValidationStatus.value == 'invalid'
-              ? const Icon(Icons.error, color: Color(0xFFEF4444))
+              ? const Icon(Icons.error_rounded, color: Color(0xFFEF4444))
               : ctrl.gstNumberCtrl.text.isNotEmpty
-              ? IconButton(icon: const Icon(Icons.search), onPressed: ctrl.validateGSTNumber)
+              ? IconButton(
+                  icon: Icon(Icons.search_rounded, color: decoration.colorScheme.primary),
+                  onPressed: ctrl.validateGSTNumber,
+                )
               : null,
-          labelStyle: const TextStyle(color: Color(0xFF64748B), fontSize: 14),
+          labelStyle: TextStyle(color: decoration.colorScheme.onSurfaceVariant, fontSize: 14),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: ctrl.gstValidationStatus.value == 'invalid' ? const Color(0xFFEF4444) : const Color(0xFFE2E8F0)),
+            borderRadius: BorderRadius.circular(14),
+            borderSide: BorderSide(color: ctrl.gstValidationStatus.value == 'invalid' ? const Color(0xFFEF4444) : decoration.colorScheme.outline.withOpacity(0.3)),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
             borderSide: BorderSide(
               color: ctrl.gstValidationStatus.value == 'valid'
                   ? const Color(0xFF10B981)
                   : ctrl.gstValidationStatus.value == 'invalid'
                   ? const Color(0xFFEF4444)
-                  : const Color(0xFFE2E8F0),
+                  : decoration.colorScheme.outline.withOpacity(0.3),
             ),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 2),
+            borderRadius: BorderRadius.circular(14),
+            borderSide: BorderSide(color: decoration.colorScheme.primary, width: 2),
           ),
           filled: true,
-          fillColor: const Color(0xFFF8FAFC),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          fillColor: Colors.white,
+          contentPadding: const EdgeInsets.all(16),
         ),
       ),
     );
@@ -293,23 +394,23 @@ class ProfileEdit extends StatelessWidget {
   Widget _buildBusinessStep(ProfileEditCtrl ctrl) {
     return _buildStepCard(
       'Business Details',
-      Icons.work_outline,
+      Icons.work_rounded,
       const Color(0xFF10B981),
       Column(
         children: [
-          _buildMultiSelectChipField(items: const ['Remote', 'Onsite', 'Hybrid'], selectedItems: ctrl.engagementModels, label: 'Engagement Models', icon: Icons.handshake_outlined),
+          _buildMultiSelectChipField(items: const ['Remote', 'Onsite', 'Hybrid'], selectedItems: ctrl.engagementModels, label: 'Engagement Models', icon: Icons.handshake_rounded),
           const SizedBox(height: 16),
-          _buildMultiSelectChipField(items: const ['IST', 'UTC', 'PST', 'EST', 'CST', 'JST'], selectedItems: ctrl.timeZones, label: 'Available Time Zones', icon: Icons.schedule),
+          _buildMultiSelectChipField(items: const ['IST', 'UTC', 'PST', 'EST', 'CST', 'JST'], selectedItems: ctrl.timeZones, label: 'Available Time Zones', icon: Icons.schedule_rounded),
           const SizedBox(height: 16),
           _buildTextField(
             controller: ctrl.resourceCountCtrl,
             label: 'Available Resources',
-            icon: Icons.people_alt,
+            icon: Icons.people_alt_rounded,
             keyboardType: TextInputType.number,
             validator: (value) => value?.isEmpty == true ? 'Resource count is required' : null,
           ),
           const SizedBox(height: 16),
-          _buildTextField(controller: ctrl.commentsCtrl, label: 'Additional Comments (Optional)', icon: Icons.comment, maxLines: 3),
+          _buildTextField(controller: ctrl.commentsCtrl, label: 'Additional Comments (Optional)', icon: Icons.comment_rounded, maxLines: 3),
         ],
       ),
     );
@@ -318,51 +419,32 @@ class ProfileEdit extends StatelessWidget {
   Widget _buildBankingStep(ProfileEditCtrl ctrl) {
     return _buildStepCard(
       'Banking Information',
-      Icons.account_balance,
+      Icons.account_balance_rounded,
       const Color(0xFF8B5CF6),
       Column(
+        spacing: 16.0,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: _buildTextField(
-                  controller: ctrl.bankAccountHolderNameCtrl,
-                  label: 'Account Holder Name',
-                  icon: Icons.person,
-                  validator: (value) => value?.isEmpty == true ? 'Account holder name is required' : null,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildTextField(
-                  controller: ctrl.bankAccountNumberCtrl,
-                  label: 'Account Number',
-                  icon: Icons.account_balance_wallet,
-                  keyboardType: TextInputType.number,
-                  validator: (value) => value?.isEmpty == true ? 'Account number is required' : null,
-                ),
-              ),
-            ],
+          _buildTextField(
+            controller: ctrl.bankAccountHolderNameCtrl,
+            label: 'Account Holder Name',
+            icon: Icons.person_rounded,
+            validator: (value) => value?.isEmpty == true ? 'Account holder name is required' : null,
           ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _buildTextField(controller: ctrl.bankNameCtrl, label: 'Bank Name', icon: Icons.account_balance, validator: (value) => value?.isEmpty == true ? 'Bank name is required' : null),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildTextField(
-                  controller: ctrl.bankBranchNameCtrl,
-                  label: 'Branch Name',
-                  icon: Icons.location_city,
-                  validator: (value) => value?.isEmpty == true ? 'Branch name is required' : null,
-                ),
-              ),
-            ],
+          _buildTextField(
+            controller: ctrl.bankAccountNumberCtrl,
+            label: 'Account Number',
+            icon: Icons.account_balance_wallet_rounded,
+            keyboardType: TextInputType.number,
+            validator: (value) => value?.isEmpty == true ? 'Account number is required' : null,
           ),
-          const SizedBox(height: 16),
-          _buildTextField(controller: ctrl.ifscCodeCtrl, label: 'IFSC Code', icon: Icons.code, validator: (value) => value?.isEmpty == true ? 'IFSC code is required' : null),
+          _buildTextField(controller: ctrl.bankNameCtrl, label: 'Bank Name', icon: Icons.account_balance_rounded, validator: (value) => value?.isEmpty == true ? 'Bank name is required' : null),
+          _buildTextField(
+            controller: ctrl.bankBranchNameCtrl,
+            label: 'Branch Name',
+            icon: Icons.location_city_rounded,
+            validator: (value) => value?.isEmpty == true ? 'Branch name is required' : null,
+          ),
+          _buildTextField(controller: ctrl.ifscCodeCtrl, label: 'IFSC Code', icon: Icons.code_rounded, validator: (value) => value?.isEmpty == true ? 'IFSC code is required' : null),
         ],
       ),
     );
@@ -371,15 +453,21 @@ class ProfileEdit extends StatelessWidget {
   Widget _buildDocumentsStep(ProfileEditCtrl ctrl) {
     return _buildStepCard(
       'Documents & Files',
-      Icons.folder_outlined,
+      Icons.folder_rounded,
       const Color(0xFFF59E0B),
       Column(
         children: [
-          _buildFileUploadField(label: 'PAN Card', file: ctrl.panCard, onTap: ctrl.pickPanCard, onRemove: () => ctrl.removeFile('panCard'), icon: Icons.credit_card, required: true),
+          _buildFileUploadField(label: 'PAN Card', file: ctrl.panCard, onTap: ctrl.pickPanCard, onRemove: () => ctrl.removeFile('panCard'), icon: Icons.credit_card_rounded, required: true),
           const SizedBox(height: 16),
-          _buildFileUploadField(label: 'Profile Avatar', file: ctrl.avatar, onTap: ctrl.pickAvatar, onRemove: () => ctrl.removeFile('avatar'), icon: Icons.person),
+          _buildFileUploadField(label: 'Profile Avatar', file: ctrl.avatar, onTap: ctrl.pickAvatar, onRemove: () => ctrl.removeFile('avatar'), icon: Icons.person_rounded),
           const SizedBox(height: 16),
-          _buildMultiFileUploadField(label: 'Certificates', files: ctrl.certificates, onTap: ctrl.pickCertificates, onRemove: (index) => ctrl.removeFile('certificate', index), icon: Icons.verified),
+          _buildMultiFileUploadField(
+            label: 'Certificates',
+            files: ctrl.certificates,
+            onTap: ctrl.pickCertificates,
+            onRemove: (index) => ctrl.removeFile('certificate', index),
+            icon: Icons.verified_rounded,
+          ),
         ],
       ),
     );
@@ -391,7 +479,7 @@ class ProfileEdit extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -401,9 +489,9 @@ class ProfileEdit extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
-                  child: Icon(icon, color: color, size: 20),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(color: color.withOpacity(0.12), borderRadius: BorderRadius.circular(12)),
+                  child: Icon(icon, color: color, size: 22),
                 ),
                 const SizedBox(width: 12),
                 Text(
@@ -421,56 +509,95 @@ class ProfileEdit extends StatelessWidget {
 
   Widget _buildBottomNavigation(ProfileEditCtrl ctrl) {
     return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [BoxShadow(color: Color(0x1A000000), blurRadius: 10, offset: Offset(0, -2))],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 12, offset: const Offset(0, -2))],
       ),
       child: Obx(
         () => Row(
           children: [
             if (ctrl.currentStep.value > 0) ...[
               Expanded(
-                child: OutlinedButton(
-                  onPressed: ctrl.previousStep,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    ctrl.currentStep.value--;
+                  },
+                  icon: const Icon(Icons.arrow_back_rounded, size: 18),
+                  label: const Text('Back'),
                   style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: decoration.colorScheme.primary),
+                    side: BorderSide(color: decoration.colorScheme.outline),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  child: Text(
-                    'Previous',
-                    style: TextStyle(color: decoration.colorScheme.primary, fontWeight: FontWeight.w600),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                 ),
               ),
               const SizedBox(width: 12),
             ],
             Expanded(
+              flex: ctrl.currentStep.value == 0 ? 1 : 2,
               child: ctrl.currentStep.value == 3
                   ? Obx(
                       () => ElevatedButton(
-                        onPressed: ctrl.isLoading.value ? null : ctrl.updateProfile,
+                        onPressed: ctrl.isLoading.value
+                            ? null
+                            : () {
+                                if (_validateDocumentsStep(ctrl)) {
+                                  ctrl.updateProfile();
+                                }
+                              },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: decoration.colorScheme.primary,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          elevation: 0,
                         ),
                         child: ctrl.isLoading.value
                             ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))
-                            : const Text('Update Profile', style: TextStyle(fontWeight: FontWeight.w600)),
+                            : const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.check_circle_rounded, size: 18),
+                                  SizedBox(width: 8),
+                                  Text('Update Profile', style: TextStyle(fontWeight: FontWeight.bold)),
+                                ],
+                              ),
                       ),
                     )
                   : ElevatedButton(
-                      onPressed: ctrl.nextStep,
+                      onPressed: () {
+                        bool isValid = false;
+                        switch (ctrl.currentStep.value) {
+                          case 0:
+                            isValid = _validateCompanyStep(ctrl);
+                            break;
+                          case 1:
+                            isValid = _validateBusinessStep(ctrl);
+                            break;
+                          case 2:
+                            isValid = _validateBankingStep(ctrl);
+                            break;
+                        }
+                        if (isValid) {
+                          ctrl.currentStep.value++;
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: decoration.colorScheme.primary,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        elevation: 0,
                       ),
-                      child: const Text('Next Step', style: TextStyle(fontWeight: FontWeight.w600)),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Next Step', style: TextStyle(fontWeight: FontWeight.bold)),
+                          SizedBox(width: 8),
+                          Icon(Icons.arrow_forward_rounded, size: 18),
+                        ],
+                      ),
                     ),
             ),
           ],
@@ -503,27 +630,27 @@ class ProfileEdit extends StatelessWidget {
       decoration: InputDecoration(
         counterText: "",
         labelText: label,
-        prefixIcon: Icon(icon, size: 20, color: const Color(0xFF64748B)),
-        labelStyle: const TextStyle(color: Color(0xFF64748B), fontSize: 14),
+        prefixIcon: Icon(icon, size: 20, color: decoration.colorScheme.onSurfaceVariant),
+        labelStyle: TextStyle(color: decoration.colorScheme.onSurfaceVariant, fontSize: 14),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: decoration.colorScheme.outline.withOpacity(0.3)),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: decoration.colorScheme.outline.withOpacity(0.3)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 2),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: decoration.colorScheme.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: Color(0xFFEF4444)),
         ),
         filled: true,
-        fillColor: const Color(0xFFF8FAFC),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.all(16),
       ),
     );
   }
@@ -534,23 +661,23 @@ class ProfileEdit extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(icon, size: 18, color: const Color(0xFF64748B)),
+            Icon(icon, size: 18, color: decoration.colorScheme.onSurfaceVariant),
             const SizedBox(width: 8),
             Text(
               label,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF374151)),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF374151)),
             ),
-            if (selectedItems.isEmpty) const Text(' *', style: TextStyle(color: Color(0xFFEF4444))),
+            const Text(' *', style: TextStyle(color: Color(0xFFEF4444))),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFFF8FAFC),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: selectedItems.isEmpty ? const Color(0xFFEF4444).withOpacity(0.5) : const Color(0xFFE2E8F0)),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: selectedItems.isEmpty ? const Color(0xFFEF4444).withOpacity(0.5) : decoration.colorScheme.outline.withOpacity(0.3)),
           ),
           child: Wrap(
             spacing: 8,
@@ -560,7 +687,7 @@ class ProfileEdit extends StatelessWidget {
                 () => FilterChip(
                   label: Text(
                     item,
-                    style: TextStyle(fontSize: 12, color: selectedItems.contains(item) ? const Color(0xFF3B82F6) : const Color(0xFF64748B), fontWeight: FontWeight.w500),
+                    style: TextStyle(fontSize: 13, color: selectedItems.contains(item) ? decoration.colorScheme.primary : const Color(0xFF64748B), fontWeight: FontWeight.w500),
                   ),
                   selected: selectedItems.contains(item),
                   onSelected: (selected) {
@@ -574,10 +701,10 @@ class ProfileEdit extends StatelessWidget {
                       Get.find<ProfileEditCtrl>().calculateCompletion();
                     }
                   },
-                  selectedColor: const Color(0xFF3B82F6).withOpacity(0.1),
-                  checkmarkColor: const Color(0xFF3B82F6),
+                  selectedColor: decoration.colorScheme.primary.withOpacity(0.12),
+                  checkmarkColor: decoration.colorScheme.primary,
                   backgroundColor: Colors.white,
-                  side: BorderSide(color: selectedItems.contains(item) ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0)),
+                  side: BorderSide(color: selectedItems.contains(item) ? decoration.colorScheme.primary : decoration.colorScheme.outline.withOpacity(0.3)),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 ),
               );
@@ -586,7 +713,7 @@ class ProfileEdit extends StatelessWidget {
         ),
         if (selectedItems.isEmpty)
           const Padding(
-            padding: EdgeInsets.only(top: 4, left: 12),
+            padding: EdgeInsets.only(top: 8, left: 12),
             child: Text('Please select at least one option', style: TextStyle(color: Color(0xFFEF4444), fontSize: 12)),
           ),
       ],
@@ -596,9 +723,9 @@ class ProfileEdit extends StatelessWidget {
   Widget _buildFileUploadField({required String label, required Rx<PlatformFile?> file, required VoidCallback onTap, required VoidCallback onRemove, required IconData icon, bool required = false}) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: required && file.value == null ? const Color(0xFFEF4444).withOpacity(0.5) : const Color(0xFFE2E8F0)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: required && file.value == null ? const Color(0xFFEF4444).withOpacity(0.5) : decoration.colorScheme.outline.withOpacity(0.3)),
       ),
       child: Obx(
         () => file.value != null
@@ -615,30 +742,31 @@ class ProfileEdit extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: onTap,
-                      icon: const Icon(Icons.refresh, color: Color(0xFF3B82F6), size: 20),
+                      icon: Icon(Icons.refresh_rounded, color: decoration.colorScheme.primary, size: 20),
                     ),
                     IconButton(
                       onPressed: onRemove,
-                      icon: const Icon(Icons.delete, color: Color(0xFFEF4444), size: 20),
+                      icon: const Icon(Icons.delete_rounded, color: Color(0xFFEF4444), size: 20),
                     ),
                   ],
                 ),
               )
             : ListTile(
-                leading: Icon(icon, color: const Color(0xFF64748B)),
+                leading: Icon(icon, color: decoration.colorScheme.onSurfaceVariant),
                 title: Text(
                   label,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: required && file.value == null ? const Color(0xFFEF4444) : const Color(0xFF64748B)),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: required && file.value == null ? const Color(0xFFEF4444) : decoration.colorScheme.onSurface),
                 ),
-                subtitle: required && file.value == null
-                    ? const Text('Required', style: TextStyle(color: Color(0xFFEF4444), fontSize: 12))
-                    : const Text('Tap to upload', style: TextStyle(fontSize: 12)),
+                subtitle: Text(
+                  required && file.value == null ? 'Required' : 'Tap to upload',
+                  style: TextStyle(color: required && file.value == null ? const Color(0xFFEF4444) : decoration.colorScheme.onSurfaceVariant, fontSize: 12),
+                ),
                 trailing: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(color: const Color(0xFF3B82F6).withOpacity(0.1), borderRadius: BorderRadius.circular(6)),
-                  child: const Text(
+                  decoration: BoxDecoration(color: decoration.colorScheme.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+                  child: Text(
                     'Upload',
-                    style: TextStyle(color: Color(0xFF3B82F6), fontSize: 12, fontWeight: FontWeight.w600),
+                    style: TextStyle(color: decoration.colorScheme.primary, fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                 ),
                 onTap: () {
@@ -653,27 +781,27 @@ class ProfileEdit extends StatelessWidget {
   Widget _buildMultiFileUploadField({required String label, required RxList files, required VoidCallback onTap, required Function(int) onRemove, required IconData icon}) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: decoration.colorScheme.outline.withOpacity(0.3)),
       ),
       child: Column(
         children: [
           ListTile(
-            leading: Icon(icon, color: const Color(0xFF64748B)),
+            leading: Icon(icon, color: decoration.colorScheme.onSurfaceVariant),
             title: Obx(
               () => Text(
                 files.isEmpty ? label : '${files.length} files selected',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: files.isNotEmpty ? const Color(0xFF10B981) : const Color(0xFF64748B)),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: files.isNotEmpty ? const Color(0xFF10B981) : decoration.colorScheme.onSurface),
               ),
             ),
             subtitle: const Text('Tap to add more files', style: TextStyle(fontSize: 12)),
             trailing: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(color: const Color(0xFF3B82F6).withOpacity(0.1), borderRadius: BorderRadius.circular(6)),
-              child: const Text(
+              decoration: BoxDecoration(color: decoration.colorScheme.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+              child: Text(
                 'Add Files',
-                style: TextStyle(color: Color(0xFF3B82F6), fontSize: 12, fontWeight: FontWeight.w600),
+                style: TextStyle(color: decoration.colorScheme.primary, fontSize: 12, fontWeight: FontWeight.bold),
               ),
             ),
             onTap: () {
@@ -686,17 +814,17 @@ class ProfileEdit extends StatelessWidget {
 
             return Column(
               children: [
-                const Divider(height: 1),
+                Divider(height: 1, color: decoration.colorScheme.outline.withOpacity(0.2)),
                 ...List.generate(files.length, (index) {
                   final file = files[index] as PlatformFile;
                   return ListTile(
                     dense: true,
-                    leading: const Icon(Icons.description, color: Color(0xFF10B981), size: 20),
+                    leading: const Icon(Icons.description_rounded, color: Color(0xFF10B981), size: 20),
                     title: Text(file.name, style: const TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis),
                     subtitle: Text('${(file.size / 1024 / 1024).toStringAsFixed(2)} MB', style: const TextStyle(fontSize: 10)),
                     trailing: IconButton(
                       onPressed: () => onRemove(index),
-                      icon: const Icon(Icons.close, color: Color(0xFFEF4444), size: 16),
+                      icon: const Icon(Icons.close_rounded, color: Color(0xFFEF4444), size: 16),
                     ),
                   );
                 }),

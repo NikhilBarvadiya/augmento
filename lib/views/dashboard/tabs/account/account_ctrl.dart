@@ -121,7 +121,6 @@ class AccountCtrl extends GetxController with GetTickerProviderStateMixin {
           ElevatedButton(
             onPressed: () {
               Get.close(1);
-              // helper.launchURL("https://docs.google.com/forms/d/e/1FAIpQLSe_6UsyVHh5hX02k2N-uaAz26Kl9iTim2fTskkyppcthKmlDQ/viewform?pli=1");
               helper.launchURL("https://augmento.itfuturz.in/account-delete");
               Get.find<AuthService>().logout();
             },

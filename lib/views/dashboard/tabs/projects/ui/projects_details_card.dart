@@ -43,11 +43,7 @@ class _ProjectsDetailsCardState extends State<ProjectsDetailsCard> {
               children: [
                 _buildCardHeader(),
                 const SizedBox(height: 12),
-                Text(
-                  widget.project["description"]?.toString().capitalizeFirst.toString() ?? "Unknown description",
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                ),
+                Text(widget.project["description"]?.toString().capitalizeFirst.toString() ?? "Unknown description", overflow: TextOverflow.ellipsis, maxLines: 3),
                 const SizedBox(height: 12),
                 SkillSection(candidate: widget.project),
               ],
@@ -72,15 +68,20 @@ class _ProjectsDetailsCardState extends State<ProjectsDetailsCard> {
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: Text(
-            widget.project['title']?.toString().capitalizeFirst.toString() ?? 'Unknown Project',
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black87),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.project['title']?.toString().capitalizeFirst.toString() ?? 'Unknown Project',
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black87),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              if (widget.project["isApplied"] == true) Text("Already Applied", style: TextStyle(fontSize: 10, color: Colors.red)),
+            ],
           ),
         ),
-        if (widget.project["isApplied"] == false) Icon(Icons.arrow_forward_ios, size: 16, color: decoration.colorScheme.primary),
-        if (widget.project["isApplied"] == true) Text("Already Applied", style: TextStyle(fontSize: 10, color: Colors.red)),
+        if (widget.project["isApplied"] == false) Icon(Icons.arrow_forward_ios, size: 14, color: decoration.colorScheme.primary),
       ],
     );
   }
