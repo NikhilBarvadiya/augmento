@@ -311,7 +311,7 @@ class ProfileEdit extends StatelessWidget {
             controller: ctrl.mobileCtrl,
             label: 'Mobile Number',
             icon: Icons.phone_rounded,
-            keyboardType: TextInputType.phone,
+            keyboardType: TextInputType.numberWithOptions(signed: true),
             maxLength: 10,
             validator: (value) {
               if (value?.isEmpty == true) return 'Mobile number is required';
@@ -406,7 +406,7 @@ class ProfileEdit extends StatelessWidget {
             controller: ctrl.resourceCountCtrl,
             label: 'Available Resources',
             icon: Icons.people_alt_rounded,
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.numberWithOptions(signed: true),
             validator: (value) => value?.isEmpty == true ? 'Resource count is required' : null,
           ),
           const SizedBox(height: 16),
@@ -434,7 +434,7 @@ class ProfileEdit extends StatelessWidget {
             controller: ctrl.bankAccountNumberCtrl,
             label: 'Account Number',
             icon: Icons.account_balance_wallet_rounded,
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.numberWithOptions(signed: true),
             validator: (value) => value?.isEmpty == true ? 'Account number is required' : null,
           ),
           _buildTextField(controller: ctrl.bankNameCtrl, label: 'Bank Name', icon: Icons.account_balance_rounded, validator: (value) => value?.isEmpty == true ? 'Bank name is required' : null),
@@ -618,9 +618,11 @@ class ProfileEdit extends StatelessWidget {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
+      minLines: 1,
       maxLines: maxLines,
       maxLength: maxLength,
       validator: validator,
+      textInputAction: TextInputAction.done,
       style: const TextStyle(fontSize: 14),
       onChanged: (_) {
         if (Get.isRegistered<ProfileEditCtrl>()) {

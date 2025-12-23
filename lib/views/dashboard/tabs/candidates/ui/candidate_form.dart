@@ -3,6 +3,7 @@ import 'package:augmento/utils/network/api_config.dart';
 import 'package:augmento/utils/toaster.dart';
 import 'package:augmento/views/dashboard/tabs/candidates/candidates_ctrl.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 
@@ -198,7 +199,14 @@ class _CandidateFormState extends State<CandidateForm> {
           ),
           const SizedBox(height: 40),
           _buildFormField(controller: ctrl.nameCtrl, label: 'Full Name', icon: Icons.person_rounded, hint: 'Enter candidate full name', isRequired: true),
-          _buildFormField(controller: ctrl.mobileCtrl, label: 'Mobile Number', icon: Icons.phone_rounded, keyboardType: TextInputType.phone, hint: '10 digit number', isRequired: true),
+          _buildFormField(
+            controller: ctrl.mobileCtrl,
+            label: 'Mobile Number',
+            icon: Icons.phone_rounded,
+            keyboardType: TextInputType.numberWithOptions(signed: true),
+            hint: '10 digit number',
+            isRequired: true,
+          ),
           const SizedBox(height: 80),
         ],
       ),
@@ -214,8 +222,8 @@ class _CandidateFormState extends State<CandidateForm> {
           _buildStepHeader(icon: Icons.contact_page_rounded, title: 'Personal Information', subtitle: 'Contact and education details'),
           const SizedBox(height: 24),
           _buildMultiSelectField(txtController: ctrl.educationCtrl, ctrl: ctrl, fieldType: 'education', label: 'Education', icon: Icons.school_rounded, hint: 'Add education qualifications'),
-          _buildFormField(controller: ctrl.currentSalaryCtrl, label: 'Current Salary', icon: Icons.attach_money_rounded, keyboardType: TextInputType.number, hint: 'Monthly'),
-          _buildFormField(controller: ctrl.chargesCtrl, label: 'Expected Salary', icon: Icons.price_change_rounded, keyboardType: TextInputType.number, hint: 'Monthly'),
+          _buildFormField(controller: ctrl.currentSalaryCtrl, label: 'Current Salary', icon: Icons.attach_money_rounded, keyboardType: TextInputType.numberWithOptions(signed: true), hint: 'Monthly'),
+          _buildFormField(controller: ctrl.chargesCtrl, label: 'Expected Salary', icon: Icons.price_change_rounded, keyboardType: TextInputType.numberWithOptions(signed: true), hint: 'Monthly'),
           const SizedBox(height: 80),
         ],
       ),
@@ -232,7 +240,14 @@ class _CandidateFormState extends State<CandidateForm> {
           const SizedBox(height: 24),
           _buildMultiSelectField(txtController: ctrl.skillsCtrl, ctrl: ctrl, fieldType: 'skills', label: 'Skills', icon: Icons.code_rounded, hint: 'Add technical skills', isRequired: true),
           _buildMultiSelectField(txtController: ctrl.techStackCtrl, ctrl: ctrl, fieldType: 'techStack', label: 'Tech Stack', icon: Icons.computer_rounded, hint: 'Add technology stack'),
-          _buildFormField(controller: ctrl.experienceCtrl, label: 'Experience (Years)', icon: Icons.timeline_rounded, keyboardType: TextInputType.number, hint: 'e.g., 3', isRequired: true),
+          _buildFormField(
+            controller: ctrl.experienceCtrl,
+            label: 'Experience (Years)',
+            icon: Icons.timeline_rounded,
+            keyboardType: TextInputType.numberWithOptions(signed: true),
+            hint: 'e.g., 3',
+            isRequired: true,
+          ),
           _buildAvailabilityDropdown(ctrl),
           const SizedBox(height: 80),
         ],
@@ -371,7 +386,8 @@ class _CandidateFormState extends State<CandidateForm> {
         controller: controller,
         keyboardType: keyboardType,
         maxLines: maxLines,
-        maxLength: keyboardType == TextInputType.phone ? 10 : null,
+        textInputAction: TextInputAction.done,
+        maxLength: keyboardType == TextInputType.numberWithOptions(signed: true) ? 10 : null,
         decoration: InputDecoration(
           counterText: "",
           labelText: '$label${isRequired ? ' *' : ''}',

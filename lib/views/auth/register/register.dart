@@ -186,7 +186,7 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
       hint: '+91 98765 43210',
       icon: Icons.phone_outlined,
       controller: ctrl.mobileCtrl,
-      keyboardType: TextInputType.phone,
+      keyboardType: TextInputType.numberWithOptions(signed: true),
       maxLength: 10,
     );
   }

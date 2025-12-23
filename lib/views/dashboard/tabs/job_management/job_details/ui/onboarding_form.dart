@@ -164,7 +164,7 @@ class OnboardingForm extends StatelessWidget {
             _buildFormField(firstName, 'First Name', Icons.person_outline_rounded, true),
             _buildFormField(lastName, 'Last Name', Icons.person_outline_rounded, true),
             _buildFormField(email, 'Email Address', Icons.email_rounded, true, isEmail: true),
-            _buildFormField(workerMobileContactNumber, 'Mobile Number', Icons.phone_rounded, true, keyboardType: TextInputType.phone),
+            _buildFormField(workerMobileContactNumber, 'Mobile Number', Icons.phone_rounded, true, keyboardType: TextInputType.numberWithOptions(signed: true)),
           ]),
         ],
       ),
@@ -197,7 +197,7 @@ class OnboardingForm extends StatelessWidget {
             _buildFormField(physicalLocation, 'Work Location', Icons.business_rounded, true),
             _buildFormField(homeCity, 'Home City', Icons.location_city_rounded, true),
             _buildFormField(homeState, 'Home State', Icons.map_rounded, true),
-            _buildFormField(homeZipCode, 'Zip Code', Icons.local_post_office_rounded, true, keyboardType: TextInputType.number),
+            _buildFormField(homeZipCode, 'Zip Code', Icons.local_post_office_rounded, true, keyboardType: TextInputType.numberWithOptions(signed: true)),
           ]),
         ],
       ),
@@ -278,7 +278,8 @@ class OnboardingForm extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         keyboardType: keyboardType,
-        maxLength: keyboardType == TextInputType.phone ? 10 : null,
+        textInputAction: TextInputAction.done,
+        maxLength: keyboardType == TextInputType.numberWithOptions(signed: true) ? 10 : null,
         decoration: InputDecoration(
           counterText: "",
           labelText: label,

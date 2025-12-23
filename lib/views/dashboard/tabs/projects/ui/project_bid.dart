@@ -224,7 +224,7 @@ class _ProjectBidState extends State<ProjectBid> {
         const SizedBox(height: 8),
         TextFormField(
           controller: _bidController,
-          keyboardType: TextInputType.number,
+          keyboardType: TextInputType.numberWithOptions(signed: true),
           decoration: InputDecoration(
             hintText: 'Enter your bid amount',
             prefixIcon: Icon(Icons.currency_rupee, color: Colors.grey[600]),
@@ -321,60 +321,52 @@ class _ProjectBidState extends State<ProjectBid> {
       ),
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: TextFormField(
-                  controller: _customStartDateController,
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    labelText: 'Start Date *',
-                    hintText: 'Select start date',
-                    prefixIcon: Icon(Icons.calendar_today, color: Colors.grey[600]),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  ),
-                  onTap: () => _selectDate(true),
-                  validator: selectedDuration == 'custom'
-                      ? (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please select start date';
-                          }
-                          return null;
-                        }
-                      : null,
-                ),
+          TextFormField(
+            controller: _customStartDateController,
+            readOnly: true,
+            decoration: InputDecoration(
+              labelText: 'Start Date *',
+              hintText: 'Select start date',
+              prefixIcon: Icon(Icons.calendar_today, color: Colors.grey[600]),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.grey[300]!),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextFormField(
-                  controller: _customEndDateController,
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    labelText: 'End Date *',
-                    hintText: 'Select end date',
-                    prefixIcon: Icon(Icons.calendar_today, color: Colors.grey[600]),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  ),
-                  onTap: () => _selectDate(false),
-                  validator: selectedDuration == 'custom'
-                      ? (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please select end date';
-                          }
-                          return null;
-                        }
-                      : null,
-                ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            ),
+            onTap: () => _selectDate(true),
+            validator: selectedDuration == 'custom'
+                ? (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select start date';
+                    }
+                    return null;
+                  }
+                : null,
+          ),
+          const SizedBox(height: 12),
+          TextFormField(
+            controller: _customEndDateController,
+            readOnly: true,
+            decoration: InputDecoration(
+              labelText: 'End Date *',
+              hintText: 'Select end date',
+              prefixIcon: Icon(Icons.calendar_today, color: Colors.grey[600]),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.grey[300]!),
               ),
-            ],
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            ),
+            onTap: () => _selectDate(false),
+            validator: selectedDuration == 'custom'
+                ? (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select end date';
+                    }
+                    return null;
+                  }
+                : null,
           ),
         ],
       ),
@@ -393,6 +385,7 @@ class _ProjectBidState extends State<ProjectBid> {
         TextFormField(
           controller: _coverLetterController,
           maxLines: 6,
+          textInputAction: TextInputAction.done,
           decoration: InputDecoration(
             hintText: 'Tell the client why you\'re the perfect fit for this project...',
             border: OutlineInputBorder(

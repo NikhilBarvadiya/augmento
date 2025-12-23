@@ -238,11 +238,11 @@ class _RequirementFormState extends State<RequirementForm> {
           Row(
             children: [
               Expanded(
-                child: _buildFormField(controller: ctrl.salaryMinCtrl, label: 'Minimum Salary', icon: Icons.attach_money_rounded, keyboardType: TextInputType.number, hint: '50000', isRequired: true),
+                child: _buildFormField(controller: ctrl.salaryMinCtrl, label: 'Minimum Salary', icon: Icons.attach_money_rounded, keyboardType: TextInputType.numberWithOptions(signed: true), hint: '50000', isRequired: true),
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: _buildFormField(controller: ctrl.salaryMaxCtrl, label: 'Maximum Salary', icon: Icons.attach_money_rounded, keyboardType: TextInputType.number, hint: '80000', isRequired: true),
+                child: _buildFormField(controller: ctrl.salaryMaxCtrl, label: 'Maximum Salary', icon: Icons.attach_money_rounded, keyboardType: TextInputType.numberWithOptions(signed: true), hint: '80000', isRequired: true),
               ),
             ],
           ),
@@ -409,6 +409,7 @@ class _RequirementFormState extends State<RequirementForm> {
         keyboardType: keyboardType,
         minLines: 1,
         maxLines: maxLines,
+        textInputAction: TextInputAction.done,
         decoration: InputDecoration(
           labelText: '$label${isRequired ? ' *' : ''}',
           hintText: hint,

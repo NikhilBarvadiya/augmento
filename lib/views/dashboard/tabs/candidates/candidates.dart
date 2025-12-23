@@ -374,17 +374,19 @@ class Candidates extends StatelessWidget {
 
   Widget _buildEmptyState() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: ListView(
+        shrinkWrap: true,
         children: [
-          Icon(Icons.people_outline, size: 80, color: Colors.grey[400]),
+          Center(child: Icon(Icons.people_outline, size: 80, color: Colors.grey[400])),
           const SizedBox(height: 16),
-          Text(
-            'No candidates found',
-            style: TextStyle(fontSize: 18, color: Colors.grey[600], fontWeight: FontWeight.w500),
+          Center(
+            child: Text(
+              'No candidates found',
+              style: TextStyle(fontSize: 18, color: Colors.grey[600], fontWeight: FontWeight.w500),
+            ),
           ),
           const SizedBox(height: 8),
-          Text('Try adjusting your search or filters', style: TextStyle(color: Colors.grey[500])),
+          Center(child: Text('Try adjusting your search or filters', style: TextStyle(color: Colors.grey[500]))),
         ],
       ),
     );

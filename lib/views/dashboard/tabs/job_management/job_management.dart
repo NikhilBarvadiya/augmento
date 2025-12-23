@@ -437,21 +437,25 @@ class _JobsManagementState extends State<JobsManagement> {
     final config = stateConfig[type] ?? stateConfig['available']!;
 
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: ListView(
+        shrinkWrap: true,
         children: [
-          Container(
-            padding: const EdgeInsets.all(32),
-            decoration: BoxDecoration(color: decoration.colorScheme.primaryContainer.withOpacity(0.3), shape: BoxShape.circle),
-            child: Icon(config['icon'], size: 64, color: decoration.colorScheme.primary),
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(color: decoration.colorScheme.primaryContainer.withOpacity(0.3), shape: BoxShape.circle),
+              child: Icon(config['icon'], size: 64, color: decoration.colorScheme.primary),
+            ),
           ),
           const SizedBox(height: 24),
-          Text(
-            config['title'],
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: decoration.colorScheme.onSurface),
+          Center(
+            child: Text(
+              config['title'],
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: decoration.colorScheme.onSurface),
+            ),
           ),
           const SizedBox(height: 8),
-          Text(config['subtitle'], style: TextStyle(fontSize: 14, color: decoration.colorScheme.onSurfaceVariant)),
+          Center(child: Text(config['subtitle'], style: TextStyle(fontSize: 14, color: decoration.colorScheme.onSurfaceVariant))),
         ],
       ),
     );

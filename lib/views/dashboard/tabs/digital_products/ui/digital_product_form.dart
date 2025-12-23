@@ -176,6 +176,7 @@ class DigitalProductForm extends StatelessWidget {
         controller: controller,
         minLines: 1,
         maxLines: maxLines,
+        textInputAction: TextInputAction.done,
         decoration: InputDecoration(
           labelText: '$label${isRequired ? ' *' : ''}',
           hintText: hint,
