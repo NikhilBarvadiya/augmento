@@ -50,7 +50,7 @@ class Dashboard extends StatelessWidget {
       ),
       child: SafeArea(
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -118,9 +118,9 @@ class Dashboard extends StatelessWidget {
                   duration: const Duration(milliseconds: 300),
                   style: TextStyle(
                     color: isSelected ? decoration.colorScheme.primary : decoration.colorScheme.onSurfaceVariant,
-                    fontSize: 11,
+                    fontSize: 10,
                     fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                    letterSpacing: 0.2,
+
                   ),
                   child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
                 ),
